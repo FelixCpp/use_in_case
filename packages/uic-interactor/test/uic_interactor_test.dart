@@ -24,6 +24,16 @@ class ReturnInputAfterDelayInteractor<T>
   }
 }
 
+class ThrowExceptionInteractor
+    implements ParameterizedResultInteractor<int, int> {
+  const ThrowExceptionInteractor();
+
+  @override
+  Future<int> execute(int input) async {
+    throw Exception('Error');
+  }
+}
+
 void main() {
   group('run interactor via explicit configuration', () {
     test('should return 500 after 100 milliseconds', () {
@@ -95,6 +105,30 @@ void main() {
           ),
         ),
       );
+    });
+  });
+
+  group('run interactor via get method', () {
+    test('should return 600', () async {
+      const interactor = ReturnInputAfterDelayInteractor<int>();
+
+      final result = await interactor(
+        ReturnInputAfterDelayParams(delay: Duration.zero, result: 600),
+      ).get();
+
+      expect(result, equals(600));
+    });
+
+    test('should return null', () async {
+      const interactor = ThrowExceptionInteractor();
+      final result = await interactor(0).getOrNull();
+      expect(result, isNull);
+    });
+
+    test('should return -1', () async {
+      const interactor = ThrowExceptionInteractor();
+      final result = await interactor(0).getOrElse(fallback: -1);
+      expect(result, equals(-1));
     });
   });
 }

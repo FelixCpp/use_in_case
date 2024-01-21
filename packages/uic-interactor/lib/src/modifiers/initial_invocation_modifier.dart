@@ -2,7 +2,8 @@ import 'package:uic_interactor/src/invocation_event.dart';
 import 'package:uic_interactor/src/modifiers/invocation_modifier.dart';
 import 'package:uic_interactor/src/parameterized_result_interactor.dart';
 
-class InitialInvocationModifier<Input, Output> implements InvocationModifier {
+class InitialInvocationModifier<Input, Output>
+    implements InvocationModifier<Input, Output> {
   final Input _input;
   final ParameterizedResultInteractor<Input, Output> _interactor;
 
@@ -13,7 +14,7 @@ class InitialInvocationModifier<Input, Output> implements InvocationModifier {
         _interactor = interactor;
 
   @override
-  Stream<InvocationEvent> buildStream() async* {
+  Stream<InvocationEvent<Input, Output>> buildStream() async* {
     try {
       yield InvocationEvent.onStart(_input);
       yield InvocationEvent.onSuccess(await _interactor.execute(_input));

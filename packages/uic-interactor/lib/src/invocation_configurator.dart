@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:uic_interactor/src/configured_invocation.dart';
 import 'package:uic_interactor/src/modifiers/initial_invocation_modifier.dart';
 import 'package:uic_interactor/src/invocation_event.dart';
@@ -5,14 +7,56 @@ import 'package:uic_interactor/src/modifiers/invocation_modifier.dart';
 import 'package:uic_interactor/src/modifiers/timeout_invocation_modifier.dart';
 import 'package:uic_interactor/uic_interactor.dart';
 
-class InvocationConfigurator<Modifier extends InvocationModifier> {
+class InvocationConfigurator<Input, Output,
+    Modifier extends InvocationModifier<Input, Output>> {
   final Modifier _modifier;
 
   const InvocationConfigurator({
     required Modifier modifier,
   }) : _modifier = modifier;
 
-  InvocationConfigurator<TimeoutInvocationModifier<Modifier>> timeout(
+  Future<Output> get() {
+    final completer = Completer<Output>();
+
+    configure((event) {
+      event.whenOrNull(
+        onSuccess: (output) => completer.complete(output),
+        onFailure: (exception) => completer.completeError(exception),
+      );
+    }).run();
+
+    return completer.future;
+  }
+
+  Future<Output?> getOrNull() {
+    return get()
+        .then((value) => Future<Output?>.value(value))
+        .catchError((_) => Future<Output?>.value());
+  }
+
+  Future<Output> getOrElse({required Output fallback}) {
+    return get().catchError((_) => fallback);
+  }
+
+  ConfiguredInvocation<Input, Output, Modifier> configure(
+    void Function(InvocationEvent<Input, Output>) onEvent,
+  ) {
+    return ConfiguredInvocation(
+      onEvent: onEvent,
+      modifier: _modifier,
+    );
+  }
+}
+
+///
+/// Timeout addon
+///
+
+extension InvocationConfiguratorWithTimeout<Input, Output,
+        Modifier extends InvocationModifier<Input, Output>>
+    on InvocationConfigurator<Input, Output, Modifier> {
+  InvocationConfigurator<Input, Output,
+      TimeoutInvocationModifier<Input, Output, Modifier>> timeout(
     Duration timeoutDuration, {
     String? message,
   }) {
@@ -24,20 +68,16 @@ class InvocationConfigurator<Modifier extends InvocationModifier> {
       ),
     );
   }
-
-  ConfiguredInvocation<Modifier> configure(
-    void Function(InvocationEvent) onEvent,
-  ) {
-    return ConfiguredInvocation(
-      onEvent: onEvent,
-      modifier: _modifier,
-    );
-  }
 }
+
+///
+/// Invocable Interactor
+///
 
 extension InvokeInteractorExtension<Input, Output>
     on ParameterizedResultInteractor<Input, Output> {
-  InvocationConfigurator<InitialInvocationModifier<Input, Output>> call(
+  InvocationConfigurator<Input, Output,
+      InitialInvocationModifier<Input, Output>> call(
     Input input,
   ) {
     return InvocationConfigurator(
