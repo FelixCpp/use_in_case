@@ -1,4 +1,6 @@
-/* import 'package:uic_interactor/uic_interactor.dart';
+import 'dart:io';
+
+import 'package:uic_interactor/uic_interactor.dart';
 
 class DivideByTwoInteractor implements ParameterizedResultInteractor<int, int> {
   const DivideByTwoInteractor();
@@ -9,11 +11,34 @@ class DivideByTwoInteractor implements ParameterizedResultInteractor<int, int> {
   }
 }
 
+class SaveToFileInteractor
+    implements ParameterizedResultInteractor<String, void> {
+  const SaveToFileInteractor();
+
+  @override
+  Future<void> execute(String content) async {
+    final file = File('example_file.txt');
+    await file.writeAsString(content);
+  }
+}
+
 Future<void> main() async {
-  const divideByTwo = DivideByTwoInteractor();
   const value = 502;
 
-  final result = await divideByTwo(value).get();
-  print('$value ~/ 2 = $result');
+  const divideByTwo = DivideByTwoInteractor();
+  final result = await divideByTwo(value).getOrElse(fallback: -1);
+
+  const saveToFile = SaveToFileInteractor();
+  saveToFile("$value ~/ 2 = $result")
+      .timeout(Duration(seconds: 1))
+      .configure((event) {
+    event.whenOrNull(
+      onSuccess: (_) {
+        print('Content has been saved successfully.');
+      },
+      onFailure: (exception) {
+        print('Could not save content to file. Exception: $exception');
+      },
+    );
+  }).run();
 }
- */

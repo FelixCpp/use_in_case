@@ -3,6 +3,6 @@
 /// More dartdocs go here.
 library;
 
-export 'src/uic_interactor_profiler_base.dart';
+export 'src/profiler_invocation_modifier.dart';
 
 // TODO: Export any libraries intended for clients of this package.

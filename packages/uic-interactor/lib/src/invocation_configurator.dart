@@ -31,7 +31,7 @@ class InvocationConfigurator<Input, Output,
   Future<Output?> getOrNull() {
     return get()
         .then((value) => Future<Output?>.value(value))
-        .catchError((_) => Future<Output?>.value());
+        .catchError((_) => null);
   }
 
   Future<Output> getOrElse({required Output fallback}) {

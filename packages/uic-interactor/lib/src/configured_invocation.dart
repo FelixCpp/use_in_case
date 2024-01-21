@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:uic_interactor/src/invocation_details.dart';
 import 'package:uic_interactor/src/invocation_event.dart';
 import 'package:uic_interactor/src/modifiers/invocation_modifier.dart';
@@ -17,11 +19,24 @@ class ConfiguredInvocation<Input, Output,
         _modifier = modifier;
 
   void run() {
-    final stream = _modifier.buildStream();
+    final controller = StreamController<InvocationEvent<Input, Output>>();
 
-    stream.listen(
-      (event) => _modifier.notify(_details, event, _onEvent),
+    StreamSubscription? subscription;
+    subscription = controller.stream.listen(
+      (event) async {
+        _modifier.notify(_details, event, _onEvent);
+
+        if (event.maybeMap(
+            onSuccess: (_) => true,
+            onFailure: (_) => true,
+            orElse: () => false)) {
+          await subscription?.cancel();
+          await controller.close();
+        }
+      },
       cancelOnError: true,
     );
+
+    controller.addStream(_modifier.buildStream());
   }
 }

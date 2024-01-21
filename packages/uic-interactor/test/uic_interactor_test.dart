@@ -125,6 +125,18 @@ void main() {
       expect(result, isNull);
     });
 
+    test('should throw due to timeout exception null', () async {
+      const interactor = ReturnInputAfterDelayInteractor<int>();
+      final result = await interactor(
+        ReturnInputAfterDelayParams(
+          delay: Duration(seconds: 50),
+          result: 123,
+        ),
+      ).timeout(Duration(milliseconds: 50)).getOrNull();
+
+      expect(result, isNull);
+    });
+
     test('should return -1', () async {
       const interactor = ThrowExceptionInteractor();
       final result = await interactor(0).getOrElse(fallback: -1);
