@@ -108,7 +108,7 @@ void main() {
     });
   });
 
-  group('run interactor via get method', () {
+  group('run interactor via get[Or[Null|Else]] method', () {
     test('should return 600', () async {
       const interactor = ReturnInputAfterDelayInteractor<int>();
 

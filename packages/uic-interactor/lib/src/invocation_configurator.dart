@@ -2,18 +2,18 @@ import 'dart:async';
 
 import 'package:uic_interactor/src/configured_invocation.dart';
 import 'package:uic_interactor/src/modifiers/initial_invocation_modifier.dart';
-import 'package:uic_interactor/src/invocation_event.dart';
-import 'package:uic_interactor/src/modifiers/invocation_modifier.dart';
 import 'package:uic_interactor/src/modifiers/timeout_invocation_modifier.dart';
 import 'package:uic_interactor/uic_interactor.dart';
 
 class InvocationConfigurator<Input, Output,
     Modifier extends InvocationModifier<Input, Output>> {
-  final Modifier _modifier;
+  final InvocationDetails details;
+  final Modifier modifier;
 
   const InvocationConfigurator({
-    required Modifier modifier,
-  }) : _modifier = modifier;
+    required this.details,
+    required this.modifier,
+  });
 
   Future<Output> get() {
     final completer = Completer<Output>();
@@ -42,8 +42,9 @@ class InvocationConfigurator<Input, Output,
     void Function(InvocationEvent<Input, Output>) onEvent,
   ) {
     return ConfiguredInvocation(
+      details: details,
       onEvent: onEvent,
-      modifier: _modifier,
+      modifier: modifier,
     );
   }
 }
@@ -61,9 +62,10 @@ extension InvocationConfiguratorWithTimeout<Input, Output,
     String? message,
   }) {
     return InvocationConfigurator(
+      details: details,
       modifier: TimeoutInvocationModifier(
         timeoutDuration: timeoutDuration,
-        modifier: _modifier,
+        modifier: modifier,
         message: message,
       ),
     );
@@ -81,6 +83,7 @@ extension InvokeInteractorExtension<Input, Output>
     Input input,
   ) {
     return InvocationConfigurator(
+      details: InvocationDetails(jobName: runtimeType.toString()),
       modifier: InitialInvocationModifier(input: input, interactor: this),
     );
   }

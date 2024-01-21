@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:uic_interactor/src/invocation_details.dart';
 import 'package:uic_interactor/src/invocation_event.dart';
 import 'package:uic_interactor/src/modifiers/invocation_modifier.dart';
 
@@ -27,5 +28,14 @@ class TimeoutInvocationModifier<Input, Output,
         ),
       );
     });
+  }
+
+  @override
+  void notify(
+    InvocationDetails details,
+    InvocationEvent<Input, Output> event,
+    void Function(InvocationEvent<Input, Output>) callback,
+  ) {
+    return _modifier.notify(details, event, callback);
   }
 }
