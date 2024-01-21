@@ -26,13 +26,13 @@ class ReturnInputAfterDelayInteractor<T>
 
 void main() {
   group('run interactor via explicit configuration', () {
-    test('should return 500 after 1 second', () {
+    test('should return 500 after 100 milliseconds', () {
       final completer = Completer<int>();
       const interactor = ReturnInputAfterDelayInteractor<int>();
 
       interactor(
         const ReturnInputAfterDelayParams(
-          delay: Duration(seconds: 1),
+          delay: Duration(milliseconds: 100),
           result: 500,
         ),
       ).configure(
@@ -66,16 +66,18 @@ void main() {
       expect(completer.future, completion(equals('Hello')));
     });
 
-    test('shoud throw timeout exception', () {
+    test('shoud throw timeout exception with message', () {
       final completer = Completer<double>();
+      const timeoutDuration = Duration(milliseconds: 50);
+      const timeoutMessage = 'Some Timeout';
       const interactor = ReturnInputAfterDelayInteractor<double>();
 
       interactor(
         const ReturnInputAfterDelayParams(
-          delay: Duration(milliseconds: 500),
+          delay: Duration(milliseconds: 100),
           result: 3.14159,
         ),
-      ).timeout(Duration(milliseconds: 250)).configure(
+      ).timeout(timeoutDuration, message: timeoutMessage).configure(
         (event) {
           event.whenOrNull(
             onFailure: (exception) => completer.completeError(exception),
@@ -83,7 +85,16 @@ void main() {
         },
       ).run();
 
-      expect(completer.future, throwsA(isA<TimeoutException>()));
+      expect(
+        completer.future,
+        throwsA(
+          isA<TimeoutException>().having(
+            (error) => error.message,
+            'message',
+            equals(timeoutMessage),
+          ),
+        ),
+      );
     });
   });
 }
