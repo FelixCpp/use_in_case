@@ -6,7 +6,13 @@ This library provides the base class **ParameterizedResultInteractor** as well a
 
 Before writing your first interactor, it is required to add this package to your dependencies.
 
-![](https://github.com/FelixCpp/use_in_case/blob/main/packages/uic-interactor/imgs/add_dependency.png)
+```yaml
+dependencies:
+  uic_interactor:
+    git:
+      url: https://github.com/FelixCpp/use_in_case.git
+      path: packages/uic-interactor
+```
 
 ## Usage
 
@@ -66,17 +72,6 @@ saveToFile("502 / 2 = 251").configure((event) {
     },
   );
 }).run(); //< Don't forget to call run at the end!
-```
-
-Additionally it is possible to insert a timeout duration before running the interactor. When the interactor takes more time than allowed, a *TimeoutException* will be added to the execution flow.
-
-```dart
-const waitingInteractor = Wait3SecondsInteractor();
-final result = await waitingInteractor(value) // Wait three seconds
-	.timeout(const Duration(seconds: 1)) // Timeout of one second.
-	.getOrElse(fallback: -1); // Returns -1 due to TimeoutException
-
-print(result);
 ```
 
 ## Additional information

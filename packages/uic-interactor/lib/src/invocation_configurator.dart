@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:uic_interactor/src/configured_invocation.dart';
 import 'package:uic_interactor/src/modifiers/initial_invocation_modifier.dart';
-import 'package:uic_interactor/src/modifiers/timeout_invocation_modifier.dart';
 import 'package:uic_interactor/uic_interactor.dart';
 
 class InvocationConfigurator<Input, Output> {
@@ -44,27 +43,6 @@ class InvocationConfigurator<Input, Output> {
       details: details,
       onEvent: onEvent,
       modifier: modifier,
-    );
-  }
-}
-
-///
-/// Timeout addon
-///
-
-extension InvocationConfiguratorWithTimeout<Input, Output>
-    on InvocationConfigurator<Input, Output> {
-  InvocationConfigurator<Input, Output> timeout(
-    Duration timeoutDuration, {
-    String? message,
-  }) {
-    return InvocationConfigurator(
-      details: details,
-      modifier: TimeoutInvocationModifier(
-        timeoutDuration: timeoutDuration,
-        modifier: modifier,
-        message: message,
-      ),
     );
   }
 }

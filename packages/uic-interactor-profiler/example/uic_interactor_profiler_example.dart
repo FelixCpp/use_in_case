@@ -2,7 +2,7 @@ import 'dart:math' as math show pi;
 
 import 'package:uic_interactor/uic_interactor.dart';
 import 'package:uic_interactor_profiler/src/invocation_profiler_logger.dart';
-import 'package:uic_interactor_profiler/src/profiler_invocation_modifier.dart';
+import 'package:uic_interactor_profiler/src/profiler_extension.dart';
 
 class ReturnPiAfterDelayInteractor
     implements ParameterizedResultInteractor<Duration, double> {
@@ -18,10 +18,8 @@ Future<void> main() async {
   const logger = TestLogger();
   const heavyMath = ReturnPiAfterDelayInteractor();
 
-  final result = await heavyMath(Duration(milliseconds: 750))
-      .timeout(Duration(milliseconds: 100))
-      .profiler(logger)
-      .getOrNull();
+  final result =
+      await heavyMath(Duration(milliseconds: 750)).profiler(logger).getOrNull();
 
   print("Result: $result");
 

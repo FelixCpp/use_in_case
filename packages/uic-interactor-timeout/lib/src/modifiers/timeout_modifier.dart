@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:uic_interactor/src/invocation_details.dart';
-import 'package:uic_interactor/src/invocation_event.dart';
-import 'package:uic_interactor/src/modifiers/invocation_modifier.dart';
+import 'package:uic_interactor/uic_interactor.dart';
 
 class TimeoutInvocationModifier<Input, Output>
     implements InvocationModifier<Input, Output> {

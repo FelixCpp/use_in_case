@@ -75,37 +75,6 @@ void main() {
 
       expect(completer.future, completion(equals('Hello')));
     });
-
-    test('shoud throw timeout exception with message', () {
-      final completer = Completer<double>();
-      const timeoutDuration = Duration(milliseconds: 50);
-      const timeoutMessage = 'Some Timeout';
-      const interactor = ReturnInputAfterDelayInteractor<double>();
-
-      interactor(
-        const ReturnInputAfterDelayParams(
-          delay: Duration(milliseconds: 100),
-          result: 3.14159,
-        ),
-      ).timeout(timeoutDuration, message: timeoutMessage).configure(
-        (event) {
-          event.whenOrNull(
-            onFailure: (exception) => completer.completeError(exception),
-          );
-        },
-      ).run();
-
-      expect(
-        completer.future,
-        throwsA(
-          isA<TimeoutException>().having(
-            (error) => error.message,
-            'message',
-            equals(timeoutMessage),
-          ),
-        ),
-      );
-    });
   });
 
   group('run interactor via get[Or[Null|Else]] method', () {
@@ -122,18 +91,6 @@ void main() {
     test('should return null', () async {
       const interactor = ThrowExceptionInteractor();
       final result = await interactor(0).getOrNull();
-      expect(result, isNull);
-    });
-
-    test('should throw due to timeout exception null', () async {
-      const interactor = ReturnInputAfterDelayInteractor<int>();
-      final result = await interactor(
-        ReturnInputAfterDelayParams(
-          delay: Duration(seconds: 50),
-          result: 123,
-        ),
-      ).timeout(Duration(milliseconds: 50)).getOrNull();
-
       expect(result, isNull);
     });
 

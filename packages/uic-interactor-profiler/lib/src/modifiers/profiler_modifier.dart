@@ -56,18 +56,3 @@ class ProfilerInvocationModifier<Input, Output>
     });
   }
 }
-
-extension InvocationConfiguratorWithProfiler<Input, Output>
-    on InvocationConfigurator<Input, Output> {
-  InvocationConfigurator<Input, Output> profiler(
-    InvocationEventProfiler logger,
-  ) {
-    return InvocationConfigurator(
-      details: details,
-      modifier: ProfilerInvocationModifier(
-        logger: logger,
-        modifier: modifier,
-      ),
-    );
-  }
-}
