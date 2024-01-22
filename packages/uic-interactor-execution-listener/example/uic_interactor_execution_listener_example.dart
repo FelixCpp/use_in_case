@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:uic_interactor/uic_interactor.dart';
 import 'package:uic_interactor_execution_listener/src/interactor_execution_publisher.dart';
 import 'package:uic_interactor_execution_listener/src/listener/interactor_execution_unicast_listener.dart';
@@ -41,18 +43,35 @@ Future<void> exampleWithListenerInstance() async {
 Future<void> exampleWithListenerCallback() async {
   const interactor = Return500AfterDelayInteractor();
 
-  final result = await interactor(Duration(milliseconds: 750))
+  final completer = Completer<int>();
+  interactor(Duration(milliseconds: 750))
       .publishInto((isLoading) => print('Interactor is working $isLoading'))
-      .publishInto((isLoading) => print('LOL'))
-      .timeout(Duration(milliseconds: 100))
-      .get();
+      .configure((event) {
+    event.whenOrNull(
+      onStart: (input) {
+        print('Started');
+      },
+      onSuccess: (data) {
+        print('Succeeded');
+        completer.complete(data);
+      },
+      onFailure: (exception) {
+        print('Failure');
+        completer.completeError(exception);
+      },
+    );
+  }).run();
 
-  print('Computation result: $result');
+  await completer.future.then((result) {
+    print('Computation result: $result');
+  });
 
   ///
   /// ~ Function Output ~
-  /// Interactor is working: true
-  /// Interactor is working: false
+  /// Interactor is working true
+  /// Started
+  /// Succeeded
+  /// Interactor is working false
   /// Computation result: 500
   ///
 }
