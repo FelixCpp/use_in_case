@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:logger/logger.dart';
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 import 'package:uic_interactor/uic_interactor.dart';
@@ -21,8 +20,7 @@ class ThrowingInteractor implements ParameterizedResultInteractor {
   }
 }
 
-class DefaultLogger implements InvocationEventProfiler {
-  final logger = Logger();
+class DefaultProfiler implements InvocationEventProfiler {
   int startCount = 0;
   int successCount = 0;
   int failureCount = 0;
@@ -32,7 +30,6 @@ class DefaultLogger implements InvocationEventProfiler {
     required InvocationDetails details,
     required T input,
   }) {
-    logger.i('${details.jobName} started');
     ++startCount;
   }
 
@@ -42,7 +39,6 @@ class DefaultLogger implements InvocationEventProfiler {
     required Duration elapsedTime,
     required T output,
   }) {
-    logger.i('${details.jobName} succeeded after $elapsedTime with $output');
     ++successCount;
   }
 
@@ -52,51 +48,125 @@ class DefaultLogger implements InvocationEventProfiler {
     required Duration elapsedTime,
     required Exception exception,
   }) {
-    logger.e(
-      '${details.jobName} failed after $elapsedTime with $exception',
-    );
     ++failureCount;
   }
 }
 
 void main() {
-  test('Should succeed with result and method counts', () async {
-    final logger = DefaultLogger();
-    final interactor = MyInteractor();
-    final result = await interactor(120).profiler(logger).get();
+  group('run interactor with single profiler modifier', () {
+    test('should continue with method calls equal to one', () async {
+      final profiler = DefaultProfiler();
+      final interactor = MyInteractor();
+      final result = await interactor(120).profiler(profiler).get();
 
-    expect(result, equals(120));
-    expect(logger.startCount, equals(1));
-    expect(logger.successCount, equals(1));
-    expect(logger.failureCount, equals(0));
+      expect(result, equals(120));
+      expect(profiler.startCount, equals(1));
+      expect(profiler.successCount, equals(1));
+      expect(profiler.failureCount, equals(0));
+    });
+
+    test('should continue with method calls equal to one and result', () async {
+      final completer = Completer<int>();
+      final profiler = DefaultProfiler();
+      final interactor = MyInteractor();
+      interactor(120).profiler(profiler).configure((event) {
+        event.whenOrNull(
+          onSuccess: (output) => completer.complete(output),
+        );
+      }).run();
+
+      expect(await completer.future, equals(120));
+      expect(profiler.startCount, equals(1));
+      expect(profiler.successCount, equals(1));
+      expect(profiler.failureCount, equals(0));
+    });
+
+    test(
+      'should continue with method calls equal to one and failure',
+      () async {
+        final completer = Completer<int>();
+        final profiler = DefaultProfiler();
+        final interactor = ThrowingInteractor();
+        interactor(120).profiler(profiler).configure((event) {
+          event.whenOrNull(
+            onFailure: (exception) => completer.completeError(exception),
+          );
+        }).run();
+
+        expect(completer.future, throwsA(isException));
+
+        try {
+          await completer.future;
+          expect(profiler.startCount, equals(1));
+          expect(profiler.successCount, equals(0));
+          expect(profiler.failureCount, equals(1));
+        } catch (_) {}
+      },
+    );
   });
 
-  test('Should succeed sum up method calls', () async {
-    final logger = DefaultLogger();
-    final interactor = MyInteractor();
-    final result =
-        await interactor(120).profiler(logger).profiler(logger).get();
+  group('run interactor with multiple profiler modifier', () {
+    test('should continue with method calls equal to three', () async {
+      final profiler = DefaultProfiler();
+      final interactor = MyInteractor();
+      final result = await interactor(120)
+          .profiler(profiler)
+          .profiler(profiler)
+          .profiler(profiler)
+          .get();
 
-    expect(result, equals(120));
-    expect(logger.startCount, equals(2));
-    expect(logger.successCount, equals(2));
-    expect(logger.failureCount, equals(0));
-  });
+      expect(result, equals(120));
+      expect(profiler.startCount, equals(3));
+      expect(profiler.successCount, equals(3));
+      expect(profiler.failureCount, equals(0));
+    });
 
-  test('Should throw exception and log error', () async {
-    final logger = DefaultLogger();
-    final interactor = ThrowingInteractor();
+    test('should continue with method calls equal to four and result',
+        () async {
+      final completer = Completer<int>();
+      final profiler = DefaultProfiler();
+      final interactor = MyInteractor();
+      interactor(120)
+          .profiler(profiler)
+          .profiler(profiler)
+          .profiler(profiler)
+          .profiler(profiler)
+          .configure((event) {
+        event.whenOrNull(
+          onSuccess: (output) => completer.complete(output),
+        );
+      }).run();
 
-    try {
-      await interactor(120).profiler(logger).get();
+      expect(await completer.future, equals(120));
+      expect(profiler.startCount, equals(4));
+      expect(profiler.successCount, equals(4));
+      expect(profiler.failureCount, equals(0));
+    });
 
-      fail('No exception has been thrown');
-    } on Exception catch (_) {
-      expect(logger.startCount, equals(1));
-      expect(logger.successCount, equals(0));
-      expect(logger.failureCount, equals(1));
-    } catch (exception) {
-      fail('Unexpected exception type has been thrown');
-    }
+    test(
+      'should continue with method calls equal to two and failure',
+      () async {
+        final completer = Completer<int>();
+        final profiler = DefaultProfiler();
+        final interactor = ThrowingInteractor();
+        interactor(120)
+            .profiler(profiler)
+            .profiler(profiler)
+            .configure((event) {
+          event.whenOrNull(
+            onFailure: (exception) => completer.completeError(exception),
+          );
+        }).run();
+
+        expect(completer.future, throwsA(isException));
+
+        try {
+          await completer.future;
+          expect(profiler.startCount, equals(2));
+          expect(profiler.successCount, equals(0));
+          expect(profiler.failureCount, equals(2));
+        } catch (_) {}
+      },
+    );
   });
 }

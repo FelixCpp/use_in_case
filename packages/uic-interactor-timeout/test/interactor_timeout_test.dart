@@ -26,8 +26,20 @@ class ReturnInputAfterDelayInteractor<T>
 }
 
 void main() {
-  group('Interactor Timeout Test', () {
-    test('should throw due to timeout exception and return null', () async {
+  group('run interactor with single timeout modifier', () {
+    test('should return 123', () async {
+      const interactor = ReturnInputAfterDelayInteractor<int>();
+      final result = await interactor(
+        ReturnInputAfterDelayParams(
+          delay: Duration(milliseconds: 50),
+          result: 123,
+        ),
+      ).timeout(Duration(milliseconds: 100)).getOrNull();
+
+      expect(result, equals(123));
+    });
+
+    test('should return null', () async {
       const interactor = ReturnInputAfterDelayInteractor<int>();
       final result = await interactor(
         ReturnInputAfterDelayParams(
@@ -38,25 +50,41 @@ void main() {
 
       expect(result, isNull);
     });
+  });
 
-    test('shoud throw timeout exception with message', () {
-      final completer = Completer<double>();
-      const timeoutDuration = Duration(milliseconds: 50);
-      const timeoutMessage = 'Some Timeout';
-      const interactor = ReturnInputAfterDelayInteractor<double>();
+  group('run interactor with multiple timeout modifiers', () {
+    test('should return 321', () async {
+      const interactor = ReturnInputAfterDelayInteractor<int>();
+      final result = await interactor(
+        ReturnInputAfterDelayParams(
+          delay: Duration(milliseconds: 50),
+          result: 321,
+        ),
+      )
+          .timeout(Duration(milliseconds: 100))
+          .timeout(Duration(milliseconds: 75))
+          .timeout(Duration(milliseconds: 150))
+          .getOrNull();
+
+      expect(result, equals(321));
+    });
+
+    test('should throw timeout exception with message "100ms"', () async {
+      final completer = Completer<int>();
+      const interactor = ReturnInputAfterDelayInteractor<int>();
 
       interactor(
-        const ReturnInputAfterDelayParams(
-          delay: Duration(milliseconds: 100),
-          result: 3.14159,
+        ReturnInputAfterDelayParams(
+          delay: Duration(milliseconds: 150),
+          result: 321,
         ),
-      ).timeout(timeoutDuration, message: timeoutMessage).configure(
-        (event) {
-          event.whenOrNull(
-            onFailure: (exception) => completer.completeError(exception),
-          );
-        },
-      ).run();
+      )
+          .timeout(Duration(milliseconds: 275), message: '275ms')
+          .timeout(Duration(milliseconds: 100), message: '100ms')
+          .timeout(Duration(milliseconds: 150), message: '150ms')
+          .configure((event) {
+        event.whenOrNull(onFailure: (ex) => completer.completeError(ex));
+      }).run();
 
       expect(
         completer.future,
@@ -64,7 +92,7 @@ void main() {
           isA<TimeoutException>().having(
             (error) => error.message,
             'message',
-            equals(timeoutMessage),
+            equals('100ms'),
           ),
         ),
       );
