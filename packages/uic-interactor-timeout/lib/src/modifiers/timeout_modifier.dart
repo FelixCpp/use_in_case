@@ -28,11 +28,9 @@ class TimeoutInvocationModifier<Input, Output>
   }
 
   @override
-  void notify(
-    InvocationDetails details,
-    InvocationEvent<Input, Output> event,
-    void Function(InvocationEvent<Input, Output>) callback,
+  InvocationEventHandler<Input, Output> buildEventHandler(
+    InvocationEventHandler<Input, Output> callback,
   ) {
-    return _modifier.notify(details, event, callback);
+    return (event, details) => callback(event, details);
   }
 }

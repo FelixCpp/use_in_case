@@ -1,5 +1,6 @@
 library;
 
+export 'src/invocation_event_handler.dart';
 export 'src/invocation_configurator.dart';
 export 'src/invocation_details.dart';
 export 'src/invocation_event.dart';

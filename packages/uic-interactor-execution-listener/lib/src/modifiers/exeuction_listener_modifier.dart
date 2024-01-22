@@ -17,23 +17,21 @@ class ExecutionListenerModifier<Input, Output>
   }
 
   @override
-  void notify(
-    InvocationDetails details,
-    InvocationEvent<Input, Output> event,
-    void Function(InvocationEvent<Input, Output>) callback,
+  InvocationEventHandler<Input, Output> buildEventHandler(
+    InvocationEventHandler<Input, Output> callback,
   ) {
-    return _modifier.notify(details, event, (event) {
+    return _modifier.buildEventHandler((event, details) {
       event.map(
         onStart: (event) {
           _onEvent(event);
-          callback(event);
+          callback(event, details);
         },
         onSuccess: (event) {
-          callback(event);
+          callback(event, details);
           _onEvent(event);
         },
         onFailure: (event) {
-          callback(event);
+          callback(event, details);
           _onEvent(event);
         },
       );
