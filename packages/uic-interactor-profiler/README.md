@@ -1,4 +1,4 @@
-## Package
+## Package uic-interactor-profiler
 
 This module provides an extension into the workflow of an interactor. The extension measures the elapsed it tool for the usecase to finish and provides callbacks that are invoked when certain events are triggered.
 
@@ -38,29 +38,15 @@ const logger = TestLogger();
 const heavyMath = ReturnPiAfterDelayInteractor();
 
 final result = await heavyMath(Duration(milliseconds: 750))
-    .timeout(Duration(milliseconds: 100))
-    .profiler(logger)
-    .getOrNull();
+  .timeout(Duration(milliseconds: 100))
+  .profiler(logger)
+  .getOrNull();
 
 print("Result: $result");
 ```
 
 The last step is to implement the `TestLogger` class. Here's probably the simplest profiler you'd wanna write.
-
-```dart
-
-```
-
-Additionally it is possible to insert a timeout duration before running the interactor. When the interactor takes more time than allowed, a *TimeoutException* will be added to the execution flow.
-
-```dart
-const waitingInteractor = Wait3SecondsInteractor();
-final result = await waitingInteractor(value) // Wait three seconds
-	.timeout(const Duration(seconds: 1)) // Timeout of one second.
-	.getOrElse(fallback: -1); // Returns -1 due to TimeoutException
-
-print(result);
-```
+To do that simply inherit from the `InteractorEventProfiler` and implement the required methods.
 
 ## Additional information
 

@@ -1,53 +1,61 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+## Package uic-interactor-timeout
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+This module allows you to add a time limit for interactors. If the usecase takes too long, a TimeoutException is thrown resulting in a call to onFailure.
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+In order to use this library you must add it to the dependency in your pubspec.yaml file.
+
+```yaml
+dependencies:
+  uic_interactor_timeout:
+    git:
+      url: https://github.com/FelixCpp/use_in_case.git
+      path: packages/uic-interactor-timeout
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+Since this module only provides an extension, the usage is basically the same in reference to the [uic-interactor](https://github.com/FelixCpp/use_in_case/tree/main/packages/uic-interactor) module. Using this dependency enables a new method called "timeout" which can be inserted into the call-hiarchy.
+
+To demonstrate the usage of this module we assume you have implemented something heavy we want to profile. For this example I've implemented an interactor that takes a given amount of time and returns pi when the time elapsed.
 
 ```dart
-const like = 'sample';
+class ReturnPiAfterDelayInteractor implements ParameterizedResultInteractor<Duration, double> {
+  const ReturnPiAfterDelayInteractor();
+
+  @override
+  Future<double> execute(Duration delay) {
+    return Future.delayed(delay, () => math.pi);
+  }
+}
+```
+
+Now we can simply add the *timeout* call anywhere in our invocation call.
+
+```dart
+const heavyMath = ReturnPiAfterDelayInteractor();
+
+final result = await heavyMath(Duration(milliseconds: 750))
+  .timeout(Duration(milliseconds: 100))
+  .getOrNull(); //< returns null due to TimeoutException
+
+print("Result: $result"); // "Result: null"
 ```
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
-
-
-
-
-Additionally it is possible to insert a timeout duration before running the interactor. When the interactor takes more time than allowed, a *TimeoutException* will be added to the execution flow.
+Be careful when adding multiple timeout modifiers in one invocation (see example below). Since the internals of this library does not use lists
+of modifiers but stores them as a call-chain it won't timeout after the last given amount of milliseconds (150). Instead it will raise a TimeoutException when the action takes longer than the lowest value provided (100 in this case).
 
 ```dart
-const waitingInteractor = Wait3SecondsInteractor();
-final result = await waitingInteractor(value) // Wait three seconds
-	.timeout(const Duration(seconds: 1)) // Timeout of one second.
-	.getOrElse(fallback: -1); // Returns -1 due to TimeoutException
+const heavyMath = ReturnPiAfterDelayInteractor();
 
-print(result);
+final result = await heavyMath(Duration(milliseconds: 750))
+  .timeout(Duration(milliseconds: 100))
+  .timeout(Duration(milliseconds: 130))
+  .timeout(Duration(milliseconds: 150))
+  .getOrNull(); //< returns null due to TimeoutException
+
+print("Result: $result"); // "Result: null"
 ```
