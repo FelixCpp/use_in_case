@@ -1,9 +1,8 @@
 import 'dart:math' as math show pi;
 
 import 'package:uic_interactor/uic_interactor.dart';
-import 'package:uic_interactor_profiler/src/invocation_completion_details.dart';
 import 'package:uic_interactor_profiler/src/invocation_profiler_logger.dart';
-import 'package:uic_interactor_profiler/src/profiler_invocation_modifier.dart';
+import 'package:uic_interactor_profiler/src/profiler_extension.dart';
 
 class ReturnPiAfterDelayInteractor
     implements ParameterizedResultInteractor<Duration, double> {
@@ -19,10 +18,8 @@ Future<void> main() async {
   const logger = TestLogger();
   const heavyMath = ReturnPiAfterDelayInteractor();
 
-  final result = await heavyMath(Duration(milliseconds: 750))
-      .timeout(Duration(milliseconds: 100))
-      .profiler(logger)
-      .getOrNull();
+  final result =
+      await heavyMath(Duration(milliseconds: 750)).profiler(logger).getOrNull();
 
   print("Result: $result");
 
@@ -34,31 +31,35 @@ Future<void> main() async {
   ///
 }
 
-class TestLogger implements InvocationProfilerLogger {
+class TestLogger implements InvocationEventProfiler {
   const TestLogger();
 
   @override
-  void onInvocationStart(InvocationDetails details) {
+  void onInvocationStart<T>({
+    required InvocationDetails details,
+    required T input,
+  }) {
     print('${details.jobName} started');
   }
 
   @override
-  void onInvocationFailure(
-    InvocationDetails details,
-    InvocationFailureDetails invocation,
-  ) {
+  void onInvocationSuccess<T>({
+    required InvocationDetails details,
+    required Duration elapsedTime,
+    required T output,
+  }) {
     print(
-      '${details.jobName} failed after ${invocation.elapsedTime} due to ${invocation.exception}',
+      '${details.jobName} succeeded after $elapsedTime with value "$output"',
     );
   }
 
   @override
-  void onInvocationSuccess<T>(
-    InvocationDetails details,
-    InvocationSuccessDetails<T> invocation,
-  ) {
+  void onInvocationFailure(
+      {required InvocationDetails details,
+      required Duration elapsedTime,
+      required Exception exception}) {
     print(
-      '${details.jobName} succeeded after ${invocation.elapsedTime} with value "${invocation.output}"',
+      '${details.jobName} failed after $elapsedTime due to $exception',
     );
   }
 }

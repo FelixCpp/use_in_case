@@ -4,16 +4,15 @@ import 'package:uic_interactor/src/invocation_details.dart';
 import 'package:uic_interactor/src/invocation_event.dart';
 import 'package:uic_interactor/src/modifiers/invocation_modifier.dart';
 
-class ConfiguredInvocation<Input, Output,
-    Modifier extends InvocationModifier<Input, Output>> {
+class ConfiguredInvocation<Input, Output> {
   final InvocationDetails _details;
   final void Function(InvocationEvent<Input, Output>) _onEvent;
-  final Modifier _modifier;
+  final InvocationModifier<Input, Output> _modifier;
 
   const ConfiguredInvocation({
     required InvocationDetails details,
     required void Function(InvocationEvent<Input, Output>) onEvent,
-    required Modifier modifier,
+    required InvocationModifier<Input, Output> modifier,
   })  : _details = details,
         _onEvent = onEvent,
         _modifier = modifier;

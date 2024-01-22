@@ -4,9 +4,8 @@ import 'package:logger/logger.dart';
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 import 'package:uic_interactor/uic_interactor.dart';
-import 'package:uic_interactor_profiler/src/invocation_completion_details.dart';
 import 'package:uic_interactor_profiler/src/invocation_profiler_logger.dart';
-import 'package:uic_interactor_profiler/src/profiler_invocation_modifier.dart';
+import 'package:uic_interactor_profiler/src/profiler_extension.dart';
 
 class MyInteractor implements ParameterizedResultInteractor<int, int> {
   @override
@@ -15,34 +14,46 @@ class MyInteractor implements ParameterizedResultInteractor<int, int> {
   }
 }
 
-class DefaultLogger implements InvocationProfilerLogger {
+class ThrowingInteractor implements ParameterizedResultInteractor {
+  @override
+  Future execute(input) {
+    throw Exception('Some Error');
+  }
+}
+
+class DefaultLogger implements InvocationEventProfiler {
   final logger = Logger();
   int startCount = 0;
   int successCount = 0;
   int failureCount = 0;
 
   @override
-  void onInvocationStart(InvocationDetails details) {
+  void onInvocationStart<T>({
+    required InvocationDetails details,
+    required T input,
+  }) {
     logger.i('${details.jobName} started');
     ++startCount;
   }
 
   @override
-  void onInvocationSuccess<T>(
-    InvocationDetails details,
-    InvocationSuccessDetails<T> invocation,
-  ) {
-    logger.i('${details.jobName} succeeded with ${invocation.output}');
+  void onInvocationSuccess<T>({
+    required InvocationDetails details,
+    required Duration elapsedTime,
+    required T output,
+  }) {
+    logger.i('${details.jobName} succeeded after $elapsedTime with $output');
     ++successCount;
   }
 
   @override
-  void onInvocationFailure(
-    InvocationDetails details,
-    InvocationFailureDetails invocation,
-  ) {
+  void onInvocationFailure({
+    required InvocationDetails details,
+    required Duration elapsedTime,
+    required Exception exception,
+  }) {
     logger.e(
-      '${details.jobName} failed after ${invocation.elapsedTime} with ${invocation.exception}',
+      '${details.jobName} failed after $elapsedTime with $exception',
     );
     ++failureCount;
   }
@@ -60,7 +71,7 @@ void main() {
     expect(logger.failureCount, equals(0));
   });
 
-  test('Should fail with result and method counts', () async {
+  test('Should succeed sum up method calls', () async {
     final logger = DefaultLogger();
     final interactor = MyInteractor();
     final result =
@@ -72,18 +83,15 @@ void main() {
     expect(logger.failureCount, equals(0));
   });
 
-  test('Should fail with timeout', () async {
+  test('Should throw exception and log error', () async {
     final logger = DefaultLogger();
-    final interactor = MyInteractor();
+    final interactor = ThrowingInteractor();
 
     try {
-      await interactor(120)
-          .profiler(logger)
-          .timeout(Duration(milliseconds: 100))
-          .get();
+      await interactor(120).profiler(logger).get();
 
       fail('No exception has been thrown');
-    } on TimeoutException catch (_) {
+    } on Exception catch (_) {
       expect(logger.startCount, equals(1));
       expect(logger.successCount, equals(0));
       expect(logger.failureCount, equals(1));

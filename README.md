@@ -9,6 +9,6 @@ The base library is implemented inside the [packages/uic-interactor](https://git
 | Library Name                      | Description                                                  |
 | --------------------------------- | :----------------------------------------------------------- |
 | uic-interactor                    | The base library that provides the base class as well as functions to invoke the interactor. |
-| uic-interactor-profiler           | Addon that provides chronological statistics about the interactor's workflow. |
 | uic-interactor-execution-listener | Addon to get notified about changes whether the interactor is working or not |
-
+| uic-interactor-profiler           | Addon that provides chronological statistics about the interactor's workflow. |
+| uic-interactor-timeout            | Addon that allows the caller to define a time limit before failing. |
