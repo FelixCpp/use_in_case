@@ -23,4 +23,9 @@ class InteractorExecutionBroadcastListener
   void removeLoader() {
     _controller.add(--_counter);
   }
+
+  @override
+  Future<void> release() {
+    return _controller.close();
+  }
 }

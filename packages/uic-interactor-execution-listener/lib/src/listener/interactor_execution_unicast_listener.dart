@@ -22,4 +22,9 @@ class InteractorExecutionUnicastListener
   void removeLoader() {
     _controller.add(false);
   }
+
+  @override
+  Future<void> release() {
+    return _controller.close();
+  }
 }

@@ -5,4 +5,5 @@ abstract interface class InteractorExecutionListener {
 
   void addLoader();
   void removeLoader();
+  Future<void> release();
 }
