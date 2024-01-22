@@ -1,15 +1,14 @@
 import 'package:uic_interactor/uic_interactor.dart';
-import 'package:uic_interactor_profiler/src/invocation_completion_details.dart';
 import 'package:uic_interactor_profiler/src/invocation_profiler_logger.dart';
 
 class ProfilerInvocationModifier<Input, Output>
     implements InvocationModifier<Input, Output> {
-  final InvocationProfilerLogger _logger;
+  final InvocationEventProfiler _logger;
   final InvocationModifier<Input, Output> _modifier;
   final Stopwatch _stopwatch;
 
   ProfilerInvocationModifier({
-    required InvocationProfilerLogger logger,
+    required InvocationEventProfiler logger,
     required InvocationModifier<Input, Output> modifier,
   })  : _logger = logger,
         _modifier = modifier,
@@ -29,57 +28,39 @@ class ProfilerInvocationModifier<Input, Output>
     _modifier.notify(details, event, (event) {
       event.map(
         onStart: (event) {
-          _startProfiling(details);
-          _logger.onInvocationStart(details);
+          _stopwatch
+            ..reset()
+            ..start();
+          _logger.onInvocationStart(details: details, input: event.input);
           callback(event);
         },
         onSuccess: (event) {
           callback(event);
-          _stopProfiling(details);
+          _stopwatch.stop();
           _logger.onInvocationSuccess(
-            details,
-            InvocationSuccessDetails(
-              elapsedTime: _stopwatch.elapsed,
-              output: event.output,
-            ),
+            details: details,
+            elapsedTime: _stopwatch.elapsed,
+            output: event.output,
           );
         },
         onFailure: (event) {
           callback(event);
-          _stopProfiling(details);
+          _stopwatch.stop();
           _logger.onInvocationFailure(
-            details,
-            InvocationFailureDetails(
-              elapsedTime: _stopwatch.elapsed,
-              exception: event.exception,
-            ),
+            details: details,
+            elapsedTime: _stopwatch.elapsed,
+            exception: event.exception,
           );
         },
       );
     });
-  }
-
-  void _startProfiling(InvocationDetails details) {
-    assert(
-      !_stopwatch.isRunning,
-      'Cannot start profiling multiple times without stopping.',
-    );
-
-    _stopwatch
-      ..reset()
-      ..start();
-  }
-
-  void _stopProfiling(InvocationDetails details) {
-    assert(_stopwatch.isRunning, 'Cannot stop profiling without starting.');
-    _stopwatch.stop();
   }
 }
 
 extension InvocationConfiguratorWithProfiler<Input, Output>
     on InvocationConfigurator<Input, Output> {
   InvocationConfigurator<Input, Output> profiler(
-    InvocationProfilerLogger logger,
+    InvocationEventProfiler logger,
   ) {
     return InvocationConfigurator(
       details: details,

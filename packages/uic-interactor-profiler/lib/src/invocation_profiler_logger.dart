@@ -1,16 +1,20 @@
 import 'package:uic_interactor/uic_interactor.dart';
-import 'package:uic_interactor_profiler/src/invocation_completion_details.dart';
 
-abstract interface class InvocationProfilerLogger {
-  void onInvocationStart(InvocationDetails details);
+abstract class InvocationEventProfiler {
+  void onInvocationStart<T>({
+    required InvocationDetails details,
+    required T input,
+  }) {}
 
-  void onInvocationSuccess<T>(
-    InvocationDetails details,
-    InvocationSuccessDetails<T> invocation,
-  );
+  void onInvocationSuccess<T>({
+    required InvocationDetails details,
+    required Duration elapsedTime,
+    required T output,
+  }) {}
 
-  void onInvocationFailure(
-    InvocationDetails details,
-    InvocationFailureDetails invocation,
-  );
+  void onInvocationFailure({
+    required InvocationDetails details,
+    required Duration elapsedTime,
+    required Exception exception,
+  }) {}
 }
