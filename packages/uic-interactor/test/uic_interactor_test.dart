@@ -35,14 +35,14 @@ class ThrowExceptionInteractor
 }
 
 void main() {
-  group('run interactor via explicit configuration', () {
-    test('should return 500 after 100 milliseconds', () {
+  group('run interactor via configuration', () {
+    test('should receive result', () {
       final completer = Completer<int>();
       const interactor = ReturnInputAfterDelayInteractor<int>();
 
       interactor(
         const ReturnInputAfterDelayParams(
-          delay: Duration(milliseconds: 100),
+          delay: Duration(milliseconds: 50),
           result: 500,
         ),
       ).configure(
@@ -56,47 +56,91 @@ void main() {
       expect(completer.future, completion(equals(500)));
     });
 
-    test('should return "Hello" immediately', () {
-      final completer = Completer<String>();
-      const interactor = ReturnInputAfterDelayInteractor<String>();
+    test('should catch exception', () {
+      final completer = Completer();
+      const interactor = ThrowExceptionInteractor();
 
-      interactor(
-        const ReturnInputAfterDelayParams(
-          delay: Duration.zero,
-          result: 'Hello',
-        ),
-      ).configure(
+      interactor(111).configure(
         (event) {
           event.whenOrNull(
-            onSuccess: (data) => completer.complete(data),
+            onFailure: (exception) => completer.completeError(exception),
           );
         },
       ).run();
 
-      expect(completer.future, completion(equals('Hello')));
+      expect(completer.future, throwsA(isException));
+    });
+
+    test('should notify start', () {
+      final completer = Completer<int>();
+      const interactor = ThrowExceptionInteractor();
+
+      interactor(111).configure(
+        (event) {
+          event.whenOrNull(onStart: (input) => completer.complete(input));
+        },
+      ).run();
+
+      expect(completer.future, completion(equals(111)));
     });
   });
 
-  group('run interactor via get[Or[Null|Else]] method', () {
+  group('run interactor via get', () {
     test('should return 600', () async {
       const interactor = ReturnInputAfterDelayInteractor<int>();
-
       final result = await interactor(
-        ReturnInputAfterDelayParams(delay: Duration.zero, result: 600),
+        ReturnInputAfterDelayParams(
+          delay: Duration.zero,
+          result: 600,
+        ),
       ).get();
 
       expect(result, equals(600));
     });
 
-    test('should return null', () async {
+    test('should throw on invocation', () async {
       const interactor = ThrowExceptionInteractor();
-      final result = await interactor(0).getOrNull();
-      expect(result, isNull);
+      final result = interactor(192).get();
+      expect(result, throwsA(isException));
+    });
+  });
+
+  group('run interactor via getOrNull', () {
+    test('should return 300', () async {
+      const interactor = ReturnInputAfterDelayInteractor<int>();
+      final result = await interactor(
+        ReturnInputAfterDelayParams(
+          delay: Duration.zero,
+          result: 300,
+        ),
+      ).getOrNull();
+
+      expect(result, equals(300));
     });
 
-    test('should return -1', () async {
+    test('should return null', () async {
       const interactor = ThrowExceptionInteractor();
-      final result = await interactor(0).getOrElse(fallback: -1);
+      final result = await interactor(192).getOrNull();
+      expect(result, isNull);
+    });
+  });
+
+  group('run interactor via getOrElse', () {
+    test('should return 192', () async {
+      const interactor = ReturnInputAfterDelayInteractor<int>();
+      final result = await interactor(
+        ReturnInputAfterDelayParams(
+          delay: Duration.zero,
+          result: 192,
+        ),
+      ).getOrNull();
+
+      expect(result, equals(192));
+    });
+
+    test('should return -1 (fallback)', () async {
+      const interactor = ThrowExceptionInteractor();
+      final result = await interactor(192).getOrElse(fallback: -1);
       expect(result, equals(-1));
     });
   });

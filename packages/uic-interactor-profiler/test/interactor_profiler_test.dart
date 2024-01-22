@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:logger/logger.dart';
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 import 'package:uic_interactor/uic_interactor.dart';
@@ -22,7 +21,6 @@ class ThrowingInteractor implements ParameterizedResultInteractor {
 }
 
 class DefaultLogger implements InvocationEventProfiler {
-  final logger = Logger();
   int startCount = 0;
   int successCount = 0;
   int failureCount = 0;
@@ -32,7 +30,6 @@ class DefaultLogger implements InvocationEventProfiler {
     required InvocationDetails details,
     required T input,
   }) {
-    logger.i('${details.jobName} started');
     ++startCount;
   }
 
@@ -42,7 +39,6 @@ class DefaultLogger implements InvocationEventProfiler {
     required Duration elapsedTime,
     required T output,
   }) {
-    logger.i('${details.jobName} succeeded after $elapsedTime with $output');
     ++successCount;
   }
 
@@ -52,9 +48,6 @@ class DefaultLogger implements InvocationEventProfiler {
     required Duration elapsedTime,
     required Exception exception,
   }) {
-    logger.e(
-      '${details.jobName} failed after $elapsedTime with $exception',
-    );
     ++failureCount;
   }
 }
