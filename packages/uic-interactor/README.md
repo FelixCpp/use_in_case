@@ -6,7 +6,7 @@ This library provides the base class **ParameterizedResultInteractor** as well a
 
 Before writing your first interactor, it is required to add this package to your dependencies.
 
-![](https://github.com/FelixCpp/use_in_case/tree/main/packages/uic-interactor/imgs)
+![](https://github.com/FelixCpp/use_in_case/blob/main/packages/uic-interactor/imgs/add_dependency.png)
 
 ## Usage
 
