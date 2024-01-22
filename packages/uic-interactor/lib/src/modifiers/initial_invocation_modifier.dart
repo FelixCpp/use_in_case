@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:uic_interactor/src/invocation_event_handler.dart';
-import 'package:uic_interactor/src/invocation_event.dart';
+import 'package:uic_interactor/src/util/invocation_event.dart';
 import 'package:uic_interactor/src/modifiers/invocation_modifier.dart';
 import 'package:uic_interactor/src/parameterized_result_interactor.dart';
 
