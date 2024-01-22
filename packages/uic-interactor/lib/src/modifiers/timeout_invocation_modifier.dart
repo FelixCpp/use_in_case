@@ -4,16 +4,15 @@ import 'package:uic_interactor/src/invocation_details.dart';
 import 'package:uic_interactor/src/invocation_event.dart';
 import 'package:uic_interactor/src/modifiers/invocation_modifier.dart';
 
-class TimeoutInvocationModifier<Input, Output,
-        Modifier extends InvocationModifier<Input, Output>>
+class TimeoutInvocationModifier<Input, Output>
     implements InvocationModifier<Input, Output> {
   final Duration _timeoutDuration;
-  final Modifier _modifier;
+  final InvocationModifier<Input, Output> _modifier;
   final String? _message;
 
   const TimeoutInvocationModifier({
     required Duration timeoutDuration,
-    required Modifier modifier,
+    required InvocationModifier<Input, Output> modifier,
     String? message,
   })  : _timeoutDuration = timeoutDuration,
         _modifier = modifier,

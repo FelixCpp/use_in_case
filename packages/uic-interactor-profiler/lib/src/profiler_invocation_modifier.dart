@@ -1,19 +1,16 @@
-import 'dart:web_gl';
-
 import 'package:uic_interactor/uic_interactor.dart';
 import 'package:uic_interactor_profiler/src/invocation_completion_details.dart';
 import 'package:uic_interactor_profiler/src/invocation_profiler_logger.dart';
 
-class ProfilerInvocationModifier<Input, Output,
-        Modifier extends InvocationModifier<Input, Output>>
+class ProfilerInvocationModifier<Input, Output>
     implements InvocationModifier<Input, Output> {
   final InvocationProfilerLogger _logger;
-  final Modifier _modifier;
+  final InvocationModifier<Input, Output> _modifier;
   final Stopwatch _stopwatch;
 
   ProfilerInvocationModifier({
     required InvocationProfilerLogger logger,
-    required Modifier modifier,
+    required InvocationModifier<Input, Output> modifier,
   })  : _logger = logger,
         _modifier = modifier,
         _stopwatch = Stopwatch();
@@ -79,11 +76,9 @@ class ProfilerInvocationModifier<Input, Output,
   }
 }
 
-extension InvocationConfiguratorWithProfiler<Input, Output,
-        Modifier extends InvocationModifier<Input, Output>>
-    on InvocationConfigurator<Input, Output, Modifier> {
-  InvocationConfigurator<Input, Output,
-      ProfilerInvocationModifier<Input, Output, Modifier>> profiler(
+extension InvocationConfiguratorWithProfiler<Input, Output>
+    on InvocationConfigurator<Input, Output> {
+  InvocationConfigurator<Input, Output> profiler(
     InvocationProfilerLogger logger,
   ) {
     return InvocationConfigurator(

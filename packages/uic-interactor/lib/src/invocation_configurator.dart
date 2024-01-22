@@ -5,10 +5,9 @@ import 'package:uic_interactor/src/modifiers/initial_invocation_modifier.dart';
 import 'package:uic_interactor/src/modifiers/timeout_invocation_modifier.dart';
 import 'package:uic_interactor/uic_interactor.dart';
 
-class InvocationConfigurator<Input, Output,
-    Modifier extends InvocationModifier<Input, Output>> {
+class InvocationConfigurator<Input, Output> {
   final InvocationDetails details;
-  final Modifier modifier;
+  final InvocationModifier<Input, Output> modifier;
 
   const InvocationConfigurator({
     required this.details,
@@ -38,7 +37,7 @@ class InvocationConfigurator<Input, Output,
     return get().catchError((_) => fallback);
   }
 
-  ConfiguredInvocation<Input, Output, Modifier> configure(
+  ConfiguredInvocation<Input, Output> configure(
     void Function(InvocationEvent<Input, Output>) onEvent,
   ) {
     return ConfiguredInvocation(
@@ -53,11 +52,9 @@ class InvocationConfigurator<Input, Output,
 /// Timeout addon
 ///
 
-extension InvocationConfiguratorWithTimeout<Input, Output,
-        Modifier extends InvocationModifier<Input, Output>>
-    on InvocationConfigurator<Input, Output, Modifier> {
-  InvocationConfigurator<Input, Output,
-      TimeoutInvocationModifier<Input, Output, Modifier>> timeout(
+extension InvocationConfiguratorWithTimeout<Input, Output>
+    on InvocationConfigurator<Input, Output> {
+  InvocationConfigurator<Input, Output> timeout(
     Duration timeoutDuration, {
     String? message,
   }) {
@@ -78,8 +75,7 @@ extension InvocationConfiguratorWithTimeout<Input, Output,
 
 extension InvokeInteractorExtension<Input, Output>
     on ParameterizedResultInteractor<Input, Output> {
-  InvocationConfigurator<Input, Output,
-      InitialInvocationModifier<Input, Output>> call(
+  InvocationConfigurator<Input, Output> call(
     Input input,
   ) {
     return InvocationConfigurator(

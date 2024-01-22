@@ -3,15 +3,14 @@ import 'dart:async';
 import 'package:uic_interactor/uic_interactor.dart';
 import 'package:uic_interactor_execution_listener/src/listener/interactor_execution_listener.dart';
 
-class InteractorExecutionPublisherModifier<Input, Output,
-        Modifier extends InvocationModifier<Input, Output>>
+class InteractorExecutionPublisherModifier<Input, Output>
     implements InvocationModifier<Input, Output> {
-  final Modifier _modifier;
+  final InvocationModifier<Input, Output> _modifier;
   final void Function(InvocationEvent<Input, Output>) _onEvent;
 
   const InteractorExecutionPublisherModifier({
     required void Function(InvocationEvent<Input, Output>) onEvent,
-    required Modifier modifier,
+    required InvocationModifier<Input, Output> modifier,
   })  : _onEvent = onEvent,
         _modifier = modifier;
 
@@ -45,12 +44,11 @@ class InteractorExecutionPublisherModifier<Input, Output,
   }
 }
 
-extension InteractorExecutionPublisherModifierExtension<Input, Output,
-        Modifier extends InvocationModifier<Input, Output>>
-    on InvocationConfigurator<Input, Output, Modifier> {
-  InvocationConfigurator<Input, Output,
-          InteractorExecutionPublisherModifier<Input, Output, Modifier>>
-      publishTo(InteractorExecutionListener listener) {
+extension InteractorExecutionPublisherModifierExtension<Input, Output>
+    on InvocationConfigurator<Input, Output> {
+  InvocationConfigurator<Input, Output> publishTo(
+    InteractorExecutionListener listener,
+  ) {
     return InvocationConfigurator(
       details: details,
       modifier: InteractorExecutionPublisherModifier(
@@ -66,9 +64,9 @@ extension InteractorExecutionPublisherModifierExtension<Input, Output,
     );
   }
 
-  InvocationConfigurator<Input, Output,
-          InteractorExecutionPublisherModifier<Input, Output, Modifier>>
-      publishInto(void Function(bool isBusy) listener) {
+  InvocationConfigurator<Input, Output> publishInto(
+    void Function(bool isBusy) listener,
+  ) {
     return InvocationConfigurator(
       details: details,
       modifier: InteractorExecutionPublisherModifier(
