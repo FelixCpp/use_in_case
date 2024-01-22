@@ -6,7 +6,7 @@ This library provides the base class **ParameterizedResultInteractor** as well a
 
 Before writing your first interactor, it is required to add this package to your dependencies.
 
-![](D:\VSProjects\Dart\use_in_case\packages\uic-interactor\images\add_dependency.png)
+![](https://github.com/FelixCpp/use_in_case/tree/main/packages/uic-interactor/imgs)
 
 ## Usage
 
