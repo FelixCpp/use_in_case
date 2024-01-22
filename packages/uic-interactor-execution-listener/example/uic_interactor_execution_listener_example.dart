@@ -44,7 +44,8 @@ Future<void> exampleWithListenerCallback() async {
   const interactor = Return500AfterDelayInteractor();
 
   final completer = Completer<int>();
-  interactor(Duration(milliseconds: 750))
+  final value = interactor(Duration(milliseconds: 750))
+      .publishInto((isLoading) => print('Interactor is working $isLoading'))
       .publishInto((isLoading) => print('Interactor is working $isLoading'))
       .configure((event) {
     event.whenOrNull(
@@ -60,7 +61,7 @@ Future<void> exampleWithListenerCallback() async {
         completer.completeError(exception);
       },
     );
-  }).run();
+  });
 
   await completer.future.then((result) {
     print('Computation result: $result');

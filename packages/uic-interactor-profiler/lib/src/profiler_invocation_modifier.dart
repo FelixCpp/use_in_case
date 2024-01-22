@@ -1,3 +1,5 @@
+import 'dart:web_gl';
+
 import 'package:uic_interactor/uic_interactor.dart';
 import 'package:uic_interactor_profiler/src/invocation_completion_details.dart';
 import 'package:uic_interactor_profiler/src/invocation_profiler_logger.dart';
