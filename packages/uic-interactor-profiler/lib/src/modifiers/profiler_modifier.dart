@@ -20,39 +20,39 @@ class ProfilerInvocationModifier<Input, Output>
   }
 
   @override
-  void notify(
-    InvocationDetails details,
-    InvocationEvent<Input, Output> event,
-    void Function(InvocationEvent<Input, Output>) callback,
+  InvocationEventHandler<Input, Output> buildEventHandler(
+    InvocationEventHandler<Input, Output> callback,
   ) {
-    _modifier.notify(details, event, (event) {
-      event.map(
-        onStart: (event) {
-          _stopwatch
-            ..reset()
-            ..start();
-          _logger.onInvocationStart(details: details, input: event.input);
-          callback(event);
-        },
-        onSuccess: (event) {
-          callback(event);
-          _stopwatch.stop();
-          _logger.onInvocationSuccess(
-            details: details,
-            elapsedTime: _stopwatch.elapsed,
-            output: event.output,
-          );
-        },
-        onFailure: (event) {
-          callback(event);
-          _stopwatch.stop();
-          _logger.onInvocationFailure(
-            details: details,
-            elapsedTime: _stopwatch.elapsed,
-            exception: event.exception,
-          );
-        },
-      );
-    });
+    return _modifier.buildEventHandler(
+      (event, details) {
+        event.map(
+          onStart: (event) {
+            _stopwatch
+              ..reset()
+              ..start();
+            _logger.onInvocationStart(details: details, input: event.input);
+            callback(event, details);
+          },
+          onSuccess: (event) {
+            callback(event, details);
+            _stopwatch.stop();
+            _logger.onInvocationSuccess(
+              details: details,
+              elapsedTime: _stopwatch.elapsed,
+              output: event.output,
+            );
+          },
+          onFailure: (event) {
+            callback(event, details);
+            _stopwatch.stop();
+            _logger.onInvocationFailure(
+              details: details,
+              elapsedTime: _stopwatch.elapsed,
+              exception: event.exception,
+            );
+          },
+        );
+      },
+    );
   }
 }

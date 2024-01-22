@@ -19,11 +19,14 @@ class ConfiguredInvocation<Input, Output> {
 
   void run() {
     final controller = StreamController<InvocationEvent<Input, Output>>();
+    final eventHandler = _modifier.buildEventHandler(
+      (event, _) => _onEvent(event),
+    );
 
     StreamSubscription? subscription;
     subscription = controller.stream.listen(
       (event) async {
-        _modifier.notify(_details, event, _onEvent);
+        eventHandler.call(event, _details);
 
         if (event.maybeMap(
             onSuccess: (_) => true,
