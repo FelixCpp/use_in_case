@@ -1,0 +1,17 @@
+name: uic_interactor_execution_listener
+description: This package provides functionality to add a receiver for status changes of an interactor.
+version: 1.0.0
+publish_to: 'none'
+repository: https://github.com/FelixCpp/use_in_case
+
+environment:
+  sdk: ^3.2.3
+
+# Add regular dependencies here.
+dependencies:
+  uic_interactor:
+    path: ../uic-interactor
+
+dev_dependencies:
+  lints: ^2.1.0
+  test: ^1.24.0
