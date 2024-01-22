@@ -11,10 +11,10 @@ environment:
 dependencies:
   uic_interactor:
     path: ../uic-interactor
-  freezed_annotation:
+  freezed_annotation: any
 
 dev_dependencies:
-  lints:
-  test:
-  freezed:
-  build_runner:
+  lints: ^3.0.0
+  test: ^1.25.1
+  freezed: any
+  build_runner: ^2.4.8
