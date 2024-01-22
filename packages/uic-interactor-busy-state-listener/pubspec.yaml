@@ -1,4 +1,4 @@
-name: uic_interactor_execution_listener
+name: uic_interactor_busy_state_listener
 description: This package provides functionality to add a receiver for status changes of an interactor.
 version: 1.0.0
 publish_to: 'none'

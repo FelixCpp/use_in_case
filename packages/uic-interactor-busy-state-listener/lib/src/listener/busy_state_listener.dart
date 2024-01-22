@@ -1,6 +1,6 @@
 import 'dart:async';
 
-abstract interface class InteractorExecutionListener {
+abstract interface class BusyStateListener {
   Stream<bool> get isLoading;
 
   void addLoader();

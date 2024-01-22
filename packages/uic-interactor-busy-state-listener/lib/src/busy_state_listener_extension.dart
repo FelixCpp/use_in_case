@@ -1,15 +1,15 @@
 import 'package:uic_interactor/uic_interactor.dart';
-import 'package:uic_interactor_execution_listener/src/listener/interactor_execution_listener.dart';
-import 'package:uic_interactor_execution_listener/src/modifiers/exeuction_listener_modifier.dart';
+import 'package:uic_interactor_busy_state_listener/src/modifiers/busy_state_listener_modifier.dart';
+import 'package:uic_interactor_busy_state_listener/uic_interactor_busy_state_listener.dart';
 
 extension InvocationConfiguratorWithExecutionListener<Input, Output>
     on InvocationConfigurator<Input, Output> {
-  InvocationConfigurator<Input, Output> publishTo(
-    InteractorExecutionListener listener,
+  InvocationConfigurator<Input, Output> listenOnBusyState(
+    BusyStateListener listener,
   ) {
     return InvocationConfigurator(
       details: details,
-      modifier: ExecutionListenerModifier(
+      modifier: BusyStateListenerModifier(
         onEvent: (event) {
           event.when(
             onStart: (_) => listener.addLoader(),
@@ -22,17 +22,17 @@ extension InvocationConfiguratorWithExecutionListener<Input, Output>
     );
   }
 
-  InvocationConfigurator<Input, Output> publishInto(
-    void Function(bool isBusy) listener,
+  InvocationConfigurator<Input, Output> receiveBusyStateChange(
+    void Function(bool isBusy) receiver,
   ) {
     return InvocationConfigurator(
       details: details,
-      modifier: ExecutionListenerModifier(
+      modifier: BusyStateListenerModifier(
         onEvent: (event) {
           event.when(
-            onStart: (_) => listener(true),
-            onSuccess: (_) => listener(false),
-            onFailure: (_) => listener(false),
+            onStart: (_) => receiver(true),
+            onSuccess: (_) => receiver(false),
+            onFailure: (_) => receiver(false),
           );
         },
         modifier: modifier,

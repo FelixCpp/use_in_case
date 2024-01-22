@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:uic_interactor/uic_interactor.dart';
-import 'package:uic_interactor_execution_listener/src/execution_listener_extension.dart';
-import 'package:uic_interactor_execution_listener/src/listener/interactor_execution_unicast_listener.dart';
+import 'package:uic_interactor_busy_state_listener/uic_interactor_busy_state_listener.dart';
 
 class Return500AfterDelayInteractor
     implements ParameterizedResultInteractor<Duration, int> {
@@ -15,15 +14,16 @@ class Return500AfterDelayInteractor
 }
 
 Future<void> exampleWithListenerInstance() async {
-  final listener = InteractorExecutionUnicastListener();
+  final listener = BusyStateConsumingListener();
   const interactor = Return500AfterDelayInteractor();
 
   final subscription = listener.isLoading.listen((isLoading) {
     print('Interactor is working: $isLoading');
   });
 
-  final result =
-      await interactor(Duration(milliseconds: 750)).publishTo(listener).get();
+  final result = await interactor(Duration(milliseconds: 750))
+      .listenOnBusyState(listener)
+      .get();
 
   await subscription.cancel();
   await listener.release();
@@ -42,10 +42,9 @@ Future<void> exampleWithListenerCallback() async {
   const interactor = Return500AfterDelayInteractor();
   final completer = Completer<int>();
 
-  interactor(Duration(milliseconds: 750))
-      .publishInto((isLoading) => print('Interactor is working $isLoading'))
-      .publishInto((isLoading) => print('Interactor is working $isLoading'))
-      .configure((event) {
+  interactor(Duration(milliseconds: 750)).receiveBusyStateChange((isLoading) {
+    print('Interactor is working $isLoading');
+  }).configure((event) {
     event.whenOrNull(
       onStart: (input) {
         print('Started');

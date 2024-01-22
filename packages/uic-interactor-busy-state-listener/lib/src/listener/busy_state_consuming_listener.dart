@@ -1,12 +1,11 @@
 import 'dart:async';
 
-import 'package:uic_interactor_execution_listener/src/listener/interactor_execution_listener.dart';
+import 'package:uic_interactor_busy_state_listener/uic_interactor_busy_state_listener.dart';
 
-class InteractorExecutionUnicastListener
-    implements InteractorExecutionListener {
+class BusyStateConsumingListener implements BusyStateListener {
   final StreamController<bool> _controller;
 
-  InteractorExecutionUnicastListener({
+  BusyStateConsumingListener({
     StreamController<bool>? controller,
   }) : _controller = controller ?? StreamController<bool>();
 

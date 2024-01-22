@@ -1,11 +1,11 @@
 import 'package:uic_interactor/uic_interactor.dart';
 
-class ExecutionListenerModifier<Input, Output>
+class BusyStateListenerModifier<Input, Output>
     implements InvocationModifier<Input, Output> {
   final InvocationModifier<Input, Output> _modifier;
   final void Function(InvocationEvent<Input, Output>) _onEvent;
 
-  const ExecutionListenerModifier({
+  const BusyStateListenerModifier({
     required void Function(InvocationEvent<Input, Output>) onEvent,
     required InvocationModifier<Input, Output> modifier,
   })  : _onEvent = onEvent,
