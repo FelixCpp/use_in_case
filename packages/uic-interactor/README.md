@@ -1,39 +1,84 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+## Package
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+This library provides the base class **ParameterizedResultInteractor** as well as functions to invoke the operation implemented by the interactor.
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Before writing your first interactor, it is required to add this package to your dependencies.
+
+![](D:\VSProjects\Dart\use_in_case\packages\uic-interactor\images\add_dependency.png)
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+Using this package allows you to implement your own interactor. The interface **ParameterizedResultInteractor** requires you to implement the <u>*execute*</u> method. The parameter as well as the return type can be modified by specifying different generic types for the base class.
 
 ```dart
-const like = 'sample';
+class DivideByTwoInteractor implements ParameterizedResultInteractor<int, int> {
+  const DivideByTwoInteractor();
+
+  @override
+  Future<int> execute(int input) async {
+    return input ~/ 2;
+  }
+}
+```
+
+Another example can be seen here. In this case we receive a String that is written to a *.txt* file called "example_file". Additionally we do not return anything from it.
+
+```dart
+class SaveToFileInteractor implements ParameterizedResultInteractor<String, void> {
+  const SaveToFileInteractor();
+
+  @override
+  Future<void> execute(String content) async {
+    final file = File('example_file.txt');
+    await file.writeAsString(content);
+  }
+}
+```
+
+To use these classes we can execute them using a method called "get". If there are any exception that we want to handle with fallback values, there are convenience methods defined called "getOrNull" as well as "getOrElse"
+
+```dart
+const value = 502;
+const divideByTwo = DivideByTwoInteractor();
+final result1 = await divideByTwo(value).get(); // returns value but throws exception on failure
+final result2 = await divideByTwo(value).getOrNull(); // returns value or null instead of throwing
+final result3 = await divideByTwo(value).getOrElse(fallback: -1); // returns value or fallback instead of throwing 
+
+print({result1, result2, result3});
+```
+
+To get full control of the flow, you can provide callbacks for invocation events using the following code:
+
+```dart
+const saveToFile = SaveToFileInteractor();
+saveToFile("502 / 2 = 251").configure((event) {
+  event.whenOrNull(
+    onStart: (input) {
+      print('Saving process started.');
+    },
+    onSuccess: (result) {
+      print('Content has been saved successfully.');
+    },
+    onFailure: (exception) {
+      print('Could not save content to file. Exception: $exception');
+    },
+  );
+}).run(); //< Don't forget to call run at the end!
+```
+
+Additionally it is possible to insert a timeout duration before running the interactor. When the interactor takes more time than allowed, a *TimeoutException* will be added to the execution flow.
+
+```dart
+const waitingInteractor = Wait3SecondsInteractor();
+final result = await waitingInteractor(value) // Wait three seconds
+	.timeout(const Duration(seconds: 1)) // Timeout of one second.
+	.getOrElse(fallback: -1); // Returns -1 due to TimeoutException
+
+print(result);
 ```
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+When you take a closer look into the implementation of this module, you will see that basically everything is an extension. I've designed it to be extensible for basically every feature that you'd like to implement. The Timeout extension is a good example on how to do that. Basically an implementation of *InvocationModifier*  is needed in order to get information about the execution flow.

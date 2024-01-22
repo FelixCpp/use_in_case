@@ -28,10 +28,10 @@ Future<void> main() async {
   const divideByTwo = DivideByTwoInteractor();
   final result = await divideByTwo(value).getOrElse(fallback: -1);
 
+  print(result);
+
   const saveToFile = SaveToFileInteractor();
-  saveToFile("$value ~/ 2 = $result")
-      .timeout(Duration(seconds: 1))
-      .configure((event) {
+  saveToFile("$value ~/ 2 = $result").configure((event) {
     event.whenOrNull(
       onSuccess: (_) {
         print('Content has been saved successfully.');
