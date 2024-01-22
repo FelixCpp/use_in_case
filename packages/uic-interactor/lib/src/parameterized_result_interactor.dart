@@ -4,8 +4,8 @@ abstract interface class ParameterizedResultInteractor<Input, Output> {
   Future<Output> execute(Input input);
 }
 
-typedef Interactor = ParameterizedResultInteractor<Nothing, Nothing>;
+typedef Interactor = ParameterizedResultInteractor<Nothing, void>;
 typedef ResultInteractor<Output>
     = ParameterizedResultInteractor<Nothing, Output>;
 typedef ParameterizedInteractor<Input>
-    = ParameterizedResultInteractor<Input, Nothing>;
+    = ParameterizedResultInteractor<Input, void>;
