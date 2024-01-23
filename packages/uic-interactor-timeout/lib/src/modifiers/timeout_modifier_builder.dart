@@ -13,7 +13,8 @@ class TimeoutInvocationModiferBuilder<Input, Output>
 
   @override
   InvocationModifier<Input, Output> build(
-      InvocationModifier<Input, Output> modifier) {
+    InvocationModifier<Input, Output> modifier,
+  ) {
     return TimeoutInvocationModifier(
       modifier: modifier,
       timeoutDuration: timeoutDuration,

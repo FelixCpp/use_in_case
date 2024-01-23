@@ -1,4 +1,4 @@
-## Package uic-interactor
+# Package uic-interactor
 
 This library provides the base class **ParameterizedResultInteractor** as well as functions to invoke the operation implemented by the interactor.
 

@@ -1,4 +1,4 @@
-## Package uic-interactor-profiler
+# Package uic-interactor-profiler
 
 This module provides an extension into the workflow of an interactor. The extension measures the elapsed it tool for the usecase to finish and provides callbacks that are invoked when certain events are triggered.
 

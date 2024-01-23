@@ -1,4 +1,4 @@
-## Package uic-interactor-timeout
+# Package uic-interactor-timeout
 
 This module allows you to add a time limit for interactors. If the usecase takes too long, a TimeoutException is thrown resulting in a call to onFailure.
 
