@@ -11,7 +11,7 @@ extension InvocationConfiguratorWithProfiler<Input, Output>
   InvocationConfigurator<Input, Output> profiler(
     InvocationEventProfiler profiler,
   ) {
-    return apply(
+    return modifier(
       (modifier) => ProfilerInvocationModifier(
         logger: profiler,
         modifier: modifier,

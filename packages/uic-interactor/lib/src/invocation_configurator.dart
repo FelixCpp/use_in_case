@@ -66,7 +66,7 @@ extension InvokeInteractorExtension<Input, Output>
 
 extension InvocationModifierApplier<Input, Output>
     on InvocationConfigurator<Input, Output> {
-  InvocationConfigurator<Input, Output> apply(
+  InvocationConfigurator<Input, Output> modifier(
     InvocationModifier<Input, Output> Function(
       InvocationModifier<Input, Output>,
     ) builder,

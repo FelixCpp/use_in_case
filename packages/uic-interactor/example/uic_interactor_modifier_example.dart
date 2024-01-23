@@ -42,7 +42,7 @@ Future<void> main() async {
   const interactor = CustomInteractor();
 
   final _ = await interactor(nothing)
-      .apply((modifier) => SkipOnStartEventExtension(modifier: modifier))
-      .apply((modifier) => CustomExtension(modifier: modifier, name: 'Ext1'))
+      .modifier((modifier) => SkipOnStartEventExtension(modifier: modifier))
+      .modifier((modifier) => CustomExtension(modifier: modifier, name: 'Ext1'))
       .get();
 }

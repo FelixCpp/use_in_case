@@ -7,7 +7,7 @@ extension InvocationConfiguratorWithExecutionListener<Input, Output>
   InvocationConfigurator<Input, Output> listenOnBusyState(
     BusyStateListener listener,
   ) {
-    return apply(
+    return modifier(
       (modifier) => BusyStateListenerModifier(
         onEvent: (event) {
           event.when(
@@ -24,7 +24,7 @@ extension InvocationConfiguratorWithExecutionListener<Input, Output>
   InvocationConfigurator<Input, Output> receiveBusyStateChange(
     void Function(bool isBusy) receiver,
   ) {
-    return apply(
+    return modifier(
       (modifier) => BusyStateListenerModifier(
         onEvent: (event) {
           event.when(

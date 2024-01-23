@@ -24,7 +24,7 @@ class ConfiguredInvocation<Input, Output> {
     StreamSubscription? subscription;
     subscription = controller.stream.listen(
       (event) async {
-        eventHandler.call(event, details);
+        eventHandler(event, details);
 
         if (event.maybeMap(
             onSuccess: (_) => true,

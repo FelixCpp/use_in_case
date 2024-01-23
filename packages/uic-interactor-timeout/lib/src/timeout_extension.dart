@@ -7,7 +7,7 @@ extension InvocationConfiguratorWithTimeout<Input, Output>
     Duration timeoutDuration, {
     String? message,
   }) {
-    return apply(
+    return modifier(
       (modifier) => TimeoutInvocationModifier(
         modifier: modifier,
         timeoutDuration: timeoutDuration,
