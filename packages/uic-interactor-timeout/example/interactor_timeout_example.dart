@@ -2,7 +2,7 @@ import 'package:uic_interactor/uic_interactor.dart';
 import 'package:uic_interactor_timeout/uic_interactor_timeout.dart';
 
 final class WaitingInteractor
-    implements ParameterizedResultInteractor<Duration, int> {
+    extends ParameterizedResultInteractor<Duration, int> {
   const WaitingInteractor();
 
   @override

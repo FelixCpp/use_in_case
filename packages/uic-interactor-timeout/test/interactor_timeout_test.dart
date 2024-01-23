@@ -15,8 +15,7 @@ class ReturnInputAfterDelayParams<T> {
 }
 
 class ReturnInputAfterDelayInteractor<T>
-    implements
-        ParameterizedResultInteractor<ReturnInputAfterDelayParams<T>, T> {
+    extends ParameterizedResultInteractor<ReturnInputAfterDelayParams<T>, T> {
   const ReturnInputAfterDelayInteractor();
 
   @override

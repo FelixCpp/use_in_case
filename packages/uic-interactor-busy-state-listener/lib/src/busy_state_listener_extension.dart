@@ -1,5 +1,5 @@
 import 'package:uic_interactor/uic_interactor.dart';
-import 'package:uic_interactor_busy_state_listener/src/modifiers/busy_state_listener_modifier.dart';
+import 'package:uic_interactor_busy_state_listener/src/modifiers/busy_state_listener_modifier_builder.dart';
 import 'package:uic_interactor_busy_state_listener/uic_interactor_busy_state_listener.dart';
 
 extension InvocationConfiguratorWithExecutionListener<Input, Output>
@@ -8,7 +8,7 @@ extension InvocationConfiguratorWithExecutionListener<Input, Output>
     BusyStateListener listener,
   ) {
     return modifier(
-      (modifier) => BusyStateListenerModifier(
+      BusyStateListenerModifierBuilder(
         onEvent: (event) {
           event.when(
             onStart: (_) => listener.addLoader(),
@@ -16,7 +16,6 @@ extension InvocationConfiguratorWithExecutionListener<Input, Output>
             onFailure: (_) => listener.removeLoader(),
           );
         },
-        modifier: modifier,
       ),
     );
   }
@@ -25,7 +24,7 @@ extension InvocationConfiguratorWithExecutionListener<Input, Output>
     void Function(bool isBusy) receiver,
   ) {
     return modifier(
-      (modifier) => BusyStateListenerModifier(
+      BusyStateListenerModifierBuilder(
         onEvent: (event) {
           event.when(
             onStart: (_) => receiver(true),
@@ -33,7 +32,6 @@ extension InvocationConfiguratorWithExecutionListener<Input, Output>
             onFailure: (_) => receiver(false),
           );
         },
-        modifier: modifier,
       ),
     );
   }

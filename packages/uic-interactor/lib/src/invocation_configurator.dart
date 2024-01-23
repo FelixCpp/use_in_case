@@ -8,7 +8,7 @@ class InvocationConfigurator<Input, Output> {
   final InvocationDetails _details;
   final InvocationModifier<Input, Output> _modifier;
 
-  const InvocationConfigurator({
+  const InvocationConfigurator._internalBuild({
     required InvocationDetails details,
     required InvocationModifier<Input, Output> modifier,
   })  : _details = details,
@@ -65,7 +65,7 @@ extension InvokeInteractorExtension<Input, Output>
       (current, builder) => builder.build(current),
     );
 
-    return InvocationConfigurator(
+    return InvocationConfigurator._internalBuild(
       details: InvocationDetails(jobName: runtimeType.toString()),
       modifier: modifier,
     );
@@ -77,7 +77,7 @@ extension InvocationModifierApplier<Input, Output>
   InvocationConfigurator<Input, Output> modifier(
     InvocationModifierBuilder<Input, Output> builder,
   ) {
-    return InvocationConfigurator(
+    return InvocationConfigurator._internalBuild(
       details: _details,
       modifier: builder.build(_modifier),
     );

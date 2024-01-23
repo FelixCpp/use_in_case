@@ -1,5 +1,5 @@
 import 'package:uic_interactor/uic_interactor.dart';
-import 'package:uic_interactor_timeout/src/modifiers/timeout_modifier.dart';
+import 'package:uic_interactor_timeout/src/modifiers/timeout_modifier_builder.dart';
 
 extension InvocationConfiguratorWithTimeout<Input, Output>
     on InvocationConfigurator<Input, Output> {
@@ -8,8 +8,7 @@ extension InvocationConfiguratorWithTimeout<Input, Output>
     String? message,
   }) {
     return modifier(
-      (modifier) => TimeoutInvocationModifier(
-        modifier: modifier,
+      TimeoutInvocationModiferBuilder(
         timeoutDuration: timeoutDuration,
         message: message,
       ),

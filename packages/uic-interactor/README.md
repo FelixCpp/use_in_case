@@ -109,13 +109,9 @@ This extension prints it's name and the event that has been published by the und
 Extensions can also control the invocation flow by overriding the `buildStream` method. The following example shows how to modify the invocation flow by skipping the first event (`onStart`):
 
 ```Dart
-class SkipOnStartEventExtension<Input, Output>
+class SkipExtension<Input, Output>
     extends ForwardingInvocationModifier<Input, Output> {
-  final String name;
-  const SkipOnStartEventExtension({
-    required super.modifier,
-    required this.name,
-  });
+  const SkipExtension({required super.modifier});
 
   @override
   Stream<InvocationEvent<Input, Output>> buildStream() {
@@ -124,19 +120,93 @@ class SkipOnStartEventExtension<Input, Output>
 }
 ```
 
-A more detailed example can be seen [here](https://github.com/FelixCpp/use_in_case/blob/main/packages/uic-interactor-timeout/lib/src/modifiers/timeout_modifier.dart). 
+A more detailed example can be seen [here](https://github.com/FelixCpp/use_in_case/blob/main/packages/uic-interactor-timeout/lib/src/modifiers/timeout_modifier.dart).
 
 ### Registering an Extension
+
+In order to register an Extension, a builder is required. The implementation of a builder must implement the `InvocationModifierBuilder` interface. To get you started i've written an example below. A detailed example can be seen [here](https://github.com/FelixCpp/use_in_case/blob/main/packages/uic-interactor-timeout/lib/src/modifiers/timeout_modifier_builder.dart).
+
+```Dart
+class SkipExtensionBuilder<Input, Output>
+    implements InvocationModifierBuilder<Input, Output> {
+  const SkipExtensionBuilder();
+
+  @override
+  InvocationModifier<Input, Output> build(
+    InvocationModifier<Input, Output> modifier,
+  ) {
+    return SkipExtension(modifier: modifier);
+  }
+}
+```
 
 Extensions can be registered using the `apply` method.
 
 ```Dart
 final _ = await interactor(nothing)
-  .apply((modifier) => SkipOnStartEventExtension(modifier: modifier))
-  .apply((modifier) => CustomExtension(modifier: modifier, name: 'My Extension'))
+  .modifier(const SkipExtensionBuilder())
+  .modifier(const CustomExtensionBuilder(name: 'Hello'))
   .get();
+```
+
+### Pre-Registered modifier
+
+Each implementation of an Interactor can override the `modifierBuilders` getter property. This property automatically registeres the returned list of builders on invocation. To wrap things up i've written a full example below.
+
+```Dart
+/// Extension/Modifier
+class PrintExtension<Input, Output> extends ForwardingInvocationModifier<Input, Output> {
+  final String name;
+
+  const PrintExtension({
+    required super.modifier,
+    required this.name,
+  });
+
+  @override
+  InvocationEventHandler<Input, Output> buildEventHandler(
+    InvocationEventHandler<Input, Output> callback,
+  ) {
+    return modifier.buildEventHandler((event, details) {
+      print(name);
+      callback(event, details);
+    });
+  }
+}
+
+/// Extension/Modifier Builder
+class PrintExtensionBuilder<Input, Output> implements InvocationModifierBuilder<Input, Output> {
+  final String name;
+  const PrintExtensionBuilder(this.name);
+
+  @override
+  InvocationModifier<Input, Output> build(
+    InvocationModifier<Input, Output> modifier,
+  ) {
+    return PrintExtension(modifier: modifier, name: name);
+  }
+}
+
+/// Interactor
+class MyInteractor extends Interactor {
+  const MyInteractor();
+
+  @override
+  Future<void> execute(Nothing input) async {}
+
+  @override
+  List<InvocationModifierBuilder<Nothing, void>> get modifierBuilders => [
+        PrintExtensionBuilder('Test 1'),
+        PrintExtensionBuilder('Test 2'),
+      ];
+}
+
+void main() {
+  const interactor = MyInteractor();
+  final _ = await interactor(nothing).get();
+}
 ```
 
 ## Additional information
 
-When you take a closer look into the implementation of this module, you will see that basically everything is an extension. I've designed it to be extensible for basically every feature that you'd like to implement. The Timeout extension is a good example on how to do that. Basically an implementation of *InvocationModifier*  is needed in order to get information about the execution flow.
+When you take a closer look into the implementation of this module, you will see that basically everything is an extension. I've designed it to be extensible for basically every feature that you'd like to implement. The Timeout extension is a good example on how to do that. Basically an implementation of *InvocationModifier* is needed in order to get information about the execution flow.

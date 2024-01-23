@@ -6,14 +6,14 @@ import 'package:uic_interactor/uic_interactor.dart';
 import 'package:uic_interactor_profiler/src/invocation_profiler_logger.dart';
 import 'package:uic_interactor_profiler/src/profiler_extension.dart';
 
-class MyInteractor implements ParameterizedResultInteractor<int, int> {
+class MyInteractor extends ParameterizedResultInteractor<int, int> {
   @override
   Future<int> execute(int input) {
     return Future.delayed(Duration(milliseconds: 250), () => input);
   }
 }
 
-class ThrowingInteractor implements ParameterizedResultInteractor {
+class ThrowingInteractor extends ParameterizedResultInteractor {
   @override
   Future execute(input) {
     throw Exception('Some Error');

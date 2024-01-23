@@ -4,7 +4,7 @@ import 'package:uic_interactor/uic_interactor.dart';
 import 'package:uic_interactor_busy_state_listener/uic_interactor_busy_state_listener.dart';
 
 class Return500AfterDelayInteractor
-    implements ParameterizedResultInteractor<Duration, int> {
+    extends ParameterizedResultInteractor<Duration, int> {
   const Return500AfterDelayInteractor();
 
   @override

@@ -5,7 +5,7 @@ import 'package:uic_interactor_profiler/src/invocation_profiler_logger.dart';
 import 'package:uic_interactor_profiler/src/profiler_extension.dart';
 
 class ReturnPiAfterDelayInteractor
-    implements ParameterizedResultInteractor<Duration, double> {
+    extends ParameterizedResultInteractor<Duration, double> {
   const ReturnPiAfterDelayInteractor();
 
   @override
