@@ -76,5 +76,5 @@ Future<void> exampleWithListenerCallback() async {
 
 Future<void> main() async {
   await exampleWithListenerInstance();
-  // await exampleWithListenerCallback();
+  await exampleWithListenerCallback();
 }

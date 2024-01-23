@@ -1,5 +1,6 @@
 library;
 
+export 'src/modifiers/forwarding_invocation_modifier.dart';
 export 'src/modifiers/invocation_modifier.dart';
 
 export 'src/util/invocation_details.dart';

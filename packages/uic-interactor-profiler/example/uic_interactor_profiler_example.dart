@@ -54,10 +54,11 @@ class TestLogger implements InvocationEventProfiler {
   }
 
   @override
-  void onInvocationFailure(
-      {required InvocationDetails details,
-      required Duration elapsedTime,
-      required Exception exception}) {
+  void onInvocationFailure({
+    required InvocationDetails details,
+    required Duration elapsedTime,
+    required Exception exception,
+  }) {
     print(
       '${details.jobName} failed after $elapsedTime due to $exception',
     );

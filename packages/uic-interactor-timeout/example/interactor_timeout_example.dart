@@ -14,7 +14,7 @@ final class WaitingInteractor
 Future<void> main() async {
   const interactor = WaitingInteractor();
   final result = await interactor(Duration(milliseconds: 750))
-      .timeout(Duration(milliseconds: 250))
+      .timeout(Duration(milliseconds: 150))
       .getOrNull();
 
   print('Result: $result');
