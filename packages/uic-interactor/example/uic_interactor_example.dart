@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:uic_interactor/uic_interactor.dart';
 
-class DivideByTwoInteractor implements ParameterizedResultInteractor<int, int> {
+class DivideByTwoInteractor extends ParameterizedResultInteractor<int, int> {
   const DivideByTwoInteractor();
 
   @override
@@ -11,8 +11,7 @@ class DivideByTwoInteractor implements ParameterizedResultInteractor<int, int> {
   }
 }
 
-class SaveToFileInteractor
-    implements ParameterizedResultInteractor<String, void> {
+class SaveToFileInteractor extends ParameterizedResultInteractor<String, void> {
   const SaveToFileInteractor();
 
   @override

@@ -57,9 +57,17 @@ extension InvokeInteractorExtension<Input, Output>
   InvocationConfigurator<Input, Output> call(
     Input input,
   ) {
+    final modifier = modifierBuilders.fold<InvocationModifier<Input, Output>>(
+      InitialInvocationModifier(
+        input: input,
+        interactor: this,
+      ),
+      (current, builder) => builder.build(current),
+    );
+
     return InvocationConfigurator(
       details: InvocationDetails(jobName: runtimeType.toString()),
-      modifier: InitialInvocationModifier(input: input, interactor: this),
+      modifier: modifier,
     );
   }
 }
@@ -67,13 +75,11 @@ extension InvokeInteractorExtension<Input, Output>
 extension InvocationModifierApplier<Input, Output>
     on InvocationConfigurator<Input, Output> {
   InvocationConfigurator<Input, Output> modifier(
-    InvocationModifier<Input, Output> Function(
-      InvocationModifier<Input, Output>,
-    ) builder,
+    InvocationModifierBuilder<Input, Output> builder,
   ) {
     return InvocationConfigurator(
       details: _details,
-      modifier: builder(_modifier),
+      modifier: builder.build(_modifier),
     );
   }
 }

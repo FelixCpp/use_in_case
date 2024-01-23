@@ -25,6 +25,20 @@ class CountingExtension<Input, Output>
   }
 }
 
+class CountingExtensionBuilder<Input, Output>
+    implements InvocationModifierBuilder<Input, Output> {
+  late CountingExtension<Input, Output> ext;
+  CountingExtensionBuilder();
+
+  @override
+  InvocationModifier<Input, Output> build(
+    InvocationModifier<Input, Output> modifier,
+  ) {
+    ext = CountingExtension(modifier: modifier);
+    return ext;
+  }
+}
+
 class SkipExtension<Input, Output>
     extends ForwardingInvocationModifier<Input, Output> {
   const SkipExtension({required super.modifier});
@@ -44,7 +58,19 @@ class SkipExtension<Input, Output>
   }
 }
 
-class TestInteractor implements Interactor {
+class SkipExtensionBuilder<Input, Output>
+    implements InvocationModifierBuilder<Input, Output> {
+  const SkipExtensionBuilder();
+
+  @override
+  InvocationModifier<Input, Output> build(
+    InvocationModifier<Input, Output> modifier,
+  ) {
+    return SkipExtension(modifier: modifier);
+  }
+}
+
+class TestInteractor extends Interactor {
   const TestInteractor();
 
   @override
@@ -54,33 +80,28 @@ class TestInteractor implements Interactor {
 void main() {
   group('run interactor with custom extension', () {
     test('should call extension method twice', () async {
-      late CountingExtension<Nothing, void> ext;
+      final builder = CountingExtensionBuilder<Nothing, void>();
       const interactor = TestInteractor();
 
-      final _ = await interactor(nothing).modifier((modifier) {
-        ext = CountingExtension(modifier: modifier);
-        return ext;
-      }).get();
+      final _ = await interactor(nothing).modifier(builder).get();
 
-      expect(ext.startCount, equals(1));
-      expect(ext.successCount, equals(1));
-      expect(ext.failureCount, equals(0));
+      expect(builder.ext.startCount, equals(1));
+      expect(builder.ext.successCount, equals(1));
+      expect(builder.ext.failureCount, equals(0));
     });
 
     test('should skip onStart event', () async {
-      late CountingExtension<Nothing, void> ext;
+      final builder = CountingExtensionBuilder<Nothing, void>();
       const interactor = TestInteractor();
 
       final _ = await interactor(nothing)
-          .modifier((modifier) => SkipExtension(modifier: modifier))
-          .modifier((modifier) {
-        ext = CountingExtension(modifier: modifier);
-        return ext;
-      }).get();
+          .modifier(const SkipExtensionBuilder())
+          .modifier(builder)
+          .get();
 
-      expect(ext.startCount, equals(0));
-      expect(ext.successCount, equals(1));
-      expect(ext.failureCount, equals(0));
+      expect(builder.ext.startCount, equals(0));
+      expect(builder.ext.successCount, equals(1));
+      expect(builder.ext.failureCount, equals(0));
     });
   });
 }

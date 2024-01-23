@@ -9,6 +9,11 @@ class CustomExtension<Input, Output>
   });
 
   @override
+  Stream<InvocationEvent<Input, Output>> buildStream() {
+    return super.buildStream().skip(1);
+  }
+
+  @override
   InvocationEventHandler<Input, Output> buildEventHandler(
     InvocationEventHandler<Input, Output> callback,
   ) {
@@ -19,19 +24,20 @@ class CustomExtension<Input, Output>
   }
 }
 
-class SkipOnStartEventExtension<Input, Output>
-    extends ForwardingInvocationModifier<Input, Output> {
-  const SkipOnStartEventExtension({
-    required super.modifier,
-  });
+class CustomExtensionBuilder<Input, Output>
+    implements InvocationModifierBuilder<Input, Output> {
+  final String name;
+  const CustomExtensionBuilder({required this.name});
 
   @override
-  Stream<InvocationEvent<Input, Output>> buildStream() {
-    return modifier.buildStream().skip(1);
+  InvocationModifier<Input, Output> build(
+    InvocationModifier<Input, Output> modifier,
+  ) {
+    return CustomExtension(modifier: modifier, name: name);
   }
 }
 
-class CustomInteractor implements Interactor {
+class CustomInteractor extends Interactor {
   const CustomInteractor();
 
   @override
@@ -42,7 +48,6 @@ Future<void> main() async {
   const interactor = CustomInteractor();
 
   final _ = await interactor(nothing)
-      .modifier((modifier) => SkipOnStartEventExtension(modifier: modifier))
-      .modifier((modifier) => CustomExtension(modifier: modifier, name: 'Ext1'))
+      .modifier(const CustomExtensionBuilder(name: 'Ext1'))
       .get();
 }
