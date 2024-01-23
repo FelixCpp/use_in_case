@@ -5,13 +5,14 @@ import 'package:uic_interactor/src/modifiers/initial_invocation_modifier.dart';
 import 'package:uic_interactor/uic_interactor.dart';
 
 class InvocationConfigurator<Input, Output> {
-  final InvocationDetails details;
-  final InvocationModifier<Input, Output> modifier;
+  final InvocationDetails _details;
+  final InvocationModifier<Input, Output> _modifier;
 
   const InvocationConfigurator({
-    required this.details,
-    required this.modifier,
-  });
+    required InvocationDetails details,
+    required InvocationModifier<Input, Output> modifier,
+  })  : _details = details,
+        _modifier = modifier;
 
   Future<Output> get() {
     final completer = Completer<Output>();
@@ -40,9 +41,9 @@ class InvocationConfigurator<Input, Output> {
     void Function(InvocationEvent<Input, Output>) onEvent,
   ) {
     return ConfiguredInvocation(
-      details: details,
+      details: _details,
       onEvent: onEvent,
-      modifier: modifier,
+      modifier: _modifier,
     );
   }
 }
@@ -59,6 +60,20 @@ extension InvokeInteractorExtension<Input, Output>
     return InvocationConfigurator(
       details: InvocationDetails(jobName: runtimeType.toString()),
       modifier: InitialInvocationModifier(input: input, interactor: this),
+    );
+  }
+}
+
+extension InvocationModifierApplier<Input, Output>
+    on InvocationConfigurator<Input, Output> {
+  InvocationConfigurator<Input, Output> apply(
+    InvocationModifier<Input, Output> Function(
+      InvocationModifier<Input, Output>,
+    ) builder,
+  ) {
+    return InvocationConfigurator(
+      details: _details,
+      modifier: builder(_modifier),
     );
   }
 }

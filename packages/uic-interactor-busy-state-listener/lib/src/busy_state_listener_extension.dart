@@ -7,9 +7,8 @@ extension InvocationConfiguratorWithExecutionListener<Input, Output>
   InvocationConfigurator<Input, Output> listenOnBusyState(
     BusyStateListener listener,
   ) {
-    return InvocationConfigurator(
-      details: details,
-      modifier: BusyStateListenerModifier(
+    return apply(
+      (modifier) => BusyStateListenerModifier(
         onEvent: (event) {
           event.when(
             onStart: (_) => listener.addLoader(),
@@ -25,9 +24,8 @@ extension InvocationConfiguratorWithExecutionListener<Input, Output>
   InvocationConfigurator<Input, Output> receiveBusyStateChange(
     void Function(bool isBusy) receiver,
   ) {
-    return InvocationConfigurator(
-      details: details,
-      modifier: BusyStateListenerModifier(
+    return apply(
+      (modifier) => BusyStateListenerModifier(
         onEvent: (event) {
           event.when(
             onStart: (_) => receiver(true),
