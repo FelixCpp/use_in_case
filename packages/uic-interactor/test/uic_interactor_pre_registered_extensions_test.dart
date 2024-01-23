@@ -1,5 +1,4 @@
 import 'package:test/test.dart';
-import 'package:uic_interactor/src/modifiers/invocation_modifier_builder.dart';
 import 'package:uic_interactor/uic_interactor.dart';
 
 class PrintExtension<Input, Output>
