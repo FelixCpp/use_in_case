@@ -5,28 +5,26 @@ import 'package:uic_interactor/src/util/invocation_event.dart';
 import 'package:uic_interactor/src/modifiers/invocation_modifier.dart';
 
 class ConfiguredInvocation<Input, Output> {
-  final InvocationDetails _details;
-  final void Function(InvocationEvent<Input, Output>) _onEvent;
-  final InvocationModifier<Input, Output> _modifier;
+  final InvocationDetails details;
+  final void Function(InvocationEvent<Input, Output>) onEvent;
+  final InvocationModifier<Input, Output> modifier;
 
   const ConfiguredInvocation({
-    required InvocationDetails details,
-    required void Function(InvocationEvent<Input, Output>) onEvent,
-    required InvocationModifier<Input, Output> modifier,
-  })  : _details = details,
-        _onEvent = onEvent,
-        _modifier = modifier;
+    required this.modifier,
+    required this.details,
+    required this.onEvent,
+  });
 
   void run() {
     final controller = StreamController<InvocationEvent<Input, Output>>();
-    final eventHandler = _modifier.buildEventHandler(
-      (event, _) => _onEvent(event),
+    final eventHandler = modifier.buildEventHandler(
+      (event, _) => onEvent(event),
     );
 
     StreamSubscription? subscription;
     subscription = controller.stream.listen(
       (event) async {
-        eventHandler.call(event, _details);
+        eventHandler.call(event, details);
 
         if (event.maybeMap(
             onSuccess: (_) => true,
@@ -39,6 +37,6 @@ class ConfiguredInvocation<Input, Output> {
       cancelOnError: true,
     );
 
-    controller.addStream(_modifier.buildStream());
+    controller.addStream(modifier.buildStream());
   }
 }

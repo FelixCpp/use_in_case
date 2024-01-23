@@ -41,9 +41,9 @@ class InvocationConfigurator<Input, Output> {
     void Function(InvocationEvent<Input, Output>) onEvent,
   ) {
     return ConfiguredInvocation(
+      modifier: _modifier,
       details: _details,
       onEvent: onEvent,
-      modifier: _modifier,
     );
   }
 }

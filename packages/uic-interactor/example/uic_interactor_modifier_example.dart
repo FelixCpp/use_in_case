@@ -12,11 +12,22 @@ class CustomExtension<Input, Output>
   InvocationEventHandler<Input, Output> buildEventHandler(
     InvocationEventHandler<Input, Output> callback,
   ) {
-    return super.buildEventHandler((event, details) {
-      //event.whenOrNull(onStart: (_) => print('Name: $name'));
+    return modifier.buildEventHandler((event, details) {
       print('$name: $event');
       callback(event, details);
     });
+  }
+}
+
+class SkipOnStartEventExtension<Input, Output>
+    extends ForwardingInvocationModifier<Input, Output> {
+  const SkipOnStartEventExtension({
+    required super.modifier,
+  });
+
+  @override
+  Stream<InvocationEvent<Input, Output>> buildStream() {
+    return modifier.buildStream().skip(1);
   }
 }
 
@@ -31,7 +42,7 @@ Future<void> main() async {
   const interactor = CustomInteractor();
 
   final _ = await interactor(nothing)
+      .apply((modifier) => SkipOnStartEventExtension(modifier: modifier))
       .apply((modifier) => CustomExtension(modifier: modifier, name: 'Ext1'))
-      .apply((modifier) => CustomExtension(modifier: modifier, name: 'Ext2'))
       .get();
 }

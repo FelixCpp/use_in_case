@@ -74,6 +74,60 @@ saveToFile("502 / 2 = 251").configure((event) {
 }).run(); //< Don't forget to call run at the end!
 ```
 
+Since this library is heavily based on extensions and external modifiers, it is possible to register custom extensions into the invocation flow.
+First thing that's required is to extend an base class called `ForwardInvocationModifier`.
+Here's an example on how to do that:
+
+```Dart
+class CustomExtension<Input, Output> extends ForwardingInvocationModifier<Input, Output> {
+  final String name;
+  const CustomExtension({
+    required super.modifier,
+    required this.name,
+  });
+
+  @override
+  InvocationEventHandler<Input, Output> buildEventHandler(
+    InvocationEventHandler<Input, Output> callback,
+  ) {
+    return modifier.buildEventHandler((event, details) {
+      print('$name: $event');
+      callback(event, details);
+    });
+  }
+}
+```
+
+This extension prints it's name and the event that has been published by the underlying invocation flow. Running the callback is essential to the behavior of this method chaining algorithm. A details example on how to handle the callback can found [here](https://github.com/FelixCpp/use_in_case/blob/main/packages/uic-interactor-profiler/lib/src/modifiers/profiler_modifier.dart).
+
+Extensions can also control the invocation flow by overriding the `buildStream` method. The following example shows how to modify the invocation flow by skipping the first event (`onStart`):
+
+```Dart
+class SkipOnStartEventExtension<Input, Output>
+    extends ForwardingInvocationModifier<Input, Output> {
+  final String name;
+  const SkipOnStartEventExtension({
+    required super.modifier,
+    required this.name,
+  });
+
+  @override
+  Stream<InvocationEvent<Input, Output>> buildStream() {
+    return modifier.buildStream().skip(1);
+  }
+}
+```
+
+A more detailed example can be seen [here](https://github.com/FelixCpp/use_in_case/blob/main/packages/uic-interactor-timeout/lib/src/modifiers/timeout_modifier.dart). 
+Extensions can be registered using the `apply` method.
+
+```Dart
+final _ = await interactor(nothing)
+  .apply((modifier) => SkipOnStartEventExtension(modifier: modifier))
+  .apply((modifier) => CustomExtension(modifier: modifier, name: 'My Extension'))
+  .get();
+``
+
 ## Additional information
 
 When you take a closer look into the implementation of this module, you will see that basically everything is an extension. I've designed it to be extensible for basically every feature that you'd like to implement. The Timeout extension is a good example on how to do that. Basically an implementation of *InvocationModifier*  is needed in order to get information about the execution flow.
