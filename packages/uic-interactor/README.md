@@ -16,6 +16,8 @@ dependencies:
 
 ## Usage
 
+### Implementing an Interactor
+
 Using this package allows you to implement your own interactor. The interface **ParameterizedResultInteractor** requires you to implement the <u>*execute*</u> method. The parameter as well as the return type can be modified by specifying different generic types for the base class.
 
 ```dart
@@ -42,6 +44,8 @@ class SaveToFileInteractor implements ParameterizedResultInteractor<String, void
   }
 }
 ```
+
+### Invoking an Interactor
 
 To use these classes we can execute them using a method called "get". If there are any exception that we want to handle with fallback values, there are convenience methods defined called "getOrNull" as well as "getOrElse"
 
@@ -73,6 +77,8 @@ saveToFile("502 / 2 = 251").configure((event) {
   );
 }).run(); //< Don't forget to call run at the end!
 ```
+
+### Implementing an Extension
 
 Since this library is heavily based on extensions and external modifiers, it is possible to register custom extensions into the invocation flow.
 First thing that's required is to extend an base class called `ForwardInvocationModifier`.
@@ -119,6 +125,9 @@ class SkipOnStartEventExtension<Input, Output>
 ```
 
 A more detailed example can be seen [here](https://github.com/FelixCpp/use_in_case/blob/main/packages/uic-interactor-timeout/lib/src/modifiers/timeout_modifier.dart). 
+
+### Registering an Extension
+
 Extensions can be registered using the `apply` method.
 
 ```Dart
@@ -126,7 +135,7 @@ final _ = await interactor(nothing)
   .apply((modifier) => SkipOnStartEventExtension(modifier: modifier))
   .apply((modifier) => CustomExtension(modifier: modifier, name: 'My Extension'))
   .get();
-``
+```
 
 ## Additional information
 
