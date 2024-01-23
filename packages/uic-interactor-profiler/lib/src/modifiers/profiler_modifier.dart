@@ -3,14 +3,13 @@ import 'package:uic_interactor_profiler/src/invocation_profiler_logger.dart';
 
 class ProfilerInvocationModifier<Input, Output>
     extends ForwardingInvocationModifier<Input, Output> {
-  final InvocationEventProfiler _logger;
-  final Stopwatch _stopwatch;
+  final InvocationEventProfiler logger;
+  final Stopwatch stopwatch;
 
   ProfilerInvocationModifier({
-    required InvocationEventProfiler logger,
     required super.modifier,
-  })  : _logger = logger,
-        _stopwatch = Stopwatch();
+    required this.logger,
+  }) : stopwatch = Stopwatch();
 
   @override
   InvocationEventHandler<Input, Output> buildEventHandler(
@@ -20,27 +19,27 @@ class ProfilerInvocationModifier<Input, Output>
       (event, details) {
         event.map(
           onStart: (event) {
-            _stopwatch
+            stopwatch
               ..reset()
               ..start();
-            _logger.onInvocationStart(details: details, input: event.input);
+            logger.onInvocationStart(details: details, input: event.input);
             callback(event, details);
           },
           onSuccess: (event) {
             callback(event, details);
-            _stopwatch.stop();
-            _logger.onInvocationSuccess(
+            stopwatch.stop();
+            logger.onInvocationSuccess(
               details: details,
-              elapsedTime: _stopwatch.elapsed,
+              elapsedTime: stopwatch.elapsed,
               output: event.output,
             );
           },
           onFailure: (event) {
             callback(event, details);
-            _stopwatch.stop();
-            _logger.onInvocationFailure(
+            stopwatch.stop();
+            logger.onInvocationFailure(
               details: details,
-              elapsedTime: _stopwatch.elapsed,
+              elapsedTime: stopwatch.elapsed,
               exception: event.exception,
             );
           },

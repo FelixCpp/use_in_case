@@ -31,7 +31,7 @@ Future<void> main() async {
   const interactor = CustomInteractor();
 
   final _ = await interactor(nothing)
-      .apply((modifier) => CustomExtension(modifier: modifier, name: 'Bla'))
-      .apply((modifier) => CustomExtension(modifier: modifier, name: 'Blu'))
+      .apply((modifier) => CustomExtension(modifier: modifier, name: 'Ext1'))
+      .apply((modifier) => CustomExtension(modifier: modifier, name: 'Ext2'))
       .get();
 }

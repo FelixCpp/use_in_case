@@ -9,8 +9,8 @@ extension InvocationConfiguratorWithTimeout<Input, Output>
   }) {
     return apply(
       (modifier) => TimeoutInvocationModifier(
-        timeoutDuration: timeoutDuration,
         modifier: modifier,
+        timeoutDuration: timeoutDuration,
         message: message,
       ),
     );
