@@ -5,10 +5,10 @@ repository: https://github.com/FelixCpp/use_in_case
 publish_to: 'none'
 
 environment:
-  sdk: ^3.2.3
+  sdk: ^3.0.0
 
 # Add regular dependencies here.
-dependency_overrides:
+dependencies:
   uic_interactor:
     path: ../uic-interactor/
 

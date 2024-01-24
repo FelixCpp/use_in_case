@@ -1,14 +1,14 @@
 name: uic_interactor_timeout
 description: Extension for the uic_interactor package that implements a timeout modifier.
 version: 1.0.0
-publish_to: 'none'
 repository: https://github.com/FelixCpp/use_in_case
+publish_to: 'none'
 
 environment:
   sdk: ^3.0.0
 
 # Add regular dependencies here.
-dependency_overrides:
+dependencies:
   uic_interactor:
     path: ../uic-interactor/
 
