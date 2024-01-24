@@ -1,5 +1,5 @@
 name: uic_interactor_busy_state
-description: A starting point for Dart libraries or applications.
+description: Extension for the uic_interactor package that implements a receiver/listener modifier to track whether an interactor is busy or not.
 version: 1.0.0
 repository: https://github.com/FelixCpp/use_in_case
 publish_to: 'none'

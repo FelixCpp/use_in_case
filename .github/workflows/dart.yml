@@ -17,8 +17,7 @@ jobs:
     strategy:
       matrix: { dir: [
         'packages/uic-interactor',
-        'packages/uic-interactor-busy-state-listener',
-        'packages/uic-interactor-profiler',
+        'packages/uic-interactor-busy-state',
         'packages/uic-interactor-timeout',
         ]
       }
