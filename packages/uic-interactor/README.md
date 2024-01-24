@@ -134,3 +134,61 @@ interactor(nothing).configure(
     }
 ).run(); //< Don't forget the `.run()`!
 ```
+
+## Advanced Topics
+
+Since this module is written to be extendable there is a simple api to add an extension that hooks itself into the invocation flow and potentially modifies the behavior & outcome of an interactor.
+
+### Writing a custom extension
+
+```Dart
+class CustomExtension<In, Out> implements ForwardingInvocationModifier<In, Out> {
+    const CustomExtension({required super.modifier});
+
+    @override
+    InvocationEventHandler<In, Out> buildEventHandler(
+        InvocationEventHandler<In, Out> callback,
+    ) {
+        return modifier.buildEventHandler((event, details) {
+            callback(event, details);
+        });
+    }
+}
+```
+
+In order to register the extension in our call chain we must define an extension builder.
+
+### Writing a custom extension builder
+
+```Dart
+class CustomExtensionBuilder<In, Out> implements InvocationModifierBuilder<In, Out> {
+    const CustomExtensionBuilder();
+
+    @override
+    InvocationModifier<In, Out> build(
+        InvocationModifier<In, Out> modifier,
+    ) {
+        return CustomExtension(modifier: modifier);
+    }
+}
+```
+
+Now we're finally ready to register our extension builder into the call chain.
+
+```Dart
+final interactor = GreetingProducerInteractor();
+final message = await interactor('Felix')
+    .modifier(const CustomExtensionBuilder()) //< Registration
+    .get();
+
+print(message);
+```
+
+## More on extensions
+
+If you're interested and want to take a closer look on how to implement extensions you can find examples inside the [uic-interactor-timeout](../uic-interactor-timeout) or [uic-interactor-busy-state](../uic-interactor-busy-state) module.
+Besides these submodules you can always take a look into the [examples](./example/) folder. Specifically [this file](example/uic_interactor_modifier_example.dart) revisits the previous steps on how to register a custom extension.
+
+## Contribution
+
+I'm sure there are many things that could be added using extensions and modification of invocation flows. If you find yourself implementing a feature that needs to should be part of the base library i'd love to review your **merge request** or discuss the feature inside **issue** tab.
