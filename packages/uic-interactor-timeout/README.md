@@ -18,7 +18,7 @@ dependencies:
       path: packages/uic-interactor-timeout
 ```
 
-## Code-example
+## Code example
 
 Here's a quick and easy to understand example.</br>
 For this example i've implemented an interactor that literally does nothing except waiting three seconds before returning.
