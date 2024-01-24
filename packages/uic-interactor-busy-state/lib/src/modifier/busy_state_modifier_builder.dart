@@ -1,5 +1,5 @@
 import 'package:uic_interactor/uic_interactor.dart';
-import 'package:uic_interactor_busy_state_listener/src/modifiers/busy_state_listener_modifier.dart';
+import 'package:uic_interactor_busy_state/src/modifier/busy_state_modifier.dart';
 
 class BusyStateListenerModifierBuilder<Input, Output>
     implements InvocationModifierBuilder<Input, Output> {

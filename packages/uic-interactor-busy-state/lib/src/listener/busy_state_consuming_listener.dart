@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:uic_interactor_busy_state_listener/uic_interactor_busy_state_listener.dart';
+import 'package:uic_interactor_busy_state/uic_interactor_busy_state.dart';
 
 class BusyStateConsumingListener implements BusyStateListener {
   final StreamController<bool> _controller;

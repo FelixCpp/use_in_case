@@ -1,11 +1,11 @@
-name: uic_interactor_timeout
-description: Extension for the uic_interactor package that implements a timeout modifier.
+name: uic_interactor_busy_state
+description: A starting point for Dart libraries or applications.
 version: 1.0.0
-publish_to: 'none'
 repository: https://github.com/FelixCpp/use_in_case
+publish_to: 'none'
 
 environment:
-  sdk: ^3.0.0
+  sdk: ^3.2.3
 
 # Add regular dependencies here.
 dependencies:

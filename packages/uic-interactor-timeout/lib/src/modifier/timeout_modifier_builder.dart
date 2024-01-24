@@ -1,5 +1,5 @@
 import 'package:uic_interactor/uic_interactor.dart';
-import 'package:uic_interactor_timeout/src/modifiers/timeout_modifier.dart';
+import 'package:uic_interactor_timeout/src/modifier/timeout_modifier.dart';
 
 class TimeoutInvocationModiferBuilder<Input, Output>
     implements InvocationModifierBuilder<Input, Output> {

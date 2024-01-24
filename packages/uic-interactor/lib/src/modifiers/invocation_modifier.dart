@@ -4,6 +4,6 @@ abstract interface class InvocationModifier<Input, Output> {
   Stream<InvocationEvent<Input, Output>> buildStream();
 
   InvocationEventHandler<Input, Output> buildEventHandler(
-    InvocationEventHandler<Input, Output> callback,
+    InvocationEventHandler<Input, Output> handler,
   );
 }
