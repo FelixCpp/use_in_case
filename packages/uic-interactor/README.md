@@ -142,7 +142,7 @@ Since this module is written to be extendable there is a simple api to add an ex
 ### Writing a custom extension
 
 ```Dart
-class CustomExtension<In, Out> implements ForwardingInvocationModifier<In, Out> {
+class CustomExtension<In, Out> extends ForwardingInvocationModifier<In, Out> {
     const CustomExtension({required super.modifier});
 
     @override
@@ -191,7 +191,7 @@ Each interactor is able to overwrite the `modifierBuilders` property. This gette
 Let's write an extension for our showcase.
 
 ```Dart
-class PrintExtension<In, Out> implements ForwardingInvocationModifier<In, Out> {
+class PrintExtension<In, Out> extends ForwardingInvocationModifier<In, Out> {
     const PrintExtension({required super.modifier});
     
     @override
