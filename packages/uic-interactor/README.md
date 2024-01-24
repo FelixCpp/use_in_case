@@ -184,6 +184,74 @@ final message = await interactor('Felix')
 print(message);
 ```
 
+### Using pre-registered extensions
+
+Each interactor is able to overwrite the `modifierBuilders` property. This getter must return a list of [modifier builders](#Writing%20a%20custom%20extension%20builder). Each one is going to be registered and automatically applied when invoking the interactor.
+
+Let's write an extension for our showcase.
+
+```Dart
+class PrintExtension<In, Out> implements ForwardingInvocationModifier<In, Out> {
+    const PrintExtension({required super.modifier});
+    
+    @override
+    InvocationEventHandler<In, Out> buildEventHandler(
+        InvocationEventHandler<In, Out> callback,
+    ) {
+        return modifier.buildEventHandler((event, details) {
+            final message = event.when(
+                onStart: (input) => 'Invocation started',
+                onSuccess: (output) => output,
+                onFailure: (exception) => exception.toString(),
+            );
+
+            print(message);
+            callback(event, details);
+        });
+    }
+}
+```
+
+As you should know by now, each extension needs a corresponding builder.
+
+```Dart
+class PrintExtensionBuilder<In, Out> implements InvocationModifierBuilder<In, Out> {
+    const PrintExtensionBuilder();
+
+    @override
+    InvocationModifier<In, Out> build(
+        InvocationModifier<In, Out> modifier,
+    ) {
+        return CustomExtension(modifier: modifier);
+    }
+}
+```
+
+For this example i've decided to extend the [StringProducerInteractor](#implementation-of-a-resultinteractor)
+```Dart
+class StringProducerInteractor extends ResultInteractor<String> {
+    @override
+    Future<String> execute(Nothing _) async {
+        return 'Hello World';
+    }
+
+    @override
+    List<InvocationModifierBuilder<Nothing, String>> get modifierBuilders {
+        return [
+            const PrintExtensionBuilder<Nothing, String>(),
+        ];
+    }
+}
+```
+
+When invoking the `StringProducerInteractor`, each event is being printed automatically without writing `.modifier(const PrintExtensionBuilder())` on each invocation.
+
+```Dart
+final interactor = StringProducerInteractor();
+final message = await interactor(nothing).get();
+print(message); 
+```
+
 ## More on extensions
 
 If you're interested and want to take a closer look on how to implement extensions you can find examples inside the [uic-interactor-timeout](../uic-interactor-timeout) or [uic-interactor-busy-state](../uic-interactor-busy-state) module.
