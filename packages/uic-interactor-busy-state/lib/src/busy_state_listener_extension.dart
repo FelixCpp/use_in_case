@@ -1,5 +1,4 @@
 import 'package:uic_interactor/uic_interactor.dart';
-import 'package:uic_interactor_busy_state/src/modifier/busy_state_modifier_builder.dart';
 import 'package:uic_interactor_busy_state/uic_interactor_busy_state.dart';
 
 extension InvocationConfiguratorWithListener<Input, Output>
