@@ -228,6 +228,7 @@ class PrintExtensionBuilder<In, Out> implements InvocationModifierBuilder<In, Ou
 ```
 
 For this example i've decided to extend the [StringProducerInteractor](#implementation-of-a-resultinteractor)
+
 ```Dart
 class StringProducerInteractor extends ResultInteractor<String> {
     @override

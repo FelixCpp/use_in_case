@@ -10,5 +10,113 @@ This library consists out of three submodules where [uic-interactor](packages/ui
 
 | Module                                                            | Functionality                                             |
 | :---------------------------------------------------------------- | :-------------------------------------------------------- |
+| [uic-interactor](packages/uic-interactor/)                        | Bas module implementing the base functionality to extend. |
 | [uic-interactor-timeout](packages/uic-interactor-timeout/)        | Limiting the duration a task is allowed to run.           |
 | [uic-interactor-busy-state](packages/uic-interactor-busy-state/)  | Get notified when the interactor has started or finished. |
+
+---
+
+The following example is a combination of all default extensions provided by the library. For more details on how each component works, it's worth taking a look into each extension module listed above.
+
+I'm going to start with a logging profiler which profiles the duration of an interactor and prints them to the console. For some pretty output i'm using the [logger](https://pub.dev/packages/logger) package by [Simon Choi](https://github.com/simc).
+
+```Dart
+class LoggingProfilerExtension<Input, Output> extends ForwardingInvocationModifier<Input, Output> {
+  final Logger _logger;
+  final Stopwatch _watch;
+
+  LoggingProfilerExtension({
+    required super.modifier,
+    required Logger logger,
+  })  : _logger = logger,
+        _watch = Stopwatch();
+
+  @override
+  InvocationEventHandler<Input, Output> buildEventHandler(
+    InvocationEventHandler<Input, Output> callback,
+  ) {
+    return modifier.buildEventHandler((event, details) {
+      final name = details.jobName;
+
+      final _ = event.when(
+        onStart: (input) {
+          _watch
+            ..reset()
+            ..start();
+
+          _logger.i('$name started executing with $input as parameter.');
+        },
+        onSuccess: (output) {
+          final elapsedTime = (_watch..stop()).elapsed;
+          _logger.i(
+            '$name succeeded after $elapsedTime with $output as result.',
+          );
+        },
+        onFailure: (exception) {
+          final elapsedTime = (_watch..stop()).elapsed;
+          _logger.e('$name failed after $elapsedTime due to $exception');
+        },
+      );
+
+      return callback(event, details);
+    });
+  }
+}
+```
+
+Each extension needs a builder in order to get registered inside the call chain.
+
+```Dart
+class LoggingProfilerExtensionBuilder<Input, Output> implements InvocationModifierBuilder<Input, Output> {
+  final Logger _logger;
+
+  const LoggingProfilerExtensionBuilder({
+    required Logger logger,
+  }) : _logger = logger;
+
+  @override
+  InvocationModifier<Input, Output> build(
+    InvocationModifier<Input, Output> modifier,
+  ) {
+    return LoggingProfilerExtension(modifier: modifier, logger: _logger);
+  }
+}
+```
+
+Now let's write an extension that can be used when invoking an interactor.
+This is for convenience only. We could also write `.modifier(const LoggingProfilerExtensionBuilder())` instead. This extension allows us to write `.logger()` instead.
+
+```Dart
+extension LoggingProfilerModifierExtension<Input, Output>
+    on InvocationConfigurator<Input, Output> {
+  InvocationConfigurator<Input, Output> logger({
+    Logger? logger,
+  }) {
+    return modifier(
+      LoggingProfilerExtensionBuilder(
+        logger: logger ?? Logger(),
+      ),
+    );
+  }
+}
+```
+
+Now let's write an interactor.
+
+```Dart
+class Calculator extends ResultInteractor<int> {
+  const Calculator();
+
+  @override
+  Future<int> execute(Nothing _) async {
+    return 6 * 7;
+  }
+
+  @override
+  List<InvocationModifierBuilder<Nothing, int>> get modifierBuilders {
+    return [
+      const TimeoutExtensionBuilder(Duration(minutes: 3)),
+    ];
+  }
+}
+```
