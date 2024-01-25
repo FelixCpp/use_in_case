@@ -8,11 +8,11 @@ This library consists out of three submodules where [uic-interactor](packages/ui
 
 ## Submodules and Extensions
 
-| Module                                                            | Functionality                                             |
-| :---------------------------------------------------------------- | :-------------------------------------------------------- |
-| [uic-interactor](packages/uic-interactor/)                        | Bas module implementing the base functionality to extend. |
-| [uic-interactor-timeout](packages/uic-interactor-timeout/)        | Limiting the duration a task is allowed to run.           |
-| [uic-interactor-busy-state](packages/uic-interactor-busy-state/)  | Get notified when the interactor has started or finished. |
+| Module                                                            | Functionality                                               |
+| :---------------------------------------------------------------- | :---------------------------------------------------------- |
+| [uic-interactor](packages/uic-interactor/)                        | Base module implementing the base functionality to extend.  |
+| [uic-interactor-timeout](packages/uic-interactor-timeout/)        | Limiting the duration a task is allowed to run.             |
+| [uic-interactor-busy-state](packages/uic-interactor-busy-state/)  | Get notified when the interactor has started or finished.   |
 
 ---
 
