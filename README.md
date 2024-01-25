@@ -16,7 +16,11 @@ This library consists out of three submodules where [uic-interactor](packages/ui
 
 ---
 
+## Implementing a full example
+
 The following example is a combination of all default extensions provided by the library. For more details on how each component works, it's worth taking a look into each extension module listed above.
+
+### Logging-Profiler extension
 
 I'm going to start with a logging profiler which profiles the duration of an interactor and prints them to the console. For some pretty output i'm using the [logger](https://pub.dev/packages/logger) package by [Simon Choi](https://github.com/simc).
 
@@ -64,6 +68,8 @@ class LoggingProfilerExtension<Input, Output> extends ForwardingInvocationModifi
 }
 ```
 
+### Logging-Profiler extension builder
+
 Each extension needs a builder in order to get registered inside the call chain.
 
 ```Dart
@@ -83,6 +89,8 @@ class LoggingProfilerExtensionBuilder<Input, Output> implements InvocationModifi
 }
 ```
 
+### Logging-Profiler convenience modifier
+
 Now let's write an extension that can be used when invoking an interactor.
 This is for convenience only. We could also write `.modifier(const LoggingProfilerExtensionBuilder())` instead. This extension allows us to write `.logger()` instead.
 
@@ -100,6 +108,8 @@ extension LoggingProfilerModifierExtension<Input, Output>
   }
 }
 ```
+
+### Calculator interactor example
 
 Now let's write an interactor.
 
@@ -120,3 +130,25 @@ class Calculator extends ResultInteractor<int> {
   }
 }
 ```
+
+### Calculator invocation example
+
+Invoking this interactor may look like this:
+
+```Dart
+const calculator = Calculator();
+
+final result = await calculator(nothing)
+    .logger()
+    .receiveBusyStateChange((isBusy) => print('IsBusy: $isBusy'))
+    .getOrElse(fallback: -1);
+
+print('Result: $result');
+```
+
+| Library / Modifier                                          | Customized  |
+| :---------------------------------------------------------- | :---------- |
+| [Base Module](./packages/uic-interactor/)                   | No          |
+| [Timeout Module](./packages/uic-interactor-timeout/)        | No          |
+| [Busy-State Module](./packages/uic-interactor-busy-state/)  | No          |
+| [Profiler Logger](#logging-profiler-extension)              | Yes         |
