@@ -125,14 +125,11 @@ print(message); // Prints 'Hello, Felix!'
 final interactor = StringProducerInteractor();
 
 interactor(nothing).configure(
-    (event) {
-        event.when(
-            onStart: (input) {},
-            onSuccess: (message) { print(message); },
-            onFailure: (exception) { print(exception.toString()); }
-        );
-    }
-).run(); //< Don't forget the `.run()`!
+  onStart: (input) {},
+  onSuccess: (message) { print(message); },
+  onFailure: (exception) { print(exception.toString()); },
+  run: true,
+);
 ```
 
 ## Advanced Topics

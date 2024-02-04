@@ -44,12 +44,9 @@ void main() {
           result: 500,
         ),
       ).configure(
-        (event) {
-          event.whenOrNull(
-            onSuccess: (data) => completer.complete(data),
-          );
-        },
-      ).run();
+        onSuccess: (data) => completer.complete(data),
+        run: true,
+      );
 
       expect(completer.future, completion(equals(500)));
     });
@@ -59,12 +56,9 @@ void main() {
       const interactor = ThrowExceptionInteractor();
 
       interactor(111).configure(
-        (event) {
-          event.whenOrNull(
-            onFailure: (exception) => completer.completeError(exception),
-          );
-        },
-      ).run();
+        onFailure: (exception) => completer.completeError(exception),
+        run: true,
+      );
 
       expect(completer.future, throwsA(isException));
     });
@@ -74,10 +68,9 @@ void main() {
       const interactor = ThrowExceptionInteractor();
 
       interactor(111).configure(
-        (event) {
-          event.whenOrNull(onStart: (input) => completer.complete(input));
-        },
-      ).run();
+        onStart: (input) => completer.complete(input),
+        run: true,
+      );
 
       expect(completer.future, completion(equals(111)));
     });

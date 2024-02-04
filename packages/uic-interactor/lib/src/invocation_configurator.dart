@@ -17,12 +17,11 @@ class InvocationConfigurator<Input, Output> {
   Future<Output> get() {
     final completer = Completer<Output>();
 
-    configure((event) {
-      event.whenOrNull(
-        onSuccess: (output) => completer.complete(output),
-        onFailure: (exception) => completer.completeError(exception),
-      );
-    }).run();
+    configure(
+      onSuccess: (output) => completer.complete(output),
+      onFailure: (exception) => completer.completeError(exception),
+      run: true,
+    );
 
     return completer.future;
   }
@@ -37,17 +36,23 @@ class InvocationConfigurator<Input, Output> {
     return get().catchError((_) => fallback);
   }
 
-  ConfiguredInvocation<Input, Output> configure(
-    void Function(InvocationEvent<Input, Output>) onEvent, {
-    bool implicitExecution = false,
+  ConfiguredInvocation<Input, Output> configure({
+    void Function(Input)? onStart,
+    void Function(Output)? onSuccess,
+    void Function(Exception)? onFailure,
+    required bool run,
   }) {
     final invocation = ConfiguredInvocation(
       modifier: _modifier,
       details: _details,
-      onEvent: onEvent,
+      onEvent: (event) => event.whenOrNull(
+        onStart: onStart,
+        onSuccess: onSuccess,
+        onFailure: onFailure,
+      ),
     );
 
-    if (implicitExecution) {
+    if (run) {
       invocation.run();
     }
 

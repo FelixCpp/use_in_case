@@ -30,14 +30,13 @@ Future<void> main() async {
   print(result);
 
   const saveToFile = SaveToFileInteractor();
-  saveToFile("$value ~/ 2 = $result").configure((event) {
-    event.whenOrNull(
-      onSuccess: (_) {
-        print('Content has been saved successfully.');
-      },
-      onFailure: (exception) {
-        print('Could not save content to file. Exception: $exception');
-      },
-    );
-  }).run();
+  saveToFile("$value ~/ 2 = $result").configure(
+    onSuccess: (_) {
+      print('Content has been saved successfully.');
+    },
+    onFailure: (exception) {
+      print('Could not save content to file. Exception: $exception');
+    },
+    run: true,
+  );
 }
