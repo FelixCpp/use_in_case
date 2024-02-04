@@ -38,13 +38,20 @@ class InvocationConfigurator<Input, Output> {
   }
 
   ConfiguredInvocation<Input, Output> configure(
-    void Function(InvocationEvent<Input, Output>) onEvent,
-  ) {
-    return ConfiguredInvocation(
+    void Function(InvocationEvent<Input, Output>) onEvent, {
+    bool implicitExecution = false,
+  }) {
+    final invocation = ConfiguredInvocation(
       modifier: _modifier,
       details: _details,
       onEvent: onEvent,
     );
+
+    if (implicitExecution) {
+      invocation.run();
+    }
+
+    return invocation;
   }
 }
 
