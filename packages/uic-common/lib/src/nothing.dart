@@ -1,4 +1,4 @@
-class Nothing {
+final class Nothing {
   const Nothing._();
 
   @override

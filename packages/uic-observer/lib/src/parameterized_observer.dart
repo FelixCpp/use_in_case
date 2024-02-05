@@ -13,7 +13,7 @@ abstract base class ParameterizedObserver<Input, Output> {
   ParameterizedObserver([StreamController<Input>? controller])
       : _controller = controller ?? StreamController.broadcast();
 
-  StreamSubscription<Output> listen(
+  OwnedStreamSubscription<Output> listen(
     void Function(Output) onData, {
     Function? onError,
     void Function()? onDone,

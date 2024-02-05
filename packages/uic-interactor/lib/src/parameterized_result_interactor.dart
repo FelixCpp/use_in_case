@@ -1,3 +1,4 @@
+import 'package:uic_common/uic_common.dart';
 import 'package:uic_interactor/uic_interactor.dart';
 
 abstract class ParameterizedResultInteractor<Input, Output> {

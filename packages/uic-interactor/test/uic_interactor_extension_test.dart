@@ -1,4 +1,5 @@
 import 'package:test/test.dart';
+import 'package:uic_common/uic_common.dart';
 import 'package:uic_interactor/uic_interactor.dart';
 
 class CountingExtension<Input, Output>

@@ -1,14 +1,11 @@
 name: uic_common
-description: A starting point for Dart libraries or applications.
+description: A module that contains shared functionality for the uic environment.
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/FelixCpp/use_in_case
+publish_to: 'none'
 
 environment:
   sdk: ^3.2.3
-
-# Add regular dependencies here.
-dependencies:
-  # path: ^1.8.0
 
 dev_dependencies:
   lints: ^2.1.0
