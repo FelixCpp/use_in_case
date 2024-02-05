@@ -18,13 +18,15 @@ class InvocationConfigurator<Input, Output> {
     final completer = Completer<Output>();
 
     configure(
+      run: true,
       onSuccess: (output) => completer.complete(output),
       onFailure: (exception) => completer.completeError(exception),
-      run: true,
     );
 
     return completer.future;
   }
+
+  Future<void> ignore() => get().then((_) {});
 
   Future<Output?> getOrNull() {
     return get()
@@ -37,10 +39,10 @@ class InvocationConfigurator<Input, Output> {
   }
 
   ConfiguredInvocation<Input, Output> configure({
+    required bool run,
     void Function(Input)? onStart,
     void Function(Output)? onSuccess,
     void Function(Exception)? onFailure,
-    required bool run,
   }) {
     final invocation = ConfiguredInvocation(
       modifier: _modifier,
