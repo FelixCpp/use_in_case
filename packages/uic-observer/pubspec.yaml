@@ -9,6 +9,7 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
+  meta: ^1.11.0
   rxdart: ^0.27.7
 
   uic_common:

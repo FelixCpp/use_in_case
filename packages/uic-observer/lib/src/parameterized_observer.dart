@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:uic_common/uic_common.dart';
 
-abstract base class ParameterizedObserver<Input, Output> {
+abstract base class ParameterizedObserver<Input, Output>
+    with StreamSubscriptionCancellationHandler {
   final StreamController<Input> _controller;
 
-  Stream<Output> get _stream => _controller.stream
+  Stream<Output> get stream => _controller.stream
       .distinct()
       .flatMap((event) => transform(event))
       .distinct();
@@ -18,34 +21,29 @@ abstract base class ParameterizedObserver<Input, Output> {
     Function? onError,
     void Function()? onDone,
     bool? cancelOnError,
-  }) =>
-      _stream.listen(
-        onData,
-        onError: onError,
-        onDone: onDone,
-        cancelOnError: cancelOnError,
-      );
+  }) {
+    final subscription = stream.listen(
+      onData,
+      onError: onError,
+      onDone: onDone,
+      cancelOnError: cancelOnError,
+    )..canceledBy(this);
+
+    return OwnedStreamSubscription(subscription);
+  }
 
   void emit(Input event) {
     _controller.add(event);
   }
 
-  Future<dynamic> closeStream() {
+  Future<dynamic> closeStream() async {
+    await cancelSubscriptions();
     return _controller.close();
   }
 
+  @protected
+  @visibleForOverriding
   Stream<Output> transform(Input input);
 }
 
-final class MyObserver extends ParameterizedObserver<int, int> {
-  @override
-  Stream<int> transform(int input) {
-    return Stream.value(input);
-  }
-}
-
-void foo() {
-  MyObserver observer = MyObserver();
-  final subscription = observer.listen((p0) {});
-  observer.emit(13);
-}
+typedef Observer<Output> = ParameterizedObserver<Nothing, Output>;
