@@ -49,7 +49,7 @@ class MyInteractor extends Interactor {
 }
 
 void main() {
-  test('bla', () async {
+  test('should invoke predefined modifiers in order', () async {
     const interactor = MyInteractor();
     final _ = await interactor(nothing).get();
   });
