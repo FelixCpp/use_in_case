@@ -9,10 +9,15 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
+  uic_common:
+    git:
+      url: https://github.com/FelixCpp/use_in_case.git
+      path: packages/uic-common
   uic_interactor:
     git:
       url: https://github.com/FelixCpp/use_in_case.git
       path: packages/uic-interactor
+  
 
 dev_dependencies:
   lints: ^3.0.0

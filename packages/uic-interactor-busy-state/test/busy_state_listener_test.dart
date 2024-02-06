@@ -21,12 +21,16 @@ class ThrowInteractor extends Interactor {
 void main() {
   group('run with consuming listener', () {
     late BusyStateListener listener;
+    late List<bool> states;
 
     setUp(() {
       listener = BusyStateConsumingListener();
+      states = List.empty(growable: true);
+      listener.listen(states.add);
     });
 
     tearDown(() async {
+      states.clear();
       await listener.release();
     });
 
@@ -34,16 +38,17 @@ void main() {
       test('should succeed by emitting [true, false]', () async {
         const interactor = NoThrowInteractor();
 
-        expectLater(listener.isLoading, emitsInOrder([true, false]));
         final _ = await interactor(nothing).listenOnBusyState(listener).get();
+        expect(states, orderedEquals([true, false]));
       });
 
       test('should fail by emitting [true, false]', () async {
         const interactor = ThrowInteractor();
 
-        expectLater(listener.isLoading, emitsInOrder([true, false]));
         final result = interactor(nothing).listenOnBusyState(listener).get();
+
         expect(result, throwsA(isException));
+        expect(states, orderedEquals([true, false]));
       });
     });
 
