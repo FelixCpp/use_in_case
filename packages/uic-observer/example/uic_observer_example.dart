@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:uic_observer/uic_observer.dart';
 
 final class CountingObserver extends ParameterizedObserver<int, int> {
@@ -10,8 +12,10 @@ final class CountingObserver extends ParameterizedObserver<int, int> {
 
 void main() async {
   final observer = CountingObserver();
-  observer.listen(print);
+  final sub = observer.listen(print);
   observer.emit(5);
 
-  await observer.closeStream();
+  sub.onDone(() async {
+    observer.closeStream();
+  });
 }

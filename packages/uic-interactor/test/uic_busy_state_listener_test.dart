@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
+import 'package:uic_common/uic_common.dart';
 import 'package:uic_interactor/uic_interactor.dart';
-import 'package:uic_interactor_busy_state/uic_interactor_busy_state.dart';
 
 class NoThrowInteractor extends Interactor {
   const NoThrowInteractor();
@@ -20,17 +20,13 @@ class ThrowInteractor extends Interactor {
 
 void main() {
   group('run with consuming listener', () {
-    late BusyStateListener listener;
-    late List<bool> states;
+    late BusyStateConsumingListener listener;
 
     setUp(() {
       listener = BusyStateConsumingListener();
-      states = List.empty(growable: true);
-      listener.listen(states.add);
     });
 
     tearDown(() async {
-      states.clear();
       await listener.release();
     });
 
@@ -38,17 +34,17 @@ void main() {
       test('should succeed by emitting [true, false]', () async {
         const interactor = NoThrowInteractor();
 
-        final _ = await interactor(nothing).listenOnBusyState(listener).get();
-        expect(states, orderedEquals([true, false]));
+        expectLater(listener.stream, emitsInOrder([true, false]));
+        await interactor(nothing).listenOnBusyState(listener).get();
       });
 
       test('should fail by emitting [true, false]', () async {
         const interactor = ThrowInteractor();
 
-        final result = interactor(nothing).listenOnBusyState(listener).get();
+        expectLater(listener.stream, emitsInOrder([true, false]));
+        final future = interactor(nothing).listenOnBusyState(listener).get();
 
-        expect(result, throwsA(isException));
-        expect(states, orderedEquals([true, false]));
+        expect(future, throwsA(isException));
       });
     });
 
@@ -57,11 +53,11 @@ void main() {
         const interactor = NoThrowInteractor();
 
         expectLater(
-          listener.isLoading,
+          listener.stream,
           emitsInOrder([true, true, true, false, false, false]),
         );
 
-        final _ = await interactor(nothing)
+        await interactor(nothing)
             .listenOnBusyState(listener)
             .listenOnBusyState(listener)
             .listenOnBusyState(listener)
@@ -72,23 +68,25 @@ void main() {
         const interactor = ThrowInteractor();
 
         expectLater(
-          listener.isLoading,
-          emitsInOrder([true, true, true, false, false, false]),
+          listener.stream,
+          emitsInOrder(
+            [true, true, true, false, false, false],
+          ),
         );
 
-        final result = interactor(nothing)
+        final future = interactor(nothing)
             .listenOnBusyState(listener)
             .listenOnBusyState(listener)
             .listenOnBusyState(listener)
             .get();
 
-        expect(result, throwsA(isException));
+        expect(future, throwsA(isException));
       });
     });
   });
 
   group('run with buffering listener', () {
-    late BusyStateListener listener;
+    late BusyStateBufferingListener listener;
 
     setUp(() {
       listener = BusyStateBufferingListener();
@@ -102,16 +100,16 @@ void main() {
       test('should succeed by emitting [true, false]', () async {
         const interactor = NoThrowInteractor();
 
-        expectLater(listener.isLoading, emitsInOrder([true, false]));
-        final _ = await interactor(nothing).listenOnBusyState(listener).get();
+        expectLater(listener.stream, emitsInOrder([true, false]));
+        await interactor(nothing).listenOnBusyState(listener).get();
       });
 
       test('should fail by emitting [true, false]', () async {
         const interactor = ThrowInteractor();
 
-        expectLater(listener.isLoading, emitsInOrder([true, false]));
-        final result = interactor(nothing).listenOnBusyState(listener).get();
-        expect(result, throwsA(isException));
+        expectLater(listener.stream, emitsInOrder([true, false]));
+        final future = interactor(nothing).listenOnBusyState(listener).get();
+        expect(future, throwsA(isException));
       });
     });
 
@@ -120,11 +118,11 @@ void main() {
         const interactor = NoThrowInteractor();
 
         expectLater(
-          listener.isLoading,
+          listener.stream,
           emitsInOrder([true, true, true, true, true, false]),
         );
 
-        final _ = await interactor(nothing)
+        await interactor(nothing)
             .listenOnBusyState(listener)
             .listenOnBusyState(listener)
             .listenOnBusyState(listener)
@@ -135,17 +133,17 @@ void main() {
         const interactor = ThrowInteractor();
 
         expectLater(
-          listener.isLoading,
+          listener.stream,
           emitsInOrder([true, true, true, true, true, false]),
         );
 
-        final result = interactor(nothing)
+        final future = interactor(nothing)
             .listenOnBusyState(listener)
             .listenOnBusyState(listener)
             .listenOnBusyState(listener)
             .get();
 
-        expect(result, throwsA(isException));
+        expect(future, throwsA(isException));
       });
     });
   });

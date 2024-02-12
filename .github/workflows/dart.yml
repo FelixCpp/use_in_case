@@ -18,8 +18,6 @@ jobs:
       matrix: { dir: [
         'packages/uic-common',
         'packages/uic-interactor',
-        'packages/uic-interactor-busy-state',
-        'packages/uic-interactor-timeout',
         'packages/uic-observer',
         ]
       }

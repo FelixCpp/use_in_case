@@ -1,8 +1,6 @@
 import 'package:test/test.dart';
-import 'package:uic_interactor/src/invocation_configurator.dart';
-import 'package:uic_interactor/src/parameterized_result_interactor.dart';
-import 'package:uic_interactor/src/util/nothing.dart';
-import 'package:uic_interactor_busy_state/src/busy_state_receiver_extension.dart';
+import 'package:uic_common/uic_common.dart';
+import 'package:uic_interactor/uic_interactor.dart';
 
 final class NoThrowInteractor extends ResultInteractor<int> {
   const NoThrowInteractor();

@@ -1,13 +1,17 @@
 import 'dart:async';
 
+import 'package:meta/meta.dart';
 import 'package:uic_common/uic_common.dart';
-import 'package:uic_interactor_busy_state/src/listener/busy_state_listener.dart';
+import 'package:uic_interactor/src/modifiers/busy_state/listener/busy_state_listener.dart';
 
 class BusyStateBufferingListener
     with StreamSubscriptionCancellationHandler
     implements BusyStateListener {
   final StreamController<int> _controller;
   int _counter = 0;
+
+  @visibleForTesting
+  Stream<bool> get stream => _controller.stream.map((event) => event > 0);
 
   BusyStateBufferingListener({
     StreamController<int>? controller,
@@ -20,12 +24,12 @@ class BusyStateBufferingListener
     void Function()? onDone,
     bool? cancelOnError,
   }) {
-    final subscription = _controller.stream.map((event) => event > 0).listen(
-          onData,
-          onError: onError,
-          onDone: onDone,
-          cancelOnError: cancelOnError,
-        )..canceledBy(this);
+    final subscription = stream.listen(
+      onData,
+      onError: onError,
+      onDone: onDone,
+      cancelOnError: cancelOnError,
+    )..canceledBy(this);
 
     return OwnedStreamSubscription(subscription);
   }
@@ -41,7 +45,8 @@ class BusyStateBufferingListener
   }
 
   @override
-  Future<void> release() {
+  Future<void> release() async {
+    await cancelSubscriptions();
     return _controller.close();
   }
 }

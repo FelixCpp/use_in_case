@@ -1,5 +1,7 @@
+import 'package:uic_interactor/src/modifiers/busy_state/busy_state_modifier_builder.dart';
+import 'package:uic_interactor/src/modifiers/busy_state/listener/busy_state_buffering_listener.dart';
+import 'package:uic_interactor/src/modifiers/busy_state/listener/busy_state_consuming_listener.dart';
 import 'package:uic_interactor/uic_interactor.dart';
-import 'package:uic_interactor_busy_state/uic_interactor_busy_state.dart';
 
 class WaitingInteractor extends ParameterizedResultInteractor<Duration, int> {
   const WaitingInteractor();
@@ -33,7 +35,7 @@ Future<void> exampleWithConsumingListener() async {
   final listener = BusyStateConsumingListener();
   final stopwatch = Stopwatch();
 
-  final subscription = listener.isLoading.listen((isBusy) {
+  listener.listen((isBusy) {
     if (isBusy) {
       stopwatch.start();
     } else {
@@ -48,7 +50,6 @@ Future<void> exampleWithConsumingListener() async {
   final elapsedTime = stopwatch.elapsed;
   print('Task took $elapsedTime and returned $result');
 
-  await subscription.cancel();
   await listener.release();
 }
 
@@ -57,7 +58,7 @@ Future<void> exampleWithBufferingListener() async {
   final listener = BusyStateBufferingListener();
   final stopwatch = Stopwatch();
 
-  final subscription = listener.isLoading.listen((isBusy) {
+  listener.listen((isBusy) {
     if (isBusy) {
       stopwatch.start();
     } else {
@@ -77,7 +78,6 @@ Future<void> exampleWithBufferingListener() async {
   final elapsedTime = stopwatch.elapsed;
   print('Task took $elapsedTime and returned $results');
 
-  await subscription.cancel();
   await listener.release();
 }
 

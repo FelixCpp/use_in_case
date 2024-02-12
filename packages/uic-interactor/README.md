@@ -255,6 +255,141 @@ print(message);
 If you're interested and want to take a closer look on how to implement extensions you can find examples inside the [uic-interactor-timeout](../uic-interactor-timeout) or [uic-interactor-busy-state](../uic-interactor-busy-state) module.
 Besides these submodules you can always take a look into the [examples](./example/) folder. Specifically [this file](example/uic_interactor_modifier_example.dart) revisits the previous steps on how to register a custom extension.
 
+## Use-In-Case: Timeout Extension
+
+Here's a quick and easy to understand example.</br>
+For this example i've implemented an interactor that literally does nothing except waiting three seconds before returning.
+
+```Dart
+class Wait3SecondsInteractor implements Interactor {
+    @override
+    Future<void> execute(Nothing _) {
+        return Future.delayed(const Duration(seconds: 3));
+    }
+}
+```
+
+Using this interactor in addition to the new `timeout` modifier may look like this:
+
+```Dart
+final interactor = Wait3SecondsInteractor();
+interactor(nothing)
+    .timeout(const Duration(seconds: 1))
+    .configure((event) {
+        event.whenOrNull(
+            onSuccess: (_) { print('Succeeded'); }
+            onFailure: (exception) { print('Failed: $exception'); }
+        );
+    })
+    .run();
+```
+
+This example will fail due to the time limit provided inside the `timeout` modifier. Therefor the `onFailure` is called which prints the timeout exception.
+
+## Use-In-Case: Busy-State Extension
+
+This extension provides two modifiers. Both of them notify the current state (working/not working) to you.
+
+| Modifier                  | Parameter | Parameter type        |
+| :------------------------ | :-------- | :-------------------- |
+| receiveBusyStateChange    | callback  | void Function(bool)   |
+| listenOnBusyState         | listener  | BusyStateListener     |
+
+### Using the `receiveBusyStateChange` method
+
+This method takes a callback as parameter that is directly hooked into the invocation flow of your interactor. Every time the interactor is invoked it produces *true*. When the interactor has finished its task, it produces *false*. This method should be your choice if your loading indicator depends on a single interactor.
+
+For this example i've written a simple interactor that waits three seconds before returning.
+
+```Dart
+class Wait3SecondsInteractor implements Interactor {
+    @override
+    Future<void> execute(Nothing _) {
+        return Future.delayed(const Duration(seconds: 3));
+    }
+}
+```
+
+We can now add our modifier to the call:
+
+```Dart
+final interactor = Wait3SecondsInteractor();
+await interactor(nothing).receiveBusyStateChange((isBusy) {
+    final message = 'Interactor ${isBusy ? 'started' : 'finished'}';
+    print(message);
+}).get();
+```
+
+### Using the `listenOnBusyState` method
+
+This method takes in an implementation of `BusyStateListener`. There are already two implementations provided by the library.
+
+| Type                          | Usage                                     |
+| :---------------------------- | :---------------------------------------- |
+| BusyStateConsumingListener    | When tracking **one** interactor          |
+| BusyStateBufferingListener    | When tracking **multiple** interactors    |
+
+---
+
+### Rule of thumb
+
+Use the `BusyStateBufferingListener` in case you need to track if any interactor is working. Otherwise use the `BusyStateConsumingListener` implementation.
+
+---
+
+### Example using `BusyStateConsumingListener`
+
+```Dart
+final interactor = ...
+final listener = BusyStateConsumingListener();
+
+// Listen on changes
+listener.listen((isBusy) {
+    // State changed.
+});
+
+await interactor(...).listenOnBusyState(listener).get();
+
+// Cleanup
+await listener.release();
+
+```
+
+### Example using `BusyStateBufferingListener`
+
+```Dart
+final interactors = { ... };
+final listener = BusyStateBufferingListener();
+
+// Listen on changes
+listener.listen((isBusy) {
+    // State changed.
+});
+
+for (final interactor in interactors) {
+    interactor(...)
+        .listenOnBusyState(listener)
+        .configure(...)
+        .run();
+}
+
+...
+
+// Cleanup
+await listener.release();
+
+```
+
+More examples can be found [here](./example/uic_interactor_busy_state_example.dart).
+
+## Additional information
+
+When using the listener it's required to cleanup the resources such as subscription and stream by yourself. This will most likely change in future.
+
+If you've registered your own callback using the configure ([read this](../uic-interactor/README.md)) method, the isBusy-callback will always be invoked surrounding your callback (before onStart, after onSuccess/onFailure). This means that it will publish false when your callback has finished it's task too.
+
+Due to the implementation of this library it doesn't matter how many timeout modifiers you add to the call. The modifier with the least amount of duration "wins".
+
 ## Contribution
 
 I'm sure there are many things that could be added using extensions and modification of invocation flows. If you find yourself implementing a feature that needs to should be part of the base library i'd love to review your **merge request** or discuss the feature inside **issue** tab.

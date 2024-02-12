@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:test/test.dart';
-import 'package:uic_interactor/src/invocation_configurator.dart';
-import 'package:uic_interactor/src/parameterized_result_interactor.dart';
-import 'package:uic_interactor/src/util/nothing.dart';
-import 'package:uic_interactor_timeout/src/timeout_extension.dart';
+import 'package:uic_common/uic_common.dart';
+import 'package:uic_interactor/uic_interactor.dart';
 
 class _DelayedReturnInteractor extends ResultInteractor<int> {
   const _DelayedReturnInteractor();

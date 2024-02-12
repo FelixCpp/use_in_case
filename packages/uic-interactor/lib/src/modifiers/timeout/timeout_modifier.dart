@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:uic_interactor/uic_interactor.dart';
 
-class TimeoutInvocationModifier<Input, Output>
+class TimeoutModifier<Input, Output>
     extends ForwardingInvocationModifier<Input, Output> {
   final Duration timeoutDuration;
   final String? message;
 
-  const TimeoutInvocationModifier({
+  const TimeoutModifier({
     required super.modifier,
     required this.timeoutDuration,
     required this.message,
