@@ -275,13 +275,11 @@ Using this interactor in addition to the new `timeout` modifier may look like th
 final interactor = Wait3SecondsInteractor();
 interactor(nothing)
     .timeout(const Duration(seconds: 1))
-    .configure((event) {
-        event.whenOrNull(
-            onSuccess: (_) { print('Succeeded'); }
-            onFailure: (exception) { print('Failed: $exception'); }
-        );
-    })
-    .run();
+    .configure(
+        run: true,
+        onSuccess: (_) { print('Succeeded'); }
+        onFailure: (exception) { print('Failed: $exception'); }
+    );
 ```
 
 This example will fail due to the time limit provided inside the `timeout` modifier. Therefor the `onFailure` is called which prints the timeout exception.

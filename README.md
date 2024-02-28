@@ -8,11 +8,11 @@ This library consists out of three submodules where [uic-interactor](packages/ui
 
 ## Submodules and Extensions
 
-| Module                                                            | Functionality                                               |
-| :---------------------------------------------------------------- | :---------------------------------------------------------- |
-| [uic-interactor](packages/uic-interactor/)                        | Base module implementing the base functionality to extend.  |
-| [uic-interactor-timeout](packages/uic-interactor-timeout/)        | Limiting the duration a task is allowed to run.             |
-| [uic-interactor-busy-state](packages/uic-interactor-busy-state/)  | Get notified when the interactor has started or finished.   |
+| Module                                        | Functionality                                                               |
+| :-------------------------------------------- | :-------------------------------------------------------------------------- |
+| [uic-interactor](packages/uic-common/)        | Base module providing shared classes & functionality for both submodules.   |
+| [uic-interactor](packages/uic-interactor/)    | Base module for interactors implementing the base functionality to extend.  |
+| [uic-observer](packages/uic-observer/)        | Module providing a base class for observers.                                |
 
 ---
 
@@ -146,9 +146,8 @@ final result = await calculator(nothing)
 print('Result: $result');
 ```
 
-| Library / Modifier                                          | Customized  |
-| :---------------------------------------------------------- | :---------- |
-| [Base Module](./packages/uic-interactor/)                   | No          |
-| [Timeout Module](./packages/uic-interactor-timeout/)        | No          |
-| [Busy-State Module](./packages/uic-interactor-busy-state/)  | No          |
-| [Profiler Logger](#logging-profiler-extension)              | Yes         |
+| Library / Modifier                              | Customized  |
+| :---------------------------------------------- | :---------- |
+| [Interactor Module](./packages/uic-interactor/) | No          |
+| [Observer Module](./packages/uic-observer/)     | No          |
+| [Profiler Logger](#logging-profiler-extension)  | Yes         |
