@@ -1,7 +1,14 @@
-import 'package:uic_interactor/src/event.dart';
-import 'package:uic_interactor/src/invocator.dart';
-import 'package:uic_interactor/src/modifier.dart';
+import 'package:use_in_case/src/event.dart';
+import 'package:use_in_case/src/interactor/modifiers/chained_modifier.dart';
+import 'package:use_in_case/src/invocator.dart';
 
+///
+/// Implementation of a invocation modifier.
+/// This modifier allows to get notified when the
+/// interactor changes it's busy-state. As soon as
+/// the invocation starts, it will publish *true*. When
+/// the invocation is done *false* will be published.
+///
 final class BusyStateModifier<Parameter, Result>
     extends ChainedModifier<Parameter, Result> {
   final void Function(bool) _onStateChange;
@@ -20,6 +27,9 @@ final class BusyStateModifier<Parameter, Result>
   }
 }
 
+///
+/// Handy extension to add the busy-state modifier to an invocation.
+///
 extension InvocationWithBusyStateReceiver<Parameter, Result>
     on Invocator<Parameter, Result> {
   Invocator<Parameter, Result> receiveBusyState(void Function(bool) onChange) {

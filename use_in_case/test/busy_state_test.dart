@@ -1,6 +1,6 @@
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
-import 'package:uic_interactor/uic_interactor.dart';
+import 'package:use_in_case/use_in_case.dart';
 
 final class _DefaultInteractor extends PInteractor<bool> {
   @override

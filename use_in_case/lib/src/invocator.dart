@@ -1,9 +1,16 @@
 import 'dart:async';
 
-import 'package:uic_interactor/src/event.dart';
-import 'package:uic_interactor/src/modifier.dart';
-import 'package:uic_interactor/src/on_event_collector.dart';
+import 'package:use_in_case/src/event.dart';
+import 'package:use_in_case/src/interactor/modifiers/modifier.dart';
+import 'package:use_in_case/src/interactor/modifiers/on_event_collector_modifier.dart';
 
+///
+/// This class provides the ability to invoke a configured
+/// invocation.
+/// Methods like [get], [getOrNull], [getOrElse] will return the value
+/// in form of a future. [run] can be used in order to simply run the
+/// invocation.
+///
 final class Invocator<Parameter, Result> {
   final Modifier<Parameter, Result> _modifier;
   final EventDetails _details;
@@ -14,18 +21,29 @@ final class Invocator<Parameter, Result> {
   })  : _modifier = modifier,
         _details = details;
 
+  ///
+  /// Get the value or throw an exception in case the invocation
+  /// fails.
+  ///
   Future<Result> get() {
     final completer = Completer<Result>();
     onResult(completer.complete).onException(completer.completeError).run();
     return completer.future;
   }
 
+  ///
+  /// Get the value or null in case the invocation fails.
+  ///
   Future<Result?> getOrNull() {
     return get()
         .then((value) => Future<Result?>.value(value))
         .onError((_, __) => null);
   }
 
+  ///
+  /// Get the value or a lazy-evaluated fallback in case the invocation
+  /// fails.
+  ///
   Future<Result> getOrElse(Result Function() fallback) {
     return get().onError((_, __) => fallback());
   }
@@ -54,6 +72,9 @@ final class Invocator<Parameter, Result> {
   }
 }
 
+///
+/// Extend the invocation with a new modifier
+///
 extension InvocatorWithModification<Parameter, Result>
     on Invocator<Parameter, Result> {
   Invocator<Parameter, Result> modifier(

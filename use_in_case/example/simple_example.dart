@@ -1,4 +1,4 @@
-import 'package:uic_interactor/uic_interactor.dart';
+import 'package:use_in_case/use_in_case.dart';
 
 final class Calculator extends PRInteractor<CalculatorParams, double> {
   const Calculator();

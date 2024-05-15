@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:uic_interactor/uic_interactor.dart';
+import 'package:use_in_case/use_in_case.dart';
 
 final class CustomModifier<Parameter, Result>
     extends ChainedModifier<Parameter, Result> {

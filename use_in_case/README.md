@@ -21,7 +21,7 @@ dependencies:
 You can read about the usage in many examples inside the [examples](example/) folder. Here's a quick example on how to get started:
 
 ```dart
-import 'package:uic_interactor/uic-interactor.dart';
+import 'package:use_in_case/use_in_case.dart';
 
 final class Square extends PRInteractor<double, double> {
   const Square();

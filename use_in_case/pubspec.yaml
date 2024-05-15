@@ -1,4 +1,4 @@
-name: uic_interactor
+name: use_in_case
 description: An extendable library that provides functionality for use cases
 version: 0.1.0
 repository: https://github.com/FelixCpp/use_in_case

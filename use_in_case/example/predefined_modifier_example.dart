@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:uic_interactor/uic_interactor.dart';
+import 'package:use_in_case/use_in_case.dart';
 
 final class SomeInteractor extends RInteractor<String> {
   const SomeInteractor();

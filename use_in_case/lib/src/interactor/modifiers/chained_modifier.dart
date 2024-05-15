@@ -1,22 +1,5 @@
-import 'package:uic_interactor/src/event.dart';
-
-///
-/// A modifier that can be applied in order to insert
-/// custom behavior into the invocation flow of an
-/// interactor.
-///
-abstract interface class Modifier<Parameter, Result> {
-  Stream<Event<Parameter, Result>> buildStream();
-  EventHandler<Parameter, Result> buildEventHandler();
-}
-
-///
-/// Handy type definition for a modifier builder.
-///
-typedef ModifierBuilder<Parameter, Result> = Modifier<Parameter, Result>
-    Function(
-  Modifier<Parameter, Result>,
-);
+import 'package:use_in_case/src/event.dart';
+import 'package:use_in_case/src/interactor/modifiers/modifier.dart';
 
 ///
 /// Forwarding implementation of a [Modifier] that can be extended
@@ -27,11 +10,17 @@ class ChainedModifier<Parameter, Result>
   final Modifier<Parameter, Result> _modifier;
   const ChainedModifier(this._modifier);
 
+  ///
+  /// Simply forward the stream
+  ///
   @override
   Stream<Event<Parameter, Result>> buildStream() {
     return _modifier.buildStream();
   }
 
+  ///
+  /// Simply forward the event handler
+  ///
   @override
   EventHandler<Parameter, Result> buildEventHandler() {
     return _modifier.buildEventHandler();
