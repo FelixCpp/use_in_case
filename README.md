@@ -24,22 +24,7 @@ Add the dependency to your project.
 ```yaml
 dependencies:
     git:
-        url: https://git.github
+        url: https://github.com/FelixCpp/use_in_case.git
         path: packages/uic-interactor
         ref: main
 ```
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
-```dart
-const like = 'sample';
-```
-
-## Additional information
-
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
