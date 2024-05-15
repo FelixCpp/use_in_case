@@ -1,5 +1,4 @@
-import 'package:use_in_case/src/interactor.dart';
-import 'package:use_in_case/src/timeout_modifier.dart';
+import 'package:uic_interactor/uic-interactor.dart';
 
 final class Calculator extends PRInteractor<CalculatorParams, double> {
   const Calculator();
@@ -41,7 +40,9 @@ void main() async {
   const b = 124.512;
 
   for (final operator in Operator.values) {
-    final result = await calculator((a: a, b: b, operator: operator)).timeout(const Duration(seconds: 5)).get();
+    final result = await calculator((a: a, b: b, operator: operator))
+        .timeout(const Duration(seconds: 5))
+        .get();
     print('$a $operator $b = $result');
   }
 }

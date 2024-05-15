@@ -1,7 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:use_in_case/src/interactor.dart';
-import 'package:use_in_case/src/invocator.dart';
-import 'package:use_in_case/src/timeout_modifier.dart';
+import 'package:uic_interactor/uic-interactor.dart';
 
 final class SomeInteractor extends RInteractor<String> {
   const SomeInteractor();
@@ -12,7 +10,8 @@ final class SomeInteractor extends RInteractor<String> {
   }
 
   @override
-  Invocator<Unit, String> Function(Invocator<Unit, String>) get configure => (invocation) {
+  Invocator<Unit, String> Function(Invocator<Unit, String>) get configure =>
+      (invocation) {
         return invocation.timeout(const Duration(seconds: 1));
       };
 }

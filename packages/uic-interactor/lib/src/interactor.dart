@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:use_in_case/src/event.dart';
-import 'package:use_in_case/src/invocator.dart';
-import 'package:use_in_case/src/modifier.dart';
+import 'package:uic_interactor/src/event.dart';
+import 'package:uic_interactor/src/invocator.dart';
+import 'package:uic_interactor/src/modifier.dart';
 
 ///
 /// Generic type interface for interactors.
@@ -26,14 +26,17 @@ abstract class ParameterizedResultInteractor<Parameter, Result> {
   /// Configures the default invocation behavior of this interactor.
   /// By default this method simply forwards the default behavior.
   ///
-  Invocator<Parameter, Result> Function(Invocator<Parameter, Result>) get configure => (invocation) => invocation;
+  Invocator<Parameter, Result> Function(Invocator<Parameter, Result>)
+      get configure => (invocation) => invocation;
 }
 
 ///
 /// Handy type definition(s)
 ///
-typedef PRInteractor<Parameter, Result> = ParameterizedResultInteractor<Parameter, Result>;
-typedef ParameterizedInteractor<Parameter> = ParameterizedResultInteractor<Parameter, void>;
+typedef PRInteractor<Parameter, Result>
+    = ParameterizedResultInteractor<Parameter, Result>;
+typedef ParameterizedInteractor<Parameter>
+    = ParameterizedResultInteractor<Parameter, void>;
 typedef PInteractor<Parameter> = ParameterizedResultInteractor<Parameter, void>;
 typedef ResultInteractor<Result> = ParameterizedResultInteractor<Unit, Result>;
 typedef RInteractor<Result> = ParameterizedResultInteractor<Unit, Result>;
@@ -45,11 +48,13 @@ typedef Interactor<Result> = ParameterizedResultInteractor<Unit, void>;
 /// This method is written as a type extension so derived classes from [ParameterizedResultInteractor]
 /// do not need to provide an implementation for this method.
 ///
-extension Invoke<Parameter, Result> on ParameterizedResultInteractor<Parameter, Result> {
+extension Invoke<Parameter, Result>
+    on ParameterizedResultInteractor<Parameter, Result> {
   Invocator<Parameter, Result> call(Parameter parameter) {
     return configure(
       Invocator(
-        modifier: _InitialInvocationModifier(parameter: parameter, interactor: this),
+        modifier:
+            _InitialInvocationModifier(parameter: parameter, interactor: this),
         details: (calleName: runtimeType.toString(),),
       ),
     );
@@ -59,7 +64,8 @@ extension Invoke<Parameter, Result> on ParameterizedResultInteractor<Parameter, 
 ///
 /// Fileprivate implementation of the initial invocation modifier.
 ///
-class _InitialInvocationModifier<Parameter, Result> implements Modifier<Parameter, Result> {
+class _InitialInvocationModifier<Parameter, Result>
+    implements Modifier<Parameter, Result> {
   final Parameter parameter;
   final PRInteractor<Parameter, Result> interactor;
 

@@ -1,8 +1,9 @@
-import 'package:use_in_case/src/event.dart';
-import 'package:use_in_case/src/invocator.dart';
-import 'package:use_in_case/src/modifier.dart';
+import 'package:uic_interactor/src/event.dart';
+import 'package:uic_interactor/src/invocator.dart';
+import 'package:uic_interactor/src/modifier.dart';
 
-final class BusyStateModifier<Parameter, Result> extends ChainedModifier<Parameter, Result> {
+final class BusyStateModifier<Parameter, Result>
+    extends ChainedModifier<Parameter, Result> {
   final void Function(bool) _onStateChange;
 
   const BusyStateModifier(super._modifier, this._onStateChange);
@@ -19,7 +20,8 @@ final class BusyStateModifier<Parameter, Result> extends ChainedModifier<Paramet
   }
 }
 
-extension InvocationWithBusyStateReceiver<Parameter, Result> on Invocator<Parameter, Result> {
+extension InvocationWithBusyStateReceiver<Parameter, Result>
+    on Invocator<Parameter, Result> {
   Invocator<Parameter, Result> receiveBusyState(void Function(bool) onChange) {
     return modifier((modifier) => BusyStateModifier(modifier, onChange));
   }

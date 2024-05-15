@@ -1,4 +1,4 @@
-name: use_in_case
+name: uic_interactor
 description: An extendable library that provides functionality for use cases
 version: 0.1.0
 repository: https://git.dataport.de/libraries-dart/use_in_case

@@ -1,4 +1,4 @@
-import 'package:use_in_case/src/event.dart';
+import 'package:uic_interactor/src/event.dart';
 
 ///
 /// A modifier that can be applied in order to insert
@@ -13,7 +13,8 @@ abstract interface class Modifier<Parameter, Result> {
 ///
 /// Handy type definition for a modifier builder.
 ///
-typedef ModifierBuilder<Parameter, Result> = Modifier<Parameter, Result> Function(
+typedef ModifierBuilder<Parameter, Result> = Modifier<Parameter, Result>
+    Function(
   Modifier<Parameter, Result>,
 );
 
@@ -21,7 +22,8 @@ typedef ModifierBuilder<Parameter, Result> = Modifier<Parameter, Result> Functio
 /// Forwarding implementation of a [Modifier] that can be extended
 /// to implement the 'default' behavior of a forwarding modifier.
 ///
-class ChainedModifier<Parameter, Result> implements Modifier<Parameter, Result> {
+class ChainedModifier<Parameter, Result>
+    implements Modifier<Parameter, Result> {
   final Modifier<Parameter, Result> _modifier;
   const ChainedModifier(this._modifier);
 

@@ -1,8 +1,9 @@
-import 'package:use_in_case/src/event.dart';
-import 'package:use_in_case/src/invocator.dart';
-import 'package:use_in_case/src/modifier.dart';
+import 'package:uic_interactor/src/event.dart';
+import 'package:uic_interactor/src/invocator.dart';
+import 'package:uic_interactor/src/modifier.dart';
 
-final class OnEventCollectorModifier<Parameter, Result> extends ChainedModifier<Parameter, Result> {
+final class OnEventCollectorModifier<Parameter, Result>
+    extends ChainedModifier<Parameter, Result> {
   final void Function(Event<Parameter, Result> event) onEvent;
   const OnEventCollectorModifier(super._modifier, this.onEvent);
 
@@ -12,10 +13,13 @@ final class OnEventCollectorModifier<Parameter, Result> extends ChainedModifier<
   }
 }
 
-extension InvocationWithEventCollector<Parameter, Result> on Invocator<Parameter, Result> {
-  Invocator<Parameter, Result> onEvent(void Function(Event<Parameter, Result>) callback) {
+extension InvocationWithEventCollector<Parameter, Result>
+    on Invocator<Parameter, Result> {
+  Invocator<Parameter, Result> onEvent(
+      void Function(Event<Parameter, Result>) callback) {
     return modifier((modifier) {
-      return OnEventCollectorModifier<Parameter, Result>(modifier, (event) => callback(event));
+      return OnEventCollectorModifier<Parameter, Result>(
+          modifier, (event) => callback(event));
     });
   }
 

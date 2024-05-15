@@ -1,7 +1,6 @@
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
-import 'package:use_in_case/src/busy_state_modifier.dart';
-import 'package:use_in_case/src/interactor.dart';
+import 'package:uic_interactor/uic-interactor.dart';
 
 final class _DefaultInteractor extends PInteractor<bool> {
   @override
@@ -40,15 +39,23 @@ void main() {
       interactor = _DefaultInteractor();
     });
 
-    test('should emit [true, true, false, false] into list when succeeding', () async {
+    test('should emit [true, true, false, false] into list when succeeding',
+        () async {
       final states = <bool>[];
-      await interactor(false).receiveBusyState(states.add).receiveBusyState(states.add).run();
+      await interactor(false)
+          .receiveBusyState(states.add)
+          .receiveBusyState(states.add)
+          .run();
       expect(states, orderedEquals([true, true, false, false]));
     });
 
-    test('should emit [true, true, false, false] into list when failing', () async {
+    test('should emit [true, true, false, false] into list when failing',
+        () async {
       final states = <bool>[];
-      await interactor(true).receiveBusyState(states.add).receiveBusyState(states.add).run();
+      await interactor(true)
+          .receiveBusyState(states.add)
+          .receiveBusyState(states.add)
+          .run();
       expect(states, orderedEquals([true, true, false, false]));
     });
   });

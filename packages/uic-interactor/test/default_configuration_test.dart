@@ -2,10 +2,7 @@ import 'dart:async';
 
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
-import 'package:use_in_case/src/busy_state_modifier.dart';
-import 'package:use_in_case/src/interactor.dart';
-import 'package:use_in_case/src/invocator.dart';
-import 'package:use_in_case/src/timeout_modifier.dart';
+import 'package:uic_interactor/uic-interactor.dart';
 
 final class _InteractorWithTimeout extends PRInteractor<Duration, double> {
   @override
@@ -14,9 +11,10 @@ final class _InteractorWithTimeout extends PRInteractor<Duration, double> {
   }
 
   @override
-  Invocator<Duration, double> Function(Invocator<Duration, double>) get configure => (invocation) {
-        return invocation.timeout(Duration(milliseconds: 250));
-      };
+  Invocator<Duration, double> Function(Invocator<Duration, double>)
+      get configure => (invocation) {
+            return invocation.timeout(Duration(milliseconds: 250));
+          };
 }
 
 final class _InteractorWithComplexConfig extends PRInteractor<Duration, int> {
@@ -30,8 +28,11 @@ final class _InteractorWithComplexConfig extends PRInteractor<Duration, int> {
   }
 
   @override
-  Invocator<Duration, int> Function(Invocator<Duration, int>) get configure => (invocation) {
-        return invocation.timeout(Duration(milliseconds: 150)).receiveBusyState(onBusyStateChange);
+  Invocator<Duration, int> Function(Invocator<Duration, int>) get configure =>
+      (invocation) {
+        return invocation
+            .timeout(Duration(milliseconds: 150))
+            .receiveBusyState(onBusyStateChange);
       };
 }
 
@@ -71,8 +72,10 @@ void main() {
       expect(states, orderedEquals([true, false]));
     });
 
-    test('should emit [true, false] into list of busy states even when failing', () async {
-      final future = interactor(Duration(milliseconds: 300)).get().whenComplete(() {
+    test('should emit [true, false] into list of busy states even when failing',
+        () async {
+      final future =
+          interactor(Duration(milliseconds: 300)).get().whenComplete(() {
         expect(states, orderedEquals([true, false]));
       });
 

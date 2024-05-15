@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:use_in_case/src/event.dart';
-import 'package:use_in_case/src/modifier.dart';
-import 'package:use_in_case/src/on_event_collector.dart';
+import 'package:uic_interactor/src/event.dart';
+import 'package:uic_interactor/src/modifier.dart';
+import 'package:uic_interactor/src/on_event_collector.dart';
 
 final class Invocator<Parameter, Result> {
   final Modifier<Parameter, Result> _modifier;
@@ -21,7 +21,9 @@ final class Invocator<Parameter, Result> {
   }
 
   Future<Result?> getOrNull() {
-    return get().then((value) => Future<Result?>.value(value)).onError((_, __) => null);
+    return get()
+        .then((value) => Future<Result?>.value(value))
+        .onError((_, __) => null);
   }
 
   Future<Result> getOrElse(Result Function() fallback) {
@@ -52,8 +54,10 @@ final class Invocator<Parameter, Result> {
   }
 }
 
-extension InvocatorWithModification<Parameter, Result> on Invocator<Parameter, Result> {
-  Invocator<Parameter, Result> modifier(ModifierBuilder<Parameter, Result> builder) {
+extension InvocatorWithModification<Parameter, Result>
+    on Invocator<Parameter, Result> {
+  Invocator<Parameter, Result> modifier(
+      ModifierBuilder<Parameter, Result> builder) {
     return Invocator(modifier: builder(_modifier), details: _details);
   }
 }

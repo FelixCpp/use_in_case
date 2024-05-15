@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
-import 'package:use_in_case/src/interactor.dart';
-import 'package:use_in_case/src/timeout_modifier.dart';
+import 'package:uic_interactor/uic-interactor.dart';
 
 final class _WaitingInteractor extends PRInteractor<Duration, int> {
   @override
@@ -21,7 +20,9 @@ void main() {
     });
 
     test('should succeed after 0.25 seconds with an result of 42', () {
-      final result = interactor(Duration(milliseconds: 250)).timeout(Duration(milliseconds: 500)).get();
+      final result = interactor(Duration(milliseconds: 250))
+          .timeout(Duration(milliseconds: 500))
+          .get();
       expect(result, completion(42));
     });
 
@@ -30,11 +31,15 @@ void main() {
       const timeoutMessage = 'Timeout Message';
 
       expect(
-        interactor(Duration(milliseconds: 300)).timeout(timeoutDuration, timeoutMessage).get(),
+        interactor(Duration(milliseconds: 300))
+            .timeout(timeoutDuration, timeoutMessage)
+            .get(),
         throwsA(
           isA<TimeoutException>()
-              .having((exception) => exception.duration, 'duration', equals(timeoutDuration))
-              .having((exception) => exception.message, 'message', equals(timeoutMessage)),
+              .having((exception) => exception.duration, 'duration',
+                  equals(timeoutDuration))
+              .having((exception) => exception.message, 'message',
+                  equals(timeoutMessage)),
         ),
       );
     });
@@ -44,7 +49,9 @@ void main() {
       const timeoutMessage = 'Timeout Message';
 
       expect(
-        interactor(Duration(milliseconds: 300)).timeout(timeoutDuration, timeoutMessage).getOrNull(),
+        interactor(Duration(milliseconds: 300))
+            .timeout(timeoutDuration, timeoutMessage)
+            .getOrNull(),
         completion(isNull),
       );
     });
@@ -54,7 +61,9 @@ void main() {
       const timeoutMessage = 'Timeout Message';
 
       expect(
-        interactor(Duration(milliseconds: 300)).timeout(timeoutDuration, timeoutMessage).getOrElse(() => -1),
+        interactor(Duration(milliseconds: 300))
+            .timeout(timeoutDuration, timeoutMessage)
+            .getOrElse(() => -1),
         completion(equals(-1)),
       );
     });
@@ -77,8 +86,10 @@ void main() {
             .get(),
         throwsA(
           isA<TimeoutException>()
-              .having((exception) => exception.duration, 'duration', equals(Duration(milliseconds: 220)))
-              .having((exception) => exception.message, 'message', equals('Timeout Message 2')),
+              .having((exception) => exception.duration, 'duration',
+                  equals(Duration(milliseconds: 220)))
+              .having((exception) => exception.message, 'message',
+                  equals('Timeout Message 2')),
         ),
       );
     });

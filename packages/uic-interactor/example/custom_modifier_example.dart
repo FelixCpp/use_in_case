@@ -1,11 +1,9 @@
 import 'dart:math';
 
-import 'package:use_in_case/src/event.dart';
-import 'package:use_in_case/src/interactor.dart';
-import 'package:use_in_case/src/invocator.dart';
-import 'package:use_in_case/src/modifier.dart';
+import 'package:uic_interactor/uic-interactor.dart';
 
-final class CustomModifier<Parameter, Result> extends ChainedModifier<Parameter, Result> {
+final class CustomModifier<Parameter, Result>
+    extends ChainedModifier<Parameter, Result> {
   const CustomModifier(super._modifier);
 
   @override
@@ -15,8 +13,10 @@ final class CustomModifier<Parameter, Result> extends ChainedModifier<Parameter,
         onStart: (parameter) {
           print('${details.calleName} started with $parameter -->');
         },
-        onResult: (result) => print('<-- ${details.calleName} succeeded with $result'),
-        onException: (exception) => print('<-- ${details.calleName} failed with $exception'),
+        onResult: (result) =>
+            print('<-- ${details.calleName} succeeded with $result'),
+        onException: (exception) =>
+            print('<-- ${details.calleName} failed with $exception'),
       );
     });
   }
@@ -33,7 +33,8 @@ final class HardWorkingInteractor extends PRInteractor<int, double> {
 
   @override
   Future<double> execute(int parameter) {
-    return Future.delayed(const Duration(milliseconds: 250), () => parameter + pi - 3.0);
+    return Future.delayed(
+        const Duration(milliseconds: 250), () => parameter + pi - 3.0);
   }
 }
 
