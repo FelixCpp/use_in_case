@@ -1,4 +1,4 @@
-import 'package:uic_interactor/uic-interactor.dart';
+import 'package:uic_interactor/uic_interactor.dart';
 
 final class Calculator extends PRInteractor<CalculatorParams, double> {
   const Calculator();

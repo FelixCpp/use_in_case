@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:uic_interactor/uic-interactor.dart';
+import 'package:uic_interactor/uic_interactor.dart';
 
 final class SomeInteractor extends RInteractor<String> {
   const SomeInteractor();

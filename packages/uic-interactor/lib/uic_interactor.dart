@@ -1,4 +1,4 @@
-library uic_interactor;
+library;
 
 export 'src/busy_state_modifier.dart';
 export 'src/event.dart';

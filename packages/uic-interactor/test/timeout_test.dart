@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
-import 'package:uic_interactor/uic-interactor.dart';
+import 'package:uic_interactor/uic_interactor.dart';
 
 final class _WaitingInteractor extends PRInteractor<Duration, int> {
   @override

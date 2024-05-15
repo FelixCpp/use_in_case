@@ -4,7 +4,7 @@ version: 0.1.0
 repository: https://git.dataport.de/libraries-dart/use_in_case
 
 environment:
-  sdk: ^3.3.4
+  sdk: ^3.0.0
 
 dependencies:
   meta: ^1.14.0
