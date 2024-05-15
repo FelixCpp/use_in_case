@@ -1,15 +1,15 @@
 import 'package:use_in_case/src/event.dart';
-import 'package:use_in_case/src/interactor/modifiers/chained_modifier.dart';
 import 'package:use_in_case/src/invocator.dart';
+import 'package:use_in_case/src/modifiers/chained_modifier.dart';
 
 ///
 /// Register a generic callback that gets called when
 /// an event is being emitted by the stream.
 ///
-final class OnEventCollectorModifier<Parameter, Result>
+final class OnEventModifier<Parameter, Result>
     extends ChainedModifier<Parameter, Result> {
   final void Function(Event<Parameter, Result> event) onEvent;
-  const OnEventCollectorModifier(super._modifier, this.onEvent);
+  const OnEventModifier(super._modifier, this.onEvent);
 
   ///
   /// Extends the previous event handler by appending
@@ -32,12 +32,12 @@ final class OnEventCollectorModifier<Parameter, Result>
 ///   .onException(printError)
 ///   .onEvent(printDebug);
 ///
-extension InvocationWithEventCollector<Parameter, Result>
+extension InvocationWithEvent<Parameter, Result>
     on Invocator<Parameter, Result> {
   Invocator<Parameter, Result> onEvent(
       void Function(Event<Parameter, Result>) callback) {
     return modifier((modifier) {
-      return OnEventCollectorModifier<Parameter, Result>(
+      return OnEventModifier<Parameter, Result>(
           modifier, (event) => callback(event));
     });
   }

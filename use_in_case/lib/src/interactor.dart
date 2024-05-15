@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:use_in_case/src/event.dart';
-import 'package:use_in_case/src/interactor/modifiers/modifier.dart';
 import 'package:use_in_case/src/invocator.dart';
+import 'package:use_in_case/src/modifiers/modifier.dart';
 
 ///
 /// Generic type interface for interactors.
@@ -35,12 +35,11 @@ abstract class ParameterizedResultInteractor<Parameter, Result> {
 ///
 typedef PRInteractor<Parameter, Result>
     = ParameterizedResultInteractor<Parameter, Result>;
-typedef ParameterizedInteractor<Parameter>
-    = ParameterizedResultInteractor<Parameter, void>;
-typedef PInteractor<Parameter> = ParameterizedResultInteractor<Parameter, void>;
-typedef ResultInteractor<Result> = ParameterizedResultInteractor<Unit, Result>;
-typedef RInteractor<Result> = ParameterizedResultInteractor<Unit, Result>;
-typedef Interactor<Result> = ParameterizedResultInteractor<Unit, void>;
+typedef Interactor<Result> = PRInteractor<Unit, void>;
+typedef PInteractor<Parameter> = PRInteractor<Parameter, void>;
+typedef ParameterizedInteractor<Parameter> = PInteractor<Parameter>;
+typedef RInteractor<Result> = PRInteractor<Unit, Result>;
+typedef ResultInteractor<Result> = RInteractor<Result>;
 
 ///
 /// Start the configuration of an invocation for an interactor.

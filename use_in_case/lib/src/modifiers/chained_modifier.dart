@@ -1,5 +1,5 @@
 import 'package:use_in_case/src/event.dart';
-import 'package:use_in_case/src/interactor/modifiers/modifier.dart';
+import 'package:use_in_case/src/modifiers/modifier.dart';
 
 ///
 /// Forwarding implementation of a [Modifier] that can be extended

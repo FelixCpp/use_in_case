@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:use_in_case/src/event.dart';
-import 'package:use_in_case/src/interactor/modifiers/chained_modifier.dart';
 import 'package:use_in_case/src/invocator.dart';
+import 'package:use_in_case/src/modifiers/chained_modifier.dart';
 
 ///
 /// This modifier applies a timeout on the stream that emits invocation events.

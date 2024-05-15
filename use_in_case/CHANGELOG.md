@@ -14,9 +14,10 @@
 - Example "[custom modifier](example/custom_modifier_example.dart)" added
 
 #### Tests
-- Test "[timeout test](test/timeout_test.dart)" added
-- Test "[busy-state test](test/busy_state_test.dart)" added
-- Test "[default configuration](test/default_configuration_test.dart)" added
+- Test "[timeout test](test/modifiers/timeout_test.dart)" added
+- Test "[busy-state test](test/modifiers/busy_state_test.dart)" added
+- Test "[default configuration test](test/default_configuration_test.dart)" added
+- Test "[on event test](test/modifiers/on_event_test.dart)" added
 
 #### Note
 * Some design decisions may not be final and may change completely in future releases.
