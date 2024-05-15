@@ -2,11 +2,6 @@
 
 This package contains the implementation required to add interactors to your project.
 
-### Dependency management
-
-Here's a simple example on how to add a [git](https://git-scm.com/) dependency.
-Read more about [dart packages](https://dart.dev/tools/pub/dependencies)
-
 ### Simple Usage
 
 You can read about the usage in many examples inside the [examples](example/) folder. Here's a quick example on how to get started:

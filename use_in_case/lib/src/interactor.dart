@@ -52,9 +52,11 @@ extension Invoke<Parameter, Result>
   Invocator<Parameter, Result> call(Parameter parameter) {
     return configure(
       Invocator(
-        modifier:
-            _InitialInvocationModifier(parameter: parameter, interactor: this),
-        details: (calleName: runtimeType.toString(),),
+        modifier: _InitialInvocationModifier(
+          parameter: parameter,
+          interactor: this,
+        ),
+        details: (calleName: runtimeType.toString()),
       ),
     );
   }

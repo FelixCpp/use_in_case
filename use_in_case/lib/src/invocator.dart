@@ -63,7 +63,6 @@ final class Invocator<Parameter, Result> {
           onException: completer.complete,
         );
       },
-      cancelOnError: true,
     );
 
     return completer.future.whenComplete(() {
