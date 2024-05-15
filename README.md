@@ -25,6 +25,35 @@ void main() async {
 }
 ```
 
+It's also possible to receive information about the workflow of our invocation.
+
+```dart
+/// ...
+/// Definition on DownloadFileInteractor class
+/// ...
+
+void main() async {
+  const downloadFile = DownloadFileInteractor();
+  final stopwatch = Stopwatch();
+
+  await downloadFile((
+    sourceUri: Uri.parse('https://www.my_website.com'),
+    destinationPath: 'downloads/my_website_data.txt',
+  ))
+  .timeout(const Duration(seconds: 30))
+  .receiveBusyState((isBusy) {
+    if (isBusy) {
+      stopwatch.start();
+    } else {
+      stopwatch.stop();
+    }
+  })
+  .onResult((data) => print('Downloading succeeded after ${stopwatch.elapsed} with $data'),)
+  .onException((exception) => print('Downloading failed after ${stopwatch.elapsed} due to $exception'))
+  .run();
+}
+```
+
 This example shows an example implementation of a [ParameterizedResultInteractor / PRInteractor](lib/src/interactor.dart). The first generic type returns the parameter of *execute*, the second defines the result/return type.
 
 ### Modifiers usage
