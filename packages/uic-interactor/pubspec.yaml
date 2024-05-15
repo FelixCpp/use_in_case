@@ -1,0 +1,18 @@
+name: use_in_case
+description: An extendable library that provides functionality for use cases
+version: 0.1.0
+repository: https://git.dataport.de/libraries-dart/use_in_case
+
+environment:
+  sdk: ^3.3.4
+
+dependencies:
+  meta: ^1.14.0
+  freezed_annotation: ^2.4.1
+  dartz: ^0.10.1
+
+dev_dependencies:
+  lints: ^3.0.0
+  test: ^1.24.0
+  build_runner: ^2.4.9
+  freezed: ^2.5.2
