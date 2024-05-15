@@ -42,7 +42,8 @@ mixin _$Event<Parameter, Result> {
   TResult map<TResult extends Object?>({
     required TResult Function(_OnStart<Parameter, Result> value) onStart,
     required TResult Function(_OnResult<Parameter, Result> value) onResult,
-    required TResult Function(_OnException<Parameter, Result> value) onException,
+    required TResult Function(_OnException<Parameter, Result> value)
+        onException,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -64,12 +65,14 @@ mixin _$Event<Parameter, Result> {
 
 /// @nodoc
 abstract class $EventCopyWith<Parameter, Result, $Res> {
-  factory $EventCopyWith(Event<Parameter, Result> value, $Res Function(Event<Parameter, Result>) then) =
+  factory $EventCopyWith(Event<Parameter, Result> value,
+          $Res Function(Event<Parameter, Result>) then) =
       _$EventCopyWithImpl<Parameter, Result, $Res, Event<Parameter, Result>>;
 }
 
 /// @nodoc
-class _$EventCopyWithImpl<Parameter, Result, $Res, $Val extends Event<Parameter, Result>>
+class _$EventCopyWithImpl<Parameter, Result, $Res,
+        $Val extends Event<Parameter, Result>>
     implements $EventCopyWith<Parameter, Result, $Res> {
   _$EventCopyWithImpl(this._value, this._then);
 
@@ -81,8 +84,8 @@ class _$EventCopyWithImpl<Parameter, Result, $Res, $Val extends Event<Parameter,
 
 /// @nodoc
 abstract class _$$OnStartImplCopyWith<Parameter, Result, $Res> {
-  factory _$$OnStartImplCopyWith(
-          _$OnStartImpl<Parameter, Result> value, $Res Function(_$OnStartImpl<Parameter, Result>) then) =
+  factory _$$OnStartImplCopyWith(_$OnStartImpl<Parameter, Result> value,
+          $Res Function(_$OnStartImpl<Parameter, Result>) then) =
       __$$OnStartImplCopyWithImpl<Parameter, Result, $Res>;
   @useResult
   $Res call({Parameter parameter});
@@ -90,10 +93,11 @@ abstract class _$$OnStartImplCopyWith<Parameter, Result, $Res> {
 
 /// @nodoc
 class __$$OnStartImplCopyWithImpl<Parameter, Result, $Res>
-    extends _$EventCopyWithImpl<Parameter, Result, $Res, _$OnStartImpl<Parameter, Result>>
+    extends _$EventCopyWithImpl<Parameter, Result, $Res,
+        _$OnStartImpl<Parameter, Result>>
     implements _$$OnStartImplCopyWith<Parameter, Result, $Res> {
-  __$$OnStartImplCopyWithImpl(
-      _$OnStartImpl<Parameter, Result> _value, $Res Function(_$OnStartImpl<Parameter, Result>) _then)
+  __$$OnStartImplCopyWithImpl(_$OnStartImpl<Parameter, Result> _value,
+      $Res Function(_$OnStartImpl<Parameter, Result>) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -132,13 +136,15 @@ class _$OnStartImpl<Parameter, Result> implements _OnStart<Parameter, Result> {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, const DeepCollectionEquality().hash(parameter));
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(parameter));
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$OnStartImplCopyWith<Parameter, Result, _$OnStartImpl<Parameter, Result>> get copyWith =>
-      __$$OnStartImplCopyWithImpl<Parameter, Result, _$OnStartImpl<Parameter, Result>>(this, _$identity);
+  _$$OnStartImplCopyWith<Parameter, Result, _$OnStartImpl<Parameter, Result>>
+      get copyWith => __$$OnStartImplCopyWithImpl<Parameter, Result,
+          _$OnStartImpl<Parameter, Result>>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -179,7 +185,8 @@ class _$OnStartImpl<Parameter, Result> implements _OnStart<Parameter, Result> {
   TResult map<TResult extends Object?>({
     required TResult Function(_OnStart<Parameter, Result> value) onStart,
     required TResult Function(_OnResult<Parameter, Result> value) onResult,
-    required TResult Function(_OnException<Parameter, Result> value) onException,
+    required TResult Function(_OnException<Parameter, Result> value)
+        onException,
   }) {
     return onStart(this);
   }
@@ -210,18 +217,19 @@ class _$OnStartImpl<Parameter, Result> implements _OnStart<Parameter, Result> {
 }
 
 abstract class _OnStart<Parameter, Result> implements Event<Parameter, Result> {
-  const factory _OnStart(final Parameter parameter) = _$OnStartImpl<Parameter, Result>;
+  const factory _OnStart(final Parameter parameter) =
+      _$OnStartImpl<Parameter, Result>;
 
   Parameter get parameter;
   @JsonKey(ignore: true)
-  _$$OnStartImplCopyWith<Parameter, Result, _$OnStartImpl<Parameter, Result>> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$OnStartImplCopyWith<Parameter, Result, _$OnStartImpl<Parameter, Result>>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$OnResultImplCopyWith<Parameter, Result, $Res> {
-  factory _$$OnResultImplCopyWith(
-          _$OnResultImpl<Parameter, Result> value, $Res Function(_$OnResultImpl<Parameter, Result>) then) =
+  factory _$$OnResultImplCopyWith(_$OnResultImpl<Parameter, Result> value,
+          $Res Function(_$OnResultImpl<Parameter, Result>) then) =
       __$$OnResultImplCopyWithImpl<Parameter, Result, $Res>;
   @useResult
   $Res call({Result result});
@@ -229,10 +237,11 @@ abstract class _$$OnResultImplCopyWith<Parameter, Result, $Res> {
 
 /// @nodoc
 class __$$OnResultImplCopyWithImpl<Parameter, Result, $Res>
-    extends _$EventCopyWithImpl<Parameter, Result, $Res, _$OnResultImpl<Parameter, Result>>
+    extends _$EventCopyWithImpl<Parameter, Result, $Res,
+        _$OnResultImpl<Parameter, Result>>
     implements _$$OnResultImplCopyWith<Parameter, Result, $Res> {
-  __$$OnResultImplCopyWithImpl(
-      _$OnResultImpl<Parameter, Result> _value, $Res Function(_$OnResultImpl<Parameter, Result>) _then)
+  __$$OnResultImplCopyWithImpl(_$OnResultImpl<Parameter, Result> _value,
+      $Res Function(_$OnResultImpl<Parameter, Result>) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -251,7 +260,8 @@ class __$$OnResultImplCopyWithImpl<Parameter, Result, $Res>
 
 /// @nodoc
 
-class _$OnResultImpl<Parameter, Result> implements _OnResult<Parameter, Result> {
+class _$OnResultImpl<Parameter, Result>
+    implements _OnResult<Parameter, Result> {
   const _$OnResultImpl(this.result);
 
   @override
@@ -271,13 +281,15 @@ class _$OnResultImpl<Parameter, Result> implements _OnResult<Parameter, Result> 
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, const DeepCollectionEquality().hash(result));
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(result));
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$OnResultImplCopyWith<Parameter, Result, _$OnResultImpl<Parameter, Result>> get copyWith =>
-      __$$OnResultImplCopyWithImpl<Parameter, Result, _$OnResultImpl<Parameter, Result>>(this, _$identity);
+  _$$OnResultImplCopyWith<Parameter, Result, _$OnResultImpl<Parameter, Result>>
+      get copyWith => __$$OnResultImplCopyWithImpl<Parameter, Result,
+          _$OnResultImpl<Parameter, Result>>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -318,7 +330,8 @@ class _$OnResultImpl<Parameter, Result> implements _OnResult<Parameter, Result> 
   TResult map<TResult extends Object?>({
     required TResult Function(_OnStart<Parameter, Result> value) onStart,
     required TResult Function(_OnResult<Parameter, Result> value) onResult,
-    required TResult Function(_OnException<Parameter, Result> value) onException,
+    required TResult Function(_OnException<Parameter, Result> value)
+        onException,
   }) {
     return onResult(this);
   }
@@ -348,19 +361,21 @@ class _$OnResultImpl<Parameter, Result> implements _OnResult<Parameter, Result> 
   }
 }
 
-abstract class _OnResult<Parameter, Result> implements Event<Parameter, Result> {
-  const factory _OnResult(final Result result) = _$OnResultImpl<Parameter, Result>;
+abstract class _OnResult<Parameter, Result>
+    implements Event<Parameter, Result> {
+  const factory _OnResult(final Result result) =
+      _$OnResultImpl<Parameter, Result>;
 
   Result get result;
   @JsonKey(ignore: true)
-  _$$OnResultImplCopyWith<Parameter, Result, _$OnResultImpl<Parameter, Result>> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$OnResultImplCopyWith<Parameter, Result, _$OnResultImpl<Parameter, Result>>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$OnExceptionImplCopyWith<Parameter, Result, $Res> {
-  factory _$$OnExceptionImplCopyWith(
-          _$OnExceptionImpl<Parameter, Result> value, $Res Function(_$OnExceptionImpl<Parameter, Result>) then) =
+  factory _$$OnExceptionImplCopyWith(_$OnExceptionImpl<Parameter, Result> value,
+          $Res Function(_$OnExceptionImpl<Parameter, Result>) then) =
       __$$OnExceptionImplCopyWithImpl<Parameter, Result, $Res>;
   @useResult
   $Res call({Exception exception});
@@ -368,10 +383,11 @@ abstract class _$$OnExceptionImplCopyWith<Parameter, Result, $Res> {
 
 /// @nodoc
 class __$$OnExceptionImplCopyWithImpl<Parameter, Result, $Res>
-    extends _$EventCopyWithImpl<Parameter, Result, $Res, _$OnExceptionImpl<Parameter, Result>>
+    extends _$EventCopyWithImpl<Parameter, Result, $Res,
+        _$OnExceptionImpl<Parameter, Result>>
     implements _$$OnExceptionImplCopyWith<Parameter, Result, $Res> {
-  __$$OnExceptionImplCopyWithImpl(
-      _$OnExceptionImpl<Parameter, Result> _value, $Res Function(_$OnExceptionImpl<Parameter, Result>) _then)
+  __$$OnExceptionImplCopyWithImpl(_$OnExceptionImpl<Parameter, Result> _value,
+      $Res Function(_$OnExceptionImpl<Parameter, Result>) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -390,7 +406,8 @@ class __$$OnExceptionImplCopyWithImpl<Parameter, Result, $Res>
 
 /// @nodoc
 
-class _$OnExceptionImpl<Parameter, Result> implements _OnException<Parameter, Result> {
+class _$OnExceptionImpl<Parameter, Result>
+    implements _OnException<Parameter, Result> {
   const _$OnExceptionImpl(this.exception);
 
   @override
@@ -406,7 +423,8 @@ class _$OnExceptionImpl<Parameter, Result> implements _OnException<Parameter, Re
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OnExceptionImpl<Parameter, Result> &&
-            (identical(other.exception, exception) || other.exception == exception));
+            (identical(other.exception, exception) ||
+                other.exception == exception));
   }
 
   @override
@@ -415,8 +433,10 @@ class _$OnExceptionImpl<Parameter, Result> implements _OnException<Parameter, Re
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$OnExceptionImplCopyWith<Parameter, Result, _$OnExceptionImpl<Parameter, Result>> get copyWith =>
-      __$$OnExceptionImplCopyWithImpl<Parameter, Result, _$OnExceptionImpl<Parameter, Result>>(this, _$identity);
+  _$$OnExceptionImplCopyWith<Parameter, Result,
+          _$OnExceptionImpl<Parameter, Result>>
+      get copyWith => __$$OnExceptionImplCopyWithImpl<Parameter, Result,
+          _$OnExceptionImpl<Parameter, Result>>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -457,7 +477,8 @@ class _$OnExceptionImpl<Parameter, Result> implements _OnException<Parameter, Re
   TResult map<TResult extends Object?>({
     required TResult Function(_OnStart<Parameter, Result> value) onStart,
     required TResult Function(_OnResult<Parameter, Result> value) onResult,
-    required TResult Function(_OnException<Parameter, Result> value) onException,
+    required TResult Function(_OnException<Parameter, Result> value)
+        onException,
   }) {
     return onException(this);
   }
@@ -487,11 +508,14 @@ class _$OnExceptionImpl<Parameter, Result> implements _OnException<Parameter, Re
   }
 }
 
-abstract class _OnException<Parameter, Result> implements Event<Parameter, Result> {
-  const factory _OnException(final Exception exception) = _$OnExceptionImpl<Parameter, Result>;
+abstract class _OnException<Parameter, Result>
+    implements Event<Parameter, Result> {
+  const factory _OnException(final Exception exception) =
+      _$OnExceptionImpl<Parameter, Result>;
 
   Exception get exception;
   @JsonKey(ignore: true)
-  _$$OnExceptionImplCopyWith<Parameter, Result, _$OnExceptionImpl<Parameter, Result>> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$OnExceptionImplCopyWith<Parameter, Result,
+          _$OnExceptionImpl<Parameter, Result>>
+      get copyWith => throw _privateConstructorUsedError;
 }

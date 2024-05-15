@@ -20,14 +20,17 @@ typedef EventDetails = ({String calleName});
 ///
 /// Type definition of a callback
 ///
-typedef EventHandler<Parameter, Result> = void Function(EventDetails, Event<Parameter, Result>);
+typedef EventHandler<Parameter, Result> = void Function(
+    EventDetails, Event<Parameter, Result>);
 
 ///
 /// Additional methods that build different kinds of ordered execution in order to
 /// invoke the corresponding callbacks at the right time.
 ///
-extension EventHandlerBuildHelpers<Parameter, Result> on EventHandler<Parameter, Result> {
-  EventHandler<Parameter, Result> wrap(EventHandler<Parameter, Result> handler) {
+extension EventHandlerBuildHelpers<Parameter, Result>
+    on EventHandler<Parameter, Result> {
+  EventHandler<Parameter, Result> wrap(
+      EventHandler<Parameter, Result> handler) {
     return (details, event) {
       current() => this(details, event);
       next() => handler(details, event);
@@ -45,14 +48,16 @@ extension EventHandlerBuildHelpers<Parameter, Result> on EventHandler<Parameter,
     };
   }
 
-  EventHandler<Parameter, Result> before(EventHandler<Parameter, Result> handler) {
+  EventHandler<Parameter, Result> before(
+      EventHandler<Parameter, Result> handler) {
     return (details, event) {
       handler(details, event);
       this(details, event);
     };
   }
 
-  EventHandler<Parameter, Result> after(EventHandler<Parameter, Result> handler) {
+  EventHandler<Parameter, Result> after(
+      EventHandler<Parameter, Result> handler) {
     return handler.before(this);
   }
 }
