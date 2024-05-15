@@ -1,4 +1,4 @@
-import 'package:use_in_case/src/event.dart';
+import '../event.dart';
 
 ///
 /// A modifier that can be applied in order to insert

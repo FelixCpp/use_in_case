@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:use_in_case/src/event.dart';
-import 'package:use_in_case/src/modifiers/modifier.dart';
-import 'package:use_in_case/src/modifiers/on_event_modifier.dart';
+import 'event.dart';
+import 'modifiers/modifier.dart';
+import 'modifiers/on_event_modifier.dart';
 
 ///
 /// This class provides the ability to invoke a configured

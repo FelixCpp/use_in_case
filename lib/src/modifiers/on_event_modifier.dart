@@ -1,6 +1,6 @@
-import 'package:use_in_case/src/event.dart';
-import 'package:use_in_case/src/invocator.dart';
-import 'package:use_in_case/src/modifiers/chained_modifier.dart';
+import '../event.dart';
+import '../invocator.dart';
+import 'chained_modifier.dart';
 
 ///
 /// Register a generic callback that gets called when

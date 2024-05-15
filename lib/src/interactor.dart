@@ -1,7 +1,8 @@
 import 'package:dartz/dartz.dart';
-import 'package:use_in_case/src/event.dart';
-import 'package:use_in_case/src/invocator.dart';
-import 'package:use_in_case/src/modifiers/modifier.dart';
+
+import 'event.dart';
+import 'invocator.dart';
+import 'modifiers/modifier.dart';
 
 ///
 /// Generic type interface for interactors.
