@@ -1,7 +1,8 @@
 name: uic_interactor
 description: An extendable library that provides functionality for use cases
 version: 0.1.0
-repository: https://git.dataport.de/libraries-dart/use_in_case
+repository: https://github.com/FelixCpp/use_in_case
+publish_to: 'pub.dev'
 
 environment:
   sdk: ^3.0.0
