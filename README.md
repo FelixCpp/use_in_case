@@ -1,120 +1,173 @@
-## Use-In-Case Interactor Library
+# Use-In-Case (UIC) Interactor
 
-This package contains the implementation required to add interactors to your project.
+This library takes a different approach in dealing with declaring and invoking interactors.
+It is written to be as extendable as possible and providing an easy way to register hooks into the
+invocation flow of a task.
 
-### Simple Usage
+## Interactor Types
 
-You can read about the usage in many examples inside the [examples](example/) folder. Here's a quick example on how to get started:
+| Type name                     | Parameterized | Resulting |
+| ----------------------------- | ------------- | --------- |
+| ParameterizedResultInteractor | Yes           | Yes       |
+| ParameterizedInteractor       | Yes           | No        |
+| ResultInteractor              | No            | Yes       |
+| Interactor                    | No            | No        |
 
-```dart
-import 'package:use_in_case/use_in_case.dart';
+## Usage
 
-final class Square extends PRInteractor<double, double> {
-  const Square();
-
-  @override
-  Future<double> execute(double parameter) async {
-    return parameter * parameter;
-  }
-}
-
-void main() async {
-  const square = Square();
-  final result = await square(11).get();
-  print(result);
-}
-```
-
-It's also possible to receive information about the workflow of our invocation.
+How to call an interactor in your code:
 
 ```dart
-/// ...
-/// Definition on DownloadFileInteractor class
-/// ...
-
-void main() async {
-  const downloadFile = DownloadFileInteractor();
-  final stopwatch = Stopwatch();
-
-  await downloadFile((
-    sourceUri: Uri.parse('https://www.my_website.com'),
-    destinationPath: 'downloads/my_website_data.txt',
-  ))
-  .timeout(const Duration(seconds: 30))
-  .receiveBusyState((isBusy) {
-    if (isBusy) {
-      stopwatch.start();
-    } else {
-      stopwatch.stop();
+// Define an interactor that does something. He must extend/implement a type mentioned above.
+class StringToIntConverter : ParameterizedResultInteractor<String, Int> {
+    override suspend fun execute(parameter: String): Int {
+        return parameter.toInt()
     }
-  })
-  .onResult((data) => print('Downloading succeeded after ${stopwatch.elapsed} with $data'),)
-  .onException((exception) => print('Downloading failed after ${stopwatch.elapsed} due to $exception'))
-  .run();
 }
+
+/// ...
+
+// Create an instance of the interactor
+val stringToIntConverter = StringToIntConverter()
+
+/// ...
+
+// Call the interactor
+val result = stringToIntConverter
+    .getOrThrow("123") // Call the interactor with a parameter
 ```
 
-This example shows an example implementation of a [ParameterizedResultInteractor / PRInteractor](lib/src/interactor.dart). The first generic type returns the parameter of *execute*, the second defines the result/return type.
+Notice the `getOrThrow` method. This is a helper method that is provided by the library to call the
+interactor and throw an exception if the interactor fails.
+Besides `getOrThrow` there are also some other methods to consider calling when needed.
 
-### Modifiers usage
+| Method name  | Description                                                                |
+| ------------ | -------------------------------------------------------------------------- |
+| `getOrThrow` | Calls the interactor and throws an exception if the interactor fails.      |
+| `getOrNull`  | Calls the interactor and returns `null` if the interactor fails.           |
+| `getOrElse`  | Calls the interactor and returns a fallback value if the interactor fails. |
+| `run`        | Calls the interactor and ignores the result.                               |
 
-This library provides the ability to add highly customizable modifiers. There are some pre-defined modifiers such as [timeout](lib/src/modifiers/timeout_modifier.dart) or [busy state](lib/src/modifiers/busy_state_modifier.dart). More information on these modifiers can be read in their corresponding examples.
+## Customization
+
+The core feature of uic-interactor is the ability to customize the invocation-flow of an interactor.
+This can be achieved by chaining multiple decorators to the interactor.
+
+In the end your invocation-flow might look like this:
 
 ```dart
+val result = stringToIntConverter
+    .timeout(5.seconds)
+    .before { println("Trying to convert $it to string.") }
+    .after { println("Successfully converted number to string. Result: $it") }
+    .catch { println("Failed to convert number to string. Exception caught: $it") }
+    .getOrNull("123") // Call the interactor with a parameter
+
 // ...
-
-void main() async {
-  const square = Square();
-  final result = await square(11)
-      .timeout(
-        const Duration(seconds: 5),
-        'Timeout because the computation took longer than 5 seconds.',
-      )
-      .receiveBusyState(
-        (isBusy) => print('${isBusy ? 'start' : 'stop'} at ${DateTime.now()}'),
-      )
-      .get();
-
-  print(result);
-}
 ```
 
-### Writing custom modifiers
+Right now there are couple of decorators available:
 
-Due to the limitations of my few implementations of modifiers provided by the library, i've designed the API publically extendable. For more details you may want to take a look into the implemenation of [timeout](lib/src/modifiers/timeout_modifier.dart) or [busy state](lib/src/modifiers/busy_state_modifier.dart) modifiers.
+| Decorator name      | Description                                                                                                   | Workflow                                  |
+| ------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `after`             | Adds a hook that is called after the interactor is executed.                                                  | ![after](./docs/after.drawio.svg)         |
+| `before`            | Adds a hook that is called before the interactor is executed.                                                 | ![before](./docs/before.drawio.svg)       |
+| `watchBusyState`    | Adds a hook that is called when the interactor starts & ends.                                                 | ![busystate](./docs/busystate.drawio.svg) |
+| `debounceBusyState` | Adds a hook that is called with a specified debounce when the interactor starts & ends.                       | ![busystate](./docs/busystate.drawio.svg) |
+| `intercept`         | Adds a hook that is called when the interactor fails.                                                         | ![catch](./docs/intercept.drawio.svg)     |
+| `typedIntercept`    | Adds a hook that is called when the interactor fails with a specific exception type.                          | ![catch](./docs/intercept.drawio.svg)     |
+| `finally`           | Adds a hook that is called when the interactor finishes.                                                      | ![finally](./docs/finally.drawio.svg)     |
+| `log`               | Times the operation and produces a message that can be displayed through logging library.                     | ![log](./docs/log.drawio.svg)             |
+| `map`               | Converts the output of the interactor.                                                                        | ![map](./docs/map.drawio.svg)             |
+| `recover`           | Calls a given callback when an exception has been thrown. The callback must return a fallback output.         | ![recover](./docs/recover.drawio.svg)     |
+| `typedRecover`      | Calls a given callback when a specific exception has been thrown. The callback must return a fallback output. | ![recover](./docs/recover.drawio.svg)     |
+| `timeout`           | Adds a timeout to the interactor.                                                                             | ![timeout](./docs/timeout.drawio.svg)     |
 
-You can write your own modifier as follows:
+## Order Matters
+
+The graphic below shows in which order each decorator is going to append itself around the execution.
+
+<table>
+<td>
+<img src="./documentation/chained.drawio.svg" alt="workflow visualization" style="width: 400px;">
+</td>
+<td style="vertical-align: top;">
 
 ```dart
-final class CustomModifier<Parameter, Result>
-    extends ChainedModifier<Parameter, Result> {
-  const CustomModifier(super._modifier);
+myInteractor
+    .catch { println("Exception caught: $it") }
+    .before { println("Interactor called with parameter = $it") }
+    .after { println("Output produced: $it") }
+    .onBusyStateChange { println("Busy State: $it") }
+```
+</td>
+</table>
+</p>
 
-  @override
-  EventHandler<Parameter, Result> buildEventHandler() {
-    return super.buildEventHandler().after((details, event) {
-      event.whenOrNull(
-        onStart: (parameter) {
-          print('${details.calleName} started with $parameter -->');
-        },
-        onResult: (result) =>
-            print('<-- ${details.calleName} succeeded with $result'),
-        onException: (exception) =>
-            print('<-- ${details.calleName} failed with $exception'),
-      );
-    });
-  }
-}
+## Declaring your own customizations
 
-// ...
+It is possible to write custom decorators that modify that invocation-flow of the interactor.
 
-void main() async {
-    const interactor = // ...
-    final result = await interactor()
-        .modifier((modifier) => CustomModifier(modifier)).get();
+Examples can be
+found [here](./commonMain/kotlin/de/dataport/android/common/architecture/mvi/uicinteractor/).
 
-    print(result);
+```dart
+fun <Input, Output> ParameterizedResultInteractor<Input, Output>.delayed(
+    duration: Duration
+) = ParameterizedResultInteractor<Input, Output> {
+    delay(duration)
+    this@delayed.execute(it)
 }
 ```
 
-**Note that this api will definitely change in future!**
+## Progress Interactors
+
+In some cases the interactor might need to publish progress information.
+Given a `FileDownloadInteractor` that downloads a file from the internet, it might look like this:
+
+```dart
+class FileDownloadInteractor(
+    private val downloadService: DownloadService,
+) : ParameterizedProgressInteractor<FileDownloadInteractor.Input, Int> {
+    override suspend fun execute() {
+        downloadService.downloadFile(
+            sourceUrl = parameter.sourceUrl,
+            destinationFilepath = parameter.destinationFilepath,
+            progressReceiver = { progress: Float ->
+                emitProgress((progress * 100.0f).roundToInt()) //< Additional method that allows you to publish progress information.
+            }
+        )
+    }
+
+    data class Input(
+        val sourceUrl: String,
+        val destinationFilepath: String,
+    )
+}
+```
+
+Just like the default interactor types written above, the ProgressInteractor provides a single method called `onProgress` which must be called before all other decorators. It gets called whenever the interactor wants to publish a progress-value to the caller. Due to API limitations it can only be registerd once in the method-pipe.
+
+The naming-convention mirrors the previously declared interactors from above.
+
+| Type name                             | Parameterized | Resulting |
+| ------------------------------------- | ------------- | --------- |
+| ParameterizedResultProgressInteractor | Yes           | Yes       |
+| ParameterizedProgressInteractor       | Yes           | No        |
+| ResultProgressInteractor              | No            | Yes       |
+| ProgressInteractor                    | No            | No        |
+
+---
+
+An example might look like this:
+
+```dart
+myFileDownloadInteractor
+    .onProgress { println("Downloaded ${it}% of the file.") }
+    .timeout(30.seconds)
+    .before { println("Downloading file from ${it.sourceUrl} to ${it.destinationFilepath}.") }
+    .after { println("Successfully downloaded file.") }
+    .catch { println("Failed to download file. Exception caught: $it") }
+    .finally { println("Finished downloading file from.") }
+    .getOrNull(FileDownloadInteractor.Input("https://example.com/file.txt", "/path/to/file.txt"))
+```
