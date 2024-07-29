@@ -1,10 +1,11 @@
 library;
 
-export 'src/event.dart';
-export 'src/interactor.dart';
-export 'src/invocator.dart';
-export 'src/modifiers/busy_state_modifier.dart';
-export 'src/modifiers/chained_modifier.dart';
-export 'src/modifiers/modifier.dart';
-export 'src/modifiers/on_event_modifier.dart';
-export 'src/modifiers/timeout_modifier.dart';
+export './src/after.dart';
+export './src/before.dart';
+export './src/eventually.dart';
+export './src/interactor.dart';
+export './src/intercept.dart';
+export './src/invoke.dart';
+export './src/recover.dart';
+export './src/timeout.dart';
+export './src/watch_busy_state.dart';
