@@ -12,23 +12,27 @@ on:
     branches: [ "main" ]
 
 jobs:
-  install_dependencies:
-    name: Install dependencies
+  checkout-code:
+    name: Checkout code
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+  install_dependencies:
+    name: Install dependencies
+    needs: checkout-code
+    runs-on: ubuntu-latest
+    steps:
+    - uses: dart-lang/setup-dart@v1
     - name: Install dependencies
       run: dart pub get
-    - uses: dart-lang/setup-dart@v1
 
   verify_formatting:
     name: Verify formatting
     runs-on: ubuntu-latest
     needs: install_dependencies
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
     - name: Verify formatting
       run: dart format --output=none --set-exit-if-changed .
     - uses: dart-lang/setup-dart@v1
@@ -38,8 +42,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: verify_formatting
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
     - name: Analyze project structure
       run: dart analyze
     - uses: dart-lang/setup-dart@v1
@@ -49,8 +51,6 @@ jobs:
     needs: install_dependencies
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
     - name: Run tests
       run: dart test
 
@@ -59,8 +59,6 @@ jobs:
     needs: testing
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
     # ... Generate LCOV files or download it from a different job
     - name: Setup LCOV
       uses: hrishikesh-kadam/setup-lcov@v1
