@@ -5,15 +5,15 @@ import 'test_interactor.dart';
 
 void main() {
   group('eventually', () {
-    late ParameterizedResultInteractor<String, int> interactor;
+    late ParameterizedResultInteractor<String, int> sut;
 
     setUp(() {
-      interactor = TestInteractor();
+      sut = TestInteractor();
     });
 
     test('should be called when no exception is thrown', () async {
       var callCount = 0;
-      final result = await interactor.eventually(() async {
+      final result = await sut.eventually(() async {
         ++callCount;
       }).getOrThrow('42');
 
@@ -25,7 +25,7 @@ void main() {
       var callCount = 0;
 
       await expectLater(
-        () => interactor.eventually(() async {
+        () => sut.eventually(() async {
           ++callCount;
         }).getOrThrow('42.0'),
         throwsFormatException,

@@ -6,16 +6,16 @@ import 'test_interactor.dart';
 
 void main() {
   group('before', () {
-    late ParameterizedResultInteractor<String, int> interactor;
+    late ParameterizedResultInteractor<String, int> sut;
 
     setUp(() {
-      interactor = TestInteractor();
+      sut = TestInteractor();
     });
 
     test('should call "after" once', () async {
       var callCount = 0;
 
-      final result = await interactor.after((_) async {
+      final result = await sut.after((_) async {
         callCount++;
       }).getOrThrow('42');
 
@@ -26,7 +26,7 @@ void main() {
     test('should call "after" with correct parameter', () async {
       var output = 0;
 
-      final result = await interactor
+      final result = await sut
           .after((producedOutput) async => output = producedOutput)
           .getOrThrow('42');
 
@@ -37,7 +37,7 @@ void main() {
     test('should call "after" in correct order', () async {
       final order = <int>[];
 
-      final result = await interactor
+      final result = await sut
           .after((_) async => order.add(0))
           .after((_) async => order.add(1))
           .getOrThrow('42');
@@ -50,7 +50,7 @@ void main() {
       var callCount = 0;
 
       await expectLater(
-        () => interactor
+        () => sut
             .after((_) async => callCount++)
             .after((_) async => throw Exception())
             .after((_) async => callCount++)

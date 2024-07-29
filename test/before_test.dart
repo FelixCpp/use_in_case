@@ -6,16 +6,16 @@ import 'test_interactor.dart';
 
 void main() {
   group('before', () {
-    late ParameterizedResultInteractor<String, int> interactor;
+    late ParameterizedResultInteractor<String, int> sut;
 
     setUp(() {
-      interactor = TestInteractor();
+      sut = TestInteractor();
     });
 
     test('should call "before" once', () async {
       var callCount = 0;
 
-      final result = await interactor.before((_) async {
+      final result = await sut.before((_) async {
         callCount++;
       }).getOrThrow('42');
 
@@ -26,9 +26,8 @@ void main() {
     test('should call "before" with correct parameter', () async {
       var parameter = '';
 
-      final result = await interactor
-          .before((input) async => parameter = input)
-          .getOrThrow('42');
+      final result =
+          await sut.before((input) async => parameter = input).getOrThrow('42');
 
       expect(parameter, equals('42'));
       expect(result, equals(42));
@@ -37,7 +36,7 @@ void main() {
     test('should call "before" in correct order', () async {
       final order = <int>[];
 
-      final result = await interactor
+      final result = await sut
           .before((_) async => order.add(1))
           .before((_) async => order.add(0))
           .getOrThrow('42');
@@ -50,7 +49,7 @@ void main() {
       var callCount = 0;
 
       await expectLater(
-        () => interactor
+        () => sut
             .before((_) async => callCount++)
             .before((_) async => throw Exception())
             .before((_) async => callCount++)

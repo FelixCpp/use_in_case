@@ -3,25 +3,19 @@ import 'dart:async';
 import 'package:test/test.dart';
 import 'package:use_in_case/use_in_case.dart';
 
-final class _WaitingInteractor
-    implements ParameterizedResultInteractor<Duration, int> {
-  @override
-  Future<int> execute(Duration input) async {
-    return Future.delayed(input, () => input.inMilliseconds);
-  }
-}
+import 'test_interactor.dart';
 
 void main() {
   group('timeout', () {
-    late ParameterizedResultInteractor<Duration, int> interactor;
+    late ParameterizedResultInteractor<Duration, int> sut;
 
     setUp(() {
-      interactor = _WaitingInteractor();
+      sut = WaitingInteractor();
     });
 
     test('should timeout after 200ms', () async {
       await expectLater(
-          () => interactor
+          () => sut
               .timeout(const Duration(milliseconds: 200))
               .getOrThrow(Duration(milliseconds: 300)),
           throwsA(isA<TimeoutException>().having(
@@ -33,7 +27,7 @@ void main() {
 
     test('should throw with correct error message', () async {
       await expectLater(
-        () => interactor
+        () => sut
             .timeout(const Duration(milliseconds: 200), errorMessage: 'bruh')
             .getOrThrow(Duration(milliseconds: 1000)),
         throwsA(
@@ -54,7 +48,7 @@ void main() {
 
     test('should timeout after shortest duration', () async {
       await expectLater(
-        () => interactor
+        () => sut
             .timeout(const Duration(milliseconds: 600))
             .timeout(const Duration(milliseconds: 200))
             .timeout(const Duration(milliseconds: 70000))
@@ -70,7 +64,7 @@ void main() {
     });
 
     test('should not timeout', () async {
-      final result = await interactor
+      final result = await sut
           .timeout(const Duration(milliseconds: 200))
           .getOrThrow(Duration(milliseconds: 10));
       expect(result, 10);

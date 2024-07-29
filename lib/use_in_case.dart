@@ -8,4 +8,4 @@ export './src/intercept.dart';
 export './src/invoke.dart';
 export './src/recover.dart';
 export './src/timeout.dart';
-export './src/watch_busy_state.dart';
+export 'src/busy_state.dart';

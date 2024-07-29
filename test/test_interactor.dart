@@ -7,3 +7,11 @@ final class TestInteractor
     return int.parse(input);
   }
 }
+
+final class WaitingInteractor
+    implements ParameterizedResultInteractor<Duration, int> {
+  @override
+  Future<int> execute(Duration input) async {
+    return Future.delayed(input, () => input.inMilliseconds);
+  }
+}

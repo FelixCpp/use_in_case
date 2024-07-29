@@ -17,20 +17,20 @@ final class _RunInteractor
 
 void main() {
   group('run', () {
-    late _RunInteractor interactor;
+    late _RunInteractor sut;
 
     setUp(() {
-      interactor = _RunInteractor();
+      sut = _RunInteractor();
     });
 
     test('should invoke execute method', () async {
-      await interactor.run('42');
-      expect(interactor.called, isTrue);
+      await sut.run('42');
+      expect(sut.called, isTrue);
     });
 
     test('should invoke execute method and ignore exception', () async {
-      await interactor.run('bruh');
-      expect(interactor.called, isTrue);
+      await sut.run('bruh');
+      expect(sut.called, isTrue);
     });
   });
 
