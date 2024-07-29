@@ -26,7 +26,7 @@ jobs:
     steps:
     - uses: dart-lang/setup-dart@v1
     - name: Install dependencies
-      run: dart pub get
+      run: cd .. && cd .. && dart pub get
 
   verify_formatting:
     name: Verify formatting
