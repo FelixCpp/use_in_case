@@ -1,9 +1,11 @@
-<div style="display: flex;">
-
+<table style="display: inline;">
+<tr style="padding: 0;">
 <img
     src="https://github.com/FelixCpp/use_in_case/actions/workflows/dart.yml/badge.svg"
     alt="continous integration status"
     style="float: left; padding-right: 30px;">
+</tr>
+<tr style="padding:0;">
 
 <a href="https://codecov.io/github/FelixCpp/use_in_case">
     <img
@@ -11,8 +13,11 @@
         alt="code coverage"
         style="float: left;">
 </a>
+</tr>
+</table>
 
-</div>
+---
+
 
 # Use-In-Case (UIC) Interactor
 
