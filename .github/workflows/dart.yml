@@ -14,8 +14,8 @@ on:
       - main
 
 jobs:
-  flutter-check:
-    name: Build Check
+  build:
+    name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -28,15 +28,28 @@ jobs:
       - name: 📦 Get Dependencies
         run: dart pub get
 
-      - name: Analyze
-        run: dart analyze
-
+  analysis:
+    name: Analyze
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: build
+    steps:
       - name: Format files
         run: dart format --output=none --set-exit-if-changed .
 
+      - name: Analyze
+        run: dart analyze
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: build
+    steps:
       - name: 🧪 Run Tests
         run: dart test
-
-      - uses: codecov/codecov-action@v1.0.2
+      
+      - name: 📊 Code Coverage
+        uses: codecov/codecov-action@v1.0.2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
