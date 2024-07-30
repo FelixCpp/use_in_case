@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: 📚 Checkout
+      - name: 📚 Checkout Repository
         uses: actions/checkout@v4
 
       - name: 🐦 Setup Dart
@@ -28,9 +28,15 @@ jobs:
       - name: 📦 Get Dependencies
         run: dart pub get
 
+      - name: Analyze
+        run: dart analyze
+
+      - name: Format files
+        run: dart format --output=none --set-exit-if-changed .
+
       - name: 🧪 Run Tests
         run: dart test
 
-        - uses: codecov/codecov-action@v1.0.2
+      - uses: codecov/codecov-action@v1.0.2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
