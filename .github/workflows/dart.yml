@@ -34,6 +34,12 @@ jobs:
     timeout-minutes: 10
     needs: build
     steps:
+      - name: 📚 Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: 🐦 Setup Dart
+        uses: dart-lang/setup-dart@v1
+
       - name: Format files
         run: dart format --output=none --set-exit-if-changed .
 
@@ -46,6 +52,12 @@ jobs:
     timeout-minutes: 10
     needs: build
     steps:
+      - name: 📚 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🐦 Setup Dart
+        uses: dart-lang/setup-dart@v1
+
       - name: 🧪 Run Tests
         run: dart test
       
