@@ -1,7 +1,8 @@
-<div style="display: flex;">
-<img src="https://github.com/FelixCpp/use_in_case/actions/workflows/dart.yml/badge.svg"/>
-<a href="https://codecov.io/github/FelixCpp/use_in_case"><img src="https://codecov.io/github/FelixCpp/use_in_case/graph/badge.svg?token=KZHYCQGVC0" alt="test-coverage"/></a>
-</ div>
+
+[![pub.dev version](https://img.shields.io/pub/v/use_in_case.svg)](https://pub.dev/packages/use_in_case)
+[![pub points](https://img.shields.io/pub/points/use_in_case)](https://pub.dev/packages/use_in_case/score)
+![Github Workflow](https://github.com/FelixCpp/use_in_case/actions/workflows/dart.yml/badge.svg)
+[![Test coverage](https://codecov.io/github/FelixCpp/use_in_case/graph/badge.svg?token=KZHYCQGVC0)](https://codecov.io/github/FelixCpp/use_in_case)
 
 ---
 
