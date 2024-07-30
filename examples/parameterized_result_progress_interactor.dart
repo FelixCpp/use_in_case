@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:use_in_case/use_in_case.dart';
 
 typedef SourceUrl = String;
@@ -40,6 +42,10 @@ void main() async {
       .eventually(() async {
         final duration = (stopwatch..stop()).elapsed;
         print('The download took: ${duration.inSeconds}s');
+      })
+      .timeout(const Duration(seconds: 2), errorMessage: 'Download timed out')
+      .typedRecover<TimeoutException>((error) async {
+        return 0;
       })
       .getOrThrow((
         sourceUrl: 'https://example.com/image.jpg',

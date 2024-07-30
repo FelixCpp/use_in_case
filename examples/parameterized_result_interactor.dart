@@ -9,6 +9,6 @@ final class Converter implements ParameterizedResultInteractor<String, int> {
 
 void main() async {
   final interactor = Converter();
-  final result = await interactor.execute('42');
+  final result = await interactor.getOrThrow('42');
   print(result); // 42
 }
