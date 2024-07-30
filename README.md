@@ -1,12 +1,25 @@
+<div style="display: flex;">
+
+<img
+    src="https://github.com/FelixCpp/use_in_case/actions/workflows/dart.yml/badge.svg"
+    alt="continous integration status"
+    style="float: left; padding-right: 30px;">
+
+<a href="https://codecov.io/github/FelixCpp/use_in_case">
+    <img
+        src="https://codecov.io/github/FelixCpp/use_in_case/graph/badge.svg?token=KZHYCQGVC0"
+        alt="code coverage"
+        style="float: left;">
+</a>
+
+</div>
+
 # Use-In-Case (UIC) Interactor
 
 This library takes a different approach in dealing with declaring and invoking interactors.
 It is written to be as extendable as possible and providing an easy way to register hooks into the
 invocation flow of a task.
 
-![Workflow](https://github.com/FelixCpp/use_in_case/actions/workflows/dart.yml/badge.svg)
-
-[![codecov](https://codecov.io/github/FelixCpp/use_in_case/graph/badge.svg?token=KZHYCQGVC0)](https://codecov.io/github/FelixCpp/use_in_case)
 
 ## Interactor Types
 
