@@ -9,9 +9,7 @@
 
 # Use-In-Case (UIC) Interactor
 
-This library takes a different approach in dealing with declaring and invoking interactors.
-It is written to be as extendable as possible and providing an easy way to register hooks into the
-invocation flow of a task.
+This library declares a base interactor interface aswell as a corresponding progress-interactor class. In order to use them there are quiet a lot of modifiers that can be used to do actions inside the invocation-flow of an interactor.
 
 
 ## Interactor Types
@@ -29,22 +27,24 @@ How to call an interactor in your code:
 
 ```dart
 // Define an interactor that does something. He must extend/implement a type mentioned above.
-class StringToIntConverter : ParameterizedResultInteractor<String, Int> {
-    override suspend fun execute(parameter: String): Int {
-        return parameter.toInt()
+final class StringToIntConverter implements ParameterizedResultInteractor<String, int> {
+    @override
+    Future<int> execute(String input) async {
+        return int.parse(input);
     }
 }
 
 /// ...
 
 // Create an instance of the interactor
-val stringToIntConverter = StringToIntConverter()
+final converter = StringToIntConverter();
 
 /// ...
 
-// Call the interactor
-val result = stringToIntConverter
-    .getOrThrow("123") // Call the interactor with a parameter
+final _ = await converter.getOrThrow("123"); // Outputs: 123
+final _ = await converter.getOrNull("not-a-number"); // Outputs: null
+final _ = await converter.getOrElse("word", (_) async => -1); // Outputs: -1
+final _ = await converter.run("123"); // Outputs: Nothing (void)
 ```
 
 Notice the `getOrThrow` method. This is a helper method that is provided by the library to call the
