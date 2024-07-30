@@ -93,7 +93,7 @@ Right now there are couple of decorators available:
 | `debounceBusyState` | Adds a hook that is called with a specified debounce when the interactor starts & ends.                       | ![busystate](./docs/busystate.drawio.svg) |
 | `intercept`         | Adds a hook that is called when the interactor fails.                                                         | ![catch](./docs/intercept.drawio.svg)     |
 | `typedIntercept`    | Adds a hook that is called when the interactor fails with a specific exception type.                          | ![catch](./docs/intercept.drawio.svg)     |
-| `finally`           | Adds a hook that is called when the interactor finishes.                                                      | ![finally](./docs/finally.drawio.svg)     |
+| `eventually`           | Adds a hook that is called when the interactor finishes.                                                      | ![finally](./docs/eventually.drawio.svg)     |
 | `log`               | Times the operation and produces a message that can be displayed through logging library.                     | ![log](./docs/log.drawio.svg)             |
 | `map`               | Converts the output of the interactor.                                                                        | ![map](./docs/map.drawio.svg)             |
 | `recover`           | Calls a given callback when an exception has been thrown. The callback must return a fallback output.         | ![recover](./docs/recover.drawio.svg)     |
@@ -106,7 +106,7 @@ The graphic below shows in which order each decorator is going to append itself 
 
 <table>
 <td>
-<img src="./documentation/chained.drawio.svg" alt="workflow visualization" style="width: 400px;">
+<img src="./docs/chained.drawio.svg" alt="workflow visualization" style="width: 400px;">
 </td>
 <td style="vertical-align: top;">
 
