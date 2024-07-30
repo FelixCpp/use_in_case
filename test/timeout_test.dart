@@ -15,20 +15,26 @@ void main() {
 
     test('should timeout after 200ms', () async {
       await expectLater(
-          () => sut
-              .timeout(const Duration(milliseconds: 200))
-              .getOrThrow(Duration(milliseconds: 300)),
-          throwsA(isA<TimeoutException>().having(
+        () => sut
+            .timeout(const Duration(milliseconds: 200))
+            .getOrThrow(Duration(milliseconds: 300)),
+        throwsA(
+          isA<TimeoutException>().having(
             (exception) => exception.duration,
             'duration',
             equals(const Duration(milliseconds: 200)),
-          )));
+          ),
+        ),
+      );
     });
 
     test('should throw with correct error message', () async {
       await expectLater(
         () => sut
-            .timeout(const Duration(milliseconds: 200), errorMessage: 'bruh')
+            .timeout(
+              const Duration(milliseconds: 200),
+              errorMessage: 'bruh',
+            )
             .getOrThrow(Duration(milliseconds: 1000)),
         throwsA(
           isA<TimeoutException>()
