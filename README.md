@@ -4,6 +4,10 @@ This library takes a different approach in dealing with declaring and invoking i
 It is written to be as extendable as possible and providing an easy way to register hooks into the
 invocation flow of a task.
 
+![Workflow](https://github.com/FelixCpp/use_in_case/actions/workflows/dart.yml/badge.svg)
+
+[![codecov](https://codecov.io/github/FelixCpp/use_in_case/graph/badge.svg?token=KZHYCQGVC0)](https://codecov.io/github/FelixCpp/use_in_case)
+
 ## Interactor Types
 
 | Type name                     | Parameterized | Resulting |

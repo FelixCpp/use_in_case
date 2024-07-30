@@ -28,11 +28,9 @@ jobs:
       - name: 📦 Get Dependencies
         run: dart pub get
 
-      - name: 📊 Generate Coverage
-        id: coverage-report
-        uses: whynotmake-it/dart-coverage-assistant@v1
+      - name: 🧪 Run Tests
+        run: dart test
+
+        - uses: codecov/codecov-action@v1.0.2
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          lower_threshold: 50
-          upper_threshold: 90
-          generate_badges: push
+          token: ${{ secrets.CODECOV_TOKEN }}
