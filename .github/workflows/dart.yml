@@ -14,12 +14,12 @@ on:
       - main
 
 jobs:
-  flutter-check:
-    name: Build Check
+  build:
+    name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: 📚 Checkout
+      - name: 📚 Checkout Repository
         uses: actions/checkout@v4
 
       - name: 🐦 Setup Dart
@@ -28,9 +28,28 @@ jobs:
       - name: 📦 Get Dependencies
         run: dart pub get
 
+      - name: Format files
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: dart analyze
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: build
+    steps:
+      - name: 📚 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🐦 Setup Dart
+        uses: dart-lang/setup-dart@v1
+
       - name: 🧪 Run Tests
         run: dart test
-
-        - uses: codecov/codecov-action@v1.0.2
+      
+      - name: 📊 Code Coverage
+        uses: codecov/codecov-action@v1.0.2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
