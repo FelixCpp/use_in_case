@@ -35,4 +35,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           lower_threshold: 50
           upper_threshold: 90
-          generate_badges: pr
+          generate_badges: push
