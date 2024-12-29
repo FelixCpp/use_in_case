@@ -105,10 +105,10 @@ The graphic below shows in which order each decorator is going to append itself 
 
 ```dart
 myInteractor
-    .catch { println("Exception caught: $it") }
-    .before { println("Interactor called with parameter = $it") }
-    .after { println("Output produced: $it") }
-    .onBusyStateChange { println("Busy State: $it") }
+    .intercept((it) => print("Exception caught: $it"))
+    .before((it) => print("Interactor called with parameter = $it"))
+    .after((it) => println("Output produced: $it"))
+    .watchBusyState((it) => println("Busy State: $it"))
 ```
 </td>
 </table>
@@ -136,23 +136,45 @@ In some cases the interactor might need to publish progress information.
 Given a `FileDownloadInteractor` that downloads a file from the internet, it might look like this:
 
 ```dart
-class FileDownloadInteractor(
-    private val downloadService: DownloadService,
-) : ParameterizedProgressInteractor<FileDownloadInteractor.Input, Int> {
-    override suspend fun execute() {
-        downloadService.downloadFile(
-            sourceUrl = parameter.sourceUrl,
-            destinationFilepath = parameter.destinationFilepath,
-            progressReceiver = { progress: Float ->
-                emitProgress((progress * 100.0f).roundToInt()) //< Additional method that allows you to publish progress information.
-            }
-        )
-    }
+typedef SourceUrl = String;
+typedef DestinationFilepath = String;
+typedef Parameter = ({
+  SourceUrl sourceUrl,
+  DestinationFilepath destinationFilepath
+});
 
-    data class Input(
-        val sourceUrl: String,
-        val destinationFilepath: String,
-    )
+typedef DownloadedBytes = int;
+typedef DownloadProgress = int;
+
+final class FileDownloadInteractor extends ParameterizedResultProgressInteractor<
+    Parameter, DownloadedBytes, DownloadProgress> {
+  @override
+  Future<DownloadedBytes> execute(Parameter input) async {
+    // TODO: Implement your file download here
+
+    await emitProgress(0);
+
+    // Download ...
+
+    await emitProgress(100);
+  }
+}
+
+// ...
+
+void main() {
+    final downloadService = FileDownloadInteractor();
+
+    final result = await downloadService
+      .receiveProgress((progress) async {
+        print('Download-Progress: $progress%');
+      })
+      .getOrThrow((
+        sourceUrl: 'https://example.com/image.jpg',
+        destinationFilepath: 'image.jpg'
+      ));
+
+    print(result);
 }
 ```
 
@@ -173,12 +195,12 @@ An example might look like this:
 
 ```dart
 myFileDownloadInteractor
-    .onProgress { println("Downloaded ${it}% of the file.") }
-    .timeout(30.seconds)
-    .before { println("Downloading file from ${it.sourceUrl} to ${it.destinationFilepath}.") }
-    .after { println("Successfully downloaded file.") }
-    .catch { println("Failed to download file. Exception caught: $it") }
-    .finally { println("Finished downloading file from.") }
-    .getOrNull(FileDownloadInteractor.Input("https://example.com/file.txt", "/path/to/file.txt"))
+    .receiveProgress((progress) => println("Downloaded ${progress}% of the file."))
+    .timeout(const Duration(seconds: 30))
+    .before((input) => println("Downloading file from ${input.sourceUrl} to ${input.destinationFilepath}."))
+    .after((_) => println("Successfully downloaded file."))
+    .intercept((exception) => println("Failed to download file. Exception caught: $it"))
+    .eventually(() => println("Finished downloading file from."))
+    .getOrNull(FileDownloadInteractorInput("https://example.com/file.txt", "/path/to/file.txt"))
 ```
 
