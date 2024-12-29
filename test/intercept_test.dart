@@ -47,7 +47,7 @@ void main() {
       expect(called, isTrue);
     });
 
-    test('should intercept exception', () async {
+    test('should not intercept exception due to type missmatch', () async {
       var called = false;
 
       await expectLater(

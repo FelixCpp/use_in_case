@@ -7,6 +7,7 @@ export './src/eventually.dart';
 export './src/interactor.dart';
 export './src/intercept.dart';
 export './src/invoke.dart';
+export './src/log.dart';
 export './src/progress.dart';
 export './src/recover.dart';
 export './src/timeout.dart';

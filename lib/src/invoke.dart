@@ -1,19 +1,21 @@
+import 'dart:async';
+
 import 'package:use_in_case/src/interactor.dart';
 
 extension Invoke<Input, Output>
     on ParameterizedResultInteractor<Input, Output> {
-  Future<void> runUnsafe(Input input) => execute(input);
-  Future<void> run(Input input) async {
+  FutureOr<void> runUnsafe(Input input) => execute(input);
+  FutureOr<void> run(Input input) async {
     try {
       await execute(input);
     } catch (_) {}
   }
 
-  Future<Output> getOrThrow(Input input) {
+  FutureOr<Output> getOrThrow(Input input) {
     return execute(input);
   }
 
-  Future<Output?> getOrNull(Input input) async {
+  FutureOr<Output?> getOrNull(Input input) async {
     try {
       return await execute(input);
     } catch (_) {
@@ -23,10 +25,12 @@ extension Invoke<Input, Output>
 
   Future<Output> getOrElse(
     Input input,
-    Future<Output> Function(Exception) fallback,
-  ) {
-    return execute(input).onError((Exception error, _) {
-      return fallback(error);
-    });
+    FutureOr<Output> Function(Exception) fallback,
+  ) async {
+    try {
+      return await execute(input);
+    } on Exception catch (exception) {
+      return await fallback(exception);
+    }
   }
 }

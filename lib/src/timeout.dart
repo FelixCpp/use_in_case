@@ -9,7 +9,7 @@ extension Timeout<Input, Output>
     String? errorMessage,
   }) {
     return InlinedParameterizedResultInteractor((input) {
-      return execute(input).timeout(
+      return Future<Output>(() => execute(input)).timeout(
         duration,
         onTimeout: () {
           throw TimeoutException(errorMessage, duration);

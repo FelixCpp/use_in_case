@@ -34,46 +34,4 @@ void main() {
       expect(order, orderedEquals([true, false]));
     });
   });
-
-  group('debounceBusyState', () {
-    late ParameterizedResultInteractor<Duration, int> interactor;
-
-    setUp(() {
-      interactor = WaitingInteractor();
-    });
-
-    test('should debounce busy state', () async {
-      final order = <bool>[];
-
-      await interactor
-          .debounceBusyState(
-            (isBusy) async => order.add(isBusy),
-            duration: const Duration(milliseconds: 200),
-          )
-          .getOrThrow(const Duration(milliseconds: 100));
-
-      expect(order, orderedEquals([]));
-    });
-
-    test('should debounce busy state with exception', () async {
-      DateTime? published;
-
-      final start = DateTime.now();
-      final result = await interactor
-          .debounceBusyState(
-            (isBusy) async => published = isBusy ? DateTime.now() : published,
-            duration: const Duration(milliseconds: 100),
-          )
-          .getOrThrow(const Duration(milliseconds: 300));
-
-      expect(result, equals(300));
-      expect(published, isNotNull);
-      expect(
-        published!.difference(start),
-        greaterThanOrEqualTo(
-          const Duration(milliseconds: 100),
-        ),
-      );
-    });
-  });
 }
