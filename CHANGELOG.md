@@ -1,5 +1,3 @@
-## 1.0.0
-
 ## 0.1.0
 
 ### Core Classes
@@ -21,7 +19,7 @@
 - Test "[default configuration test](test/default_configuration_test.dart)" added
 - Test "[on event test](test/modifiers/on_event_test.dart)" added
 
-## 2.0.0
+## 1.0.0
 
 I'm glad to announce that Versin 2 has reached its initial state that can be published!
 
