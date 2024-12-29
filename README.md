@@ -118,8 +118,7 @@ myInteractor
 
 It is possible to write custom decorators that modify that invocation-flow of the interactor.
 
-Examples can be
-found [here](./commonMain/kotlin/de/dataport/android/common/architecture/mvi/uicinteractor/).
+Examples can be found [here](lib/src/).
 
 ```dart
 fun <Input, Output> ParameterizedResultInteractor<Input, Output>.delayed(
