@@ -67,10 +67,10 @@ In the end your invocation-flow might look like this:
 
 ```dart
 val result = stringToIntConverter
-    .timeout(5.seconds)
-    .before { println("Trying to convert $it to string.") }
-    .after { println("Successfully converted number to string. Result: $it") }
-    .catch { println("Failed to convert number to string. Exception caught: $it") }
+    .timeout(const Duration(seconds: 5))
+    .before((input) => print("Trying to convert $input to string."))
+    .after((output) => print("Successfully converted number to string. Result: $output"))
+    .intercept((exception) => print("Failed to convert number to string. Exception caught: $exception"))
     .getOrNull("123") // Call the interactor with a parameter
 
 // ...
@@ -80,18 +80,18 @@ Right now there are couple of decorators available:
 
 | Decorator name      | Description                                                                                                   | Workflow                                  |
 | ------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| `after`             | Adds a hook that is called after the interactor is executed.                                                  | ![after](./docs/after.drawio.svg)         |
-| `before`            | Adds a hook that is called before the interactor is executed.                                                 | ![before](./docs/before.drawio.svg)       |
-| `watchBusyState`    | Adds a hook that is called when the interactor starts & ends.                                                 | ![busystate](./docs/busystate.drawio.svg) |
-| `debounceBusyState` | Adds a hook that is called with a specified debounce when the interactor starts & ends.                       | ![busystate](./docs/busystate.drawio.svg) |
-| `intercept`         | Adds a hook that is called when the interactor fails.                                                         | ![catch](./docs/intercept.drawio.svg)     |
-| `typedIntercept`    | Adds a hook that is called when the interactor fails with a specific exception type.                          | ![catch](./docs/intercept.drawio.svg)     |
-| `eventually`           | Adds a hook that is called when the interactor finishes.                                                      | ![finally](./docs/eventually.drawio.svg)     |
-| `log`               | Times the operation and produces a message that can be displayed through logging library.                     | ![log](./docs/log.drawio.svg)             |
-| `map`               | Converts the output of the interactor.                                                                        | ![map](./docs/map.drawio.svg)             |
-| `recover`           | Calls a given callback when an exception has been thrown. The callback must return a fallback output.         | ![recover](./docs/recover.drawio.svg)     |
-| `typedRecover`      | Calls a given callback when a specific exception has been thrown. The callback must return a fallback output. | ![recover](./docs/recover.drawio.svg)     |
-| `timeout`           | Adds a timeout to the interactor.                                                                             | ![timeout](./docs/timeout.drawio.svg)     |
+| `after`             | Adds a hook that is called after the interactor is executed.                                                  | ![after](./doc/after.drawio.svg)         |
+| `before`            | Adds a hook that is called before the interactor is executed.                                                 | ![before](./doc/before.drawio.svg)       |
+| `watchBusyState`    | Adds a hook that is called when the interactor starts & ends.                                                 | ![busystate](./doc/busystate.drawio.svg) |
+| `debounceBusyState` | Adds a hook that is called with a specified debounce when the interactor starts & ends.                       | ![busystate](./doc/busystate.drawio.svg) |
+| `intercept`         | Adds a hook that is called when the interactor fails.                                                         | ![catch](./doc/intercept.drawio.svg)     |
+| `typedIntercept`    | Adds a hook that is called when the interactor fails with a specific exception type.                          | ![catch](./doc/intercept.drawio.svg)     |
+| `eventually`           | Adds a hook that is called when the interactor finishes.                                                      | ![finally](./doc/eventually.drawio.svg)     |
+| `log`               | Times the operation and produces a message that can be displayed through logging library.                     | ![log](./doc/log.drawio.svg)             |
+| `map`               | Converts the output of the interactor.                                                                        | ![map](./doc/map.drawio.svg)             |
+| `recover`           | Calls a given callback when an exception has been thrown. The callback must return a fallback output.         | ![recover](./doc/recover.drawio.svg)     |
+| `typedRecover`      | Calls a given callback when a specific exception has been thrown. The callback must return a fallback output. | ![recover](./doc/recover.drawio.svg)     |
+| `timeout`           | Adds a timeout to the interactor.                                                                             | ![timeout](./doc/timeout.drawio.svg)     |
 
 ## Order Matters
 
@@ -99,7 +99,7 @@ The graphic below shows in which order each decorator is going to append itself 
 
 <table>
 <td>
-<img src="./docs/chained.drawio.svg" alt="workflow visualization" style="width: 400px;">
+<img src="./doc/chained.drawio.svg" alt="workflow visualization" style="width: 400px;">
 </td>
 <td style="vertical-align: top;">
 
@@ -121,11 +121,13 @@ It is possible to write custom decorators that modify that invocation-flow of th
 Examples can be found [here](lib/src/).
 
 ```dart
-fun <Input, Output> ParameterizedResultInteractor<Input, Output>.delayed(
-    duration: Duration
-) = ParameterizedResultInteractor<Input, Output> {
-    delay(duration)
-    this@delayed.execute(it)
+extension CustomModifier<Input, Output> on ParameterizedResultInteractor<Input, Output> {
+  ParameterizedResultInteractor<Input, Output> customModifier() {
+    return InlinedParameterizedResultInteractor((input) {
+      print("I am here!")
+      return await execute(input);
+    });
+  }
 }
 ```
 

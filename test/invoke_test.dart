@@ -1,3 +1,4 @@
+import 'package:dartz/dartz.dart';
 import 'package:test/test.dart';
 import 'package:use_in_case/src/interactor.dart';
 import 'package:use_in_case/src/invoke.dart';
@@ -12,6 +13,13 @@ final class _RunInteractor
   Future<int> execute(String input) async {
     called = true;
     return int.parse(input);
+  }
+}
+
+final class _ThrowErrorInteracctor implements ResultInteractor<int> {
+  @override
+  Future<int> execute(Unit unit) async {
+    throw ArgumentError('Invalid argument');
   }
 }
 
@@ -104,6 +112,26 @@ void main() {
 
     test('should throw FormatException', () async {
       expect(await interactor.getOrElse('42.0', (_) async => -1), equals(-1));
+    });
+  });
+
+  group('invocation with errors', () {
+    late ParameterizedResultInteractor<Unit, int> interactor;
+
+    setUp(() {
+      interactor = _ThrowErrorInteracctor();
+    });
+
+    test('should throw ArgumentError', () {
+      expect(() => interactor.getOrThrow(unit), throwsArgumentError);
+    });
+
+    test('should return null', () async {
+      expect(interactor.getOrNull(unit), completion(isNull));
+    });
+
+    test('should not return fallback value due to error not exception', () {
+      expect(() => interactor.getOrElse(unit, (_) => -1), throwsArgumentError);
     });
   });
 }

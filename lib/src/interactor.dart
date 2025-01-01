@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:dartz/dartz.dart';
 
+/// Defines the interface for an interactor.
+/// All interactors must implement this interface in order to fit into the use case architecture.
 abstract interface class ParameterizedResultInteractor<Input, Output> {
   FutureOr<Output> execute(Input input);
 }

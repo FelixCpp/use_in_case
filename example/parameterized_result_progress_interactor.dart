@@ -43,7 +43,8 @@ void main() async {
         final duration = (stopwatch..stop()).elapsed;
         print('The download took: ${duration.inSeconds}s');
       })
-      .timeout(const Duration(seconds: 2), errorMessage: 'Download timed out')
+      .timeout(const Duration(seconds: 2),
+          errorMessage: () => 'Download timed out')
       .typedRecover<TimeoutException>((error) async {
         return 0;
       })

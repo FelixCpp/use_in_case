@@ -4,33 +4,39 @@ import 'package:use_in_case/src/interactor.dart';
 
 extension Invoke<Input, Output>
     on ParameterizedResultInteractor<Input, Output> {
-  FutureOr<void> runUnsafe(Input input) => execute(input);
-  FutureOr<void> run(Input input) async {
+  /// Executes the interactor and returns the output.
+  /// If an exception is thrown, it will be propagated.
+  Future<void> runUnsafe(Input input) => Future(() => execute(input));
+
+  /// Executes the interactor and returns the output.
+  /// If an exception is thrown, it will be caught and ignored.
+  Future<void> run(Input input) async {
     try {
       await execute(input);
     } catch (_) {}
   }
 
-  FutureOr<Output> getOrThrow(Input input) {
-    return execute(input);
+  /// Executes the interactor and returns the output.
+  /// If an exception is thrown, it will be propagated.
+  Future<Output> getOrThrow(Input input) => Future(() => execute(input));
+
+  /// Executes the interactor and returns the output.
+  /// If an exception is thrown, it will be caught and null will be returned.
+  Future<Output?> getOrNull(Input input) {
+    return getOrThrow(input)
+        .then((value) => Future<Output?>.value(value))
+        .onError((_, __) => null);
   }
 
-  FutureOr<Output?> getOrNull(Input input) async {
-    try {
-      return await execute(input);
-    } catch (_) {
-      return null;
-    }
-  }
-
+  /// Executes the interactor and returns the output.
+  /// If an exception is thrown, the [fallback] function will be called and its result will be returned.
   Future<Output> getOrElse(
     Input input,
     FutureOr<Output> Function(Exception) fallback,
-  ) async {
-    try {
-      return await execute(input);
-    } on Exception catch (exception) {
-      return await fallback(exception);
-    }
+  ) {
+    return getOrThrow(input).onError(
+      (error, _) => fallback(error as Exception),
+      test: (error) => error is Exception,
+    );
   }
 }
