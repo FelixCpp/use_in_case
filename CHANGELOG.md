@@ -1,4 +1,4 @@
-## 0.1.0
+# 0.1.0
 
 ### Core Classes
 - Base Class "[Interactor](lib/src/interactor.dart)" added
@@ -19,7 +19,7 @@
 - Test "[default configuration test](test/default_configuration_test.dart)" added
 - Test "[on event test](test/modifiers/on_event_test.dart)" added
 
-## 1.0.0
+# 1.0.0
 
 I'm glad to announce that Versin 2 has reached its initial state that can be published!
 
@@ -78,6 +78,26 @@ I'm glad to announce that Versin 2 has reached its initial state that can be pub
 ### Cleanup
 Removed pretty much all dependencies from the [pubspec](./pubspec.yaml) except darz for the unit type.
 Removed use_in_case2.0 branch from git-workflow filter.
+
+# 1.1.0
+
+### Documentation
+- Code Documentation added in [after.dart](lib/src/after.dart)
+- Code Documentation added in [before.dart](lib/src/before.dart)
+- Code Documentation added in [busy_state.dart](lib/src/busy_state.dart)
+- Code Documentation added in [eventually.dart](lib/src/eventually.dart)
+- Code Documentation added in [interactor.dart](lib/src/interactor.dart)
+- Code Documentation added in [intercept.dart](lib/src/intercept.dart)
+- Code Documentation added in [invoke.dart](lib/src/invoke.dart)
+- Code Documentation added in [log.dart](lib/src/log.dart)
+- Code Documentation added in [map.dart](lib/src/map.dart)
+- Code Documentation added in [progress.dart](lib/src/progress.dart)
+- Code Documentation added in [recover.dart](lib/src/recover.dart)
+- Code Documentation added in [timeout.dart](lib/src/timeout.dart)
+
+### Breaking Changes
+
+`errorMessage` parameter in [`timeout`](./lib/src/timeout.dart) modifier has been migrated to be a lazily-invoked callback due to unnecessary evaluation.
 
 #### Note
 * Some design decisions may not be final and may change completely in future releases.
