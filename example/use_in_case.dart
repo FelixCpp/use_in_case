@@ -11,6 +11,6 @@ final class StringToIntConverter
 
 void main() async {
   final interactor = StringToIntConverter();
-  final result = await interactor.execute('42');
+  final result = await interactor.getOrThrow('42');
   print(result); // 42
 }

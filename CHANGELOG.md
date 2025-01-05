@@ -99,6 +99,7 @@ Removed use_in_case2.0 branch from git-workflow filter.
 
 `errorMessage` parameter in [`timeout`](./lib/src/timeout.dart) modifier has been migrated to be a lazily-invoked callback due to unnecessary evaluation.
 
-#### Note
-* Some design decisions may not be final and may change completely in future releases.
-* README's may contain content that isn't present yet but will be published quiet soon.
+# 1.1.1
+
+- Removed documentation of deprecated method `debounceBusyState` in README.md
+- Updated [example](./example/use_in_case.dart) to call getOrThrow instead of execute.

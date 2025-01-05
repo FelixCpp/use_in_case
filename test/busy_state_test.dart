@@ -14,9 +14,7 @@ void main() {
     test('should invoke callback in correct order', () async {
       final order = <bool>[];
 
-      await sut
-          .watchBusyState((isBusy) async => order.add(isBusy))
-          .getOrThrow('42');
+      await sut.watchBusyState((isBusy) => order.add(isBusy)).getOrThrow('42');
 
       expect(order, orderedEquals([true, false]));
     });
@@ -25,9 +23,8 @@ void main() {
       final order = <bool>[];
 
       await expectLater(
-        () => sut
-            .watchBusyState((isBusy) async => order.add(isBusy))
-            .getOrThrow('NaN'),
+        () =>
+            sut.watchBusyState((isBusy) => order.add(isBusy)).getOrThrow('NaN'),
         throwsA(isA<FormatException>()),
       );
 

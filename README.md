@@ -124,7 +124,7 @@ extension CustomModifier<Input, Output> on ParameterizedResultInteractor<Input, 
   ParameterizedResultInteractor<Input, Output> customModifier() {
     return InlinedParameterizedResultInteractor((input) {
       print("I am here!")
-      return await execute(input);
+      return execute(input);
     });
   }
 }
