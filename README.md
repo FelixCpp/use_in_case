@@ -41,22 +41,22 @@ final converter = StringToIntConverter();
 
 /// ...
 
-final _ = await converter.getOrThrow("123"); // Outputs: 123
-final _ = await converter.getOrNull("not-a-number"); // Outputs: null
-final _ = await converter.getOrElse("word", (_) async => -1); // Outputs: -1
-final _ = await converter.run("123"); // Outputs: Nothing (void)
+Future<int>  _ = converter.getOrThrow("123"); // Outputs: 123
+Future<int?> _ = converter.getOrNull("not-a-number"); // Outputs: null
+Future<int>  _ = converter.getOrElse("word", (_) => -1); // Outputs: -1
+Future<void> _ = converter.run("123"); // Outputs: Nothing (void)
+Future<void> _ = converter.run("word"); // Doesn't throw & returns void
+Future<void> _ = converter.runUnsafe("123"); // Outputs: Nothing (void)
+Future<void> _ = converter.runUnsafe("word"); // Throws exception
 ```
 
-Notice the `getOrThrow` method. This is a helper method that is provided by the library to call the
-interactor and throw an exception if the interactor fails.
-Besides `getOrThrow` there are also some other methods to consider calling when needed.
-
-| Method name  | Description                                                                |
-| ------------ | -------------------------------------------------------------------------- |
-| `getOrThrow` | Calls the interactor and throws an exception if the interactor fails.      |
-| `getOrNull`  | Calls the interactor and returns `null` if the interactor fails.           |
-| `getOrElse`  | Calls the interactor and returns a fallback value if the interactor fails. |
-| `run`        | Calls the interactor and ignores the result.                               |
+| Method name  | Description                                                                                  |
+| ------------ | -------------------------------------------------------------------------------------------- |
+| `getOrThrow` | Calls the interactor and throws an exception if the interactor fails.                        |
+| `getOrNull`  | Calls the interactor and returns `null` if the interactor fails.                             |
+| `getOrElse`  | Calls the interactor and returns a fallback value if the interactor fails.                   |
+| `run`        | Calls the interactor and ignores the result. Also this method does not throw.                                                 |
+| `runUnsafe`  | Calls the interactor and throws an exception in case of a failure. The return type is void.  |
 
 ## Customization
 
@@ -66,7 +66,7 @@ This can be achieved by chaining multiple decorators to the interactor.
 In the end your invocation-flow might look like this:
 
 ```dart
-val result = stringToIntConverter
+final result = stringToIntConverter
     .timeout(const Duration(seconds: 5))
     .before((input) => print("Trying to convert $input to string."))
     .after((output) => print("Successfully converted number to string. Result: $output"))
@@ -83,10 +83,9 @@ Right now there are couple of decorators available:
 | `after`             | Adds a hook that is called after the interactor is executed.                                                  | ![after](./doc/after.drawio.svg)         |
 | `before`            | Adds a hook that is called before the interactor is executed.                                                 | ![before](./doc/before.drawio.svg)       |
 | `watchBusyState`    | Adds a hook that is called when the interactor starts & ends.                                                 | ![busystate](./doc/busystate.drawio.svg) |
-| `debounceBusyState` | Adds a hook that is called with a specified debounce when the interactor starts & ends.                       | ![busystate](./doc/busystate.drawio.svg) |
+| `eventually`           | Adds a hook that is called when the interactor finishes.                                                   | ![finally](./doc/eventually.drawio.svg)     |
 | `intercept`         | Adds a hook that is called when the interactor fails.                                                         | ![catch](./doc/intercept.drawio.svg)     |
 | `typedIntercept`    | Adds a hook that is called when the interactor fails with a specific exception type.                          | ![catch](./doc/intercept.drawio.svg)     |
-| `eventually`           | Adds a hook that is called when the interactor finishes.                                                      | ![finally](./doc/eventually.drawio.svg)     |
 | `log`               | Times the operation and produces a message that can be displayed through logging library.                     | ![log](./doc/log.drawio.svg)             |
 | `map`               | Converts the output of the interactor.                                                                        | ![map](./doc/map.drawio.svg)             |
 | `recover`           | Calls a given callback when an exception has been thrown. The callback must return a fallback output.         | ![recover](./doc/recover.drawio.svg)     |
@@ -105,10 +104,10 @@ The graphic below shows in which order each decorator is going to append itself 
 
 ```dart
 myInteractor
-    .intercept((it) => print("Exception caught: $it"))
-    .before((it) => print("Interactor called with parameter = $it"))
-    .after((it) => println("Output produced: $it"))
-    .watchBusyState((it) => println("Busy State: $it"))
+    .intercept((exception) => print("Exception caught: $exception"))
+    .before((input) => print("Interactor called with parameter = $input"))
+    .after((output) => println("Output produced: $output"))
+    .watchBusyState((isBusy) => println("Busy State: $isBusy"))
 ```
 </td>
 </table>
