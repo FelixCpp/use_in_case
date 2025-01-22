@@ -105,3 +105,7 @@ Removed use_in_case2.0 branch from git-workflow filter.
 - Updated [example](./example/use_in_case.dart) to call getOrThrow instead of execute.
 - Renamed execute interactor to runUnsafe
 - Edited documentation to match the new interactor signature.
+
+# 1.2.1
+
+- Added [map](lib/src/map.dart) to library export
