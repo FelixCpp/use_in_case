@@ -3,7 +3,7 @@ import 'package:use_in_case/use_in_case.dart';
 
 final class Runner implements Interactor {
   @override
-  Future<void> execute(Unit _) async {
+  Future<void> runUnsafe(Unit _) async {
     print('Hello, World!');
   }
 }

@@ -2,30 +2,29 @@ import 'dart:async';
 
 import 'package:use_in_case/src/interactor.dart';
 
-extension Invoke<Input, Output>
-    on ParameterizedResultInteractor<Input, Output> {
-  /// Executes the interactor and returns the output.
-  /// If an exception is thrown, it will be propagated.
-  Future<void> runUnsafe(Input input) => Future(() => execute(input));
-
+extension Invoke<Input, Output> on ParameterizedResultInteractor<Input, Output> {
   /// Executes the interactor and returns the output.
   /// If an exception is thrown, it will be caught and ignored.
   Future<void> run(Input input) async {
     try {
-      await execute(input);
+      await runUnsafe(input);
     } catch (_) {}
   }
 
   /// Executes the interactor and returns the output.
   /// If an exception is thrown, it will be propagated.
-  Future<Output> getOrThrow(Input input) => Future(() => execute(input));
+  Future<Output> getOrThrow(Input input) async {
+    return await runUnsafe(input);
+  }
 
   /// Executes the interactor and returns the output.
   /// If an exception is thrown, it will be caught and null will be returned.
-  Future<Output?> getOrNull(Input input) {
-    return getOrThrow(input)
-        .then((value) => Future<Output?>.value(value))
-        .onError((_, __) => null);
+  Future<Output?> getOrNull(Input input) async {
+    try {
+      return await runUnsafe(input);
+    } catch (_) {
+      return null;
+    }
   }
 
   /// Executes the interactor and returns the output.
@@ -33,10 +32,13 @@ extension Invoke<Input, Output>
   Future<Output> getOrElse(
     Input input,
     FutureOr<Output> Function(Exception) fallback,
-  ) {
-    return getOrThrow(input).onError(
-      (error, _) => fallback(error as Exception),
-      test: (error) => error is Exception,
-    );
+  ) async {
+    try {
+      return await runUnsafe(input);
+    } on Exception catch (exception) {
+      return await fallback(exception);
+    }
   }
 }
+
+extension DeprecatedInvocations<Input, Output> on ParameterizedResultInteractor<Input, Output> {}

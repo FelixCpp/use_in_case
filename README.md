@@ -29,7 +29,7 @@ How to call an interactor in your code:
 // Define an interactor that does something. He must extend/implement a type mentioned above.
 final class StringToIntConverter implements ParameterizedResultInteractor<String, int> {
     @override
-    Future<int> execute(String input) async {
+    Future<int> runUnsafe(String input) async {
         return int.parse(input);
     }
 }
@@ -55,7 +55,7 @@ Future<void> _ = converter.runUnsafe("word"); // Throws exception
 | `getOrThrow` | Calls the interactor and throws an exception if the interactor fails.                        |
 | `getOrNull`  | Calls the interactor and returns `null` if the interactor fails.                             |
 | `getOrElse`  | Calls the interactor and returns a fallback value if the interactor fails.                   |
-| `run`        | Calls the interactor and ignores the result. Also this method does not throw.                                                 |
+| `run`        | Calls the interactor and ignores the result. Also this method does not throw.                |
 | `runUnsafe`  | Calls the interactor and throws an exception in case of a failure. The return type is void.  |
 
 ## Customization
@@ -80,17 +80,19 @@ Right now there are couple of decorators available:
 
 | Decorator name      | Description                                                                                                   | Workflow                                  |
 | ------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| `after`             | Adds a hook that is called after the interactor is executed.                                                  | ![after](./doc/after.drawio.svg)         |
-| `before`            | Adds a hook that is called before the interactor is executed.                                                 | ![before](./doc/before.drawio.svg)       |
-| `watchBusyState`    | Adds a hook that is called when the interactor starts & ends.                                                 | ![busystate](./doc/busystate.drawio.svg) |
-| `eventually`           | Adds a hook that is called when the interactor finishes.                                                   | ![finally](./doc/eventually.drawio.svg)     |
-| `intercept`         | Adds a hook that is called when the interactor fails.                                                         | ![catch](./doc/intercept.drawio.svg)     |
-| `typedIntercept`    | Adds a hook that is called when the interactor fails with a specific exception type.                          | ![catch](./doc/intercept.drawio.svg)     |
-| `log`               | Times the operation and produces a message that can be displayed through logging library.                     | ![log](./doc/log.drawio.svg)             |
-| `map`               | Converts the output of the interactor.                                                                        | ![map](./doc/map.drawio.svg)             |
-| `recover`           | Calls a given callback when an exception has been thrown. The callback must return a fallback output.         | ![recover](./doc/recover.drawio.svg)     |
-| `typedRecover`      | Calls a given callback when a specific exception has been thrown. The callback must return a fallback output. | ![recover](./doc/recover.drawio.svg)     |
-| `timeout`           | Adds a timeout to the interactor.                                                                             | ![timeout](./doc/timeout.drawio.svg)     |
+| `after`             | Adds a hook that is called after the interactor is executed.                                                  | ![after](./doc/after.drawio.svg)          |
+| `before`            | Adds a hook that is called before the interactor is executed.                                                 | ![before](./doc/before.drawio.svg)        |
+| `watchBusyState`    | Adds a hook that is called when the interactor starts & ends.                                                 | ![busystate](./doc/busystate.drawio.svg)  |
+| `eventually`        | Adds a hook that is called when the interactor finishes.                                                      | ![finally](./doc/eventually.drawio.svg)   |
+| `intercept`         | Adds a hook that is called when the interactor fails.                                                         | ![catch](./doc/intercept.drawio.svg)      |
+| `typedIntercept`    | Adds a hook that is called when the interactor fails with a specific exception type.                          | ![catch](./doc/intercept.drawio.svg)      |
+| `checkedIntercept`  | Adds a hook that is called when the interactor fails and a given predicate returns true.                      | ![catch](./doc/intercept.drawio.svg)      |
+| `log`               | Times the operation and produces a message that can be displayed through logging library.                     | ![log](./doc/log.drawio.svg)              |
+| `map`               | Converts the output of the interactor.                                                                        | ![map](./doc/map.drawio.svg)              |
+| `recover`           | Calls a given callback when an exception has been thrown. The callback must return a fallback output.         | ![recover](./doc/recover.drawio.svg)      |
+| `typedRecover`      | Calls a given callback when a specific exception has been thrown. The callback must return a fallback output. | ![recover](./doc/recover.drawio.svg)      |
+| `checkedRecover`    | Calls a given callback when the given predicate returns true. The callback must return a fallback output.     | ![recover](./doc/recover.drawio.svg)      |
+| `timeout`           | Adds a timeout to the interactor.                                                                             | ![timeout](./doc/timeout.drawio.svg)      |
 
 ## Order Matters
 
@@ -124,7 +126,7 @@ extension CustomModifier<Input, Output> on ParameterizedResultInteractor<Input, 
   ParameterizedResultInteractor<Input, Output> customModifier() {
     return InlinedParameterizedResultInteractor((input) {
       print("I am here!")
-      return execute(input);
+      return await runUnsafe(input);
     });
   }
 }
@@ -149,7 +151,7 @@ typedef DownloadProgress = int;
 final class FileDownloadInteractor extends ParameterizedResultProgressInteractor<
     Parameter, DownloadedBytes, DownloadProgress> {
   @override
-  Future<DownloadedBytes> execute(Parameter input) async {
+  Future<DownloadedBytes> runUnsafe(Parameter input) async {
     // TODO: Implement your file download here
 
     await emitProgress(0);

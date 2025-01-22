@@ -6,7 +6,7 @@ final class Counter implements ResultInteractor<int> {
   int _counter = 0;
 
   @override
-  Future<int> execute(Unit _) async {
+  Future<int> runUnsafe(Unit _) async {
     return _counter++;
   }
 }

@@ -17,9 +17,7 @@ void main() {
       Exception? interceptedException;
 
       await expectLater(
-        () => sut
-            .intercept((e) async => interceptedException = e)
-            .getOrThrow('input'),
+        () => sut.intercept((e) async => interceptedException = e).getOrThrow('input'),
         throwsA(isA<FormatException>()),
       );
 
@@ -38,9 +36,7 @@ void main() {
       var called = false;
 
       await expectLater(
-        () => sut
-            .typedIntercept<FormatException>((e) async => called = true)
-            .getOrThrow('input'),
+        () => sut.typedIntercept<FormatException>((e) async => called = true).getOrThrow('input'),
         throwsA(isA<FormatException>()),
       );
 
@@ -51,9 +47,7 @@ void main() {
       var called = false;
 
       await expectLater(
-        () => sut
-            .typedIntercept<TimeoutException>((e) async => called = true)
-            .getOrThrow('input'),
+        () => sut.typedIntercept<TimeoutException>((e) async => called = true).getOrThrow('input'),
         throwsA(isA<FormatException>()),
       );
 

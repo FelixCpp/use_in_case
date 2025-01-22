@@ -2,7 +2,7 @@ import 'package:use_in_case/use_in_case.dart';
 
 final class Converter implements ParameterizedResultInteractor<String, int> {
   @override
-  Future<int> execute(String input) async {
+  Future<int> runUnsafe(String input) async {
     return int.parse(input);
   }
 }

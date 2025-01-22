@@ -3,14 +3,12 @@ import 'package:use_in_case/use_in_case.dart';
 
 final class Printer implements Interactor {
   @override
-  Future<void> execute(Unit input) async {
+  Future<void> runUnsafe(Unit input) async {
     print('Goodbye!');
   }
 }
 
 void main() async {
   final interactor = Printer();
-  await interactor
-      .eventually(() => print('Done.'))
-      .run(unit); // Hello!, Goodbye!
+  await interactor.eventually(() => print('Done.')).run(unit); // Hello!, Goodbye!
 }

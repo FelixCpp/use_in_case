@@ -47,8 +47,7 @@ extension Log<Input, Output> on ParameterizedResultInteractor<Input, Output> {
         await logStart(input);
 
         stopwatch.start();
-        final output = await execute(input);
-        stopwatch.stop();
+        final output = await runUnsafe(input);
 
         await logSuccess(stopwatch.elapsed, output);
 
@@ -68,10 +67,8 @@ extension Log<Input, Output> on ParameterizedResultInteractor<Input, Output> {
   }) {
     return logEvents(
       logStart: (input) => logStart('$tag started with $input'),
-      logSuccess: (duration, output) =>
-          logSuccess('$tag completed after $duration with $output'),
-      logError: (duration, exception) =>
-          logError('$tag failed after $duration with $exception'),
+      logSuccess: (duration, output) => logSuccess('$tag completed after $duration with $output'),
+      logError: (duration, exception) => logError('$tag failed after $duration with $exception'),
     );
   }
 }

@@ -2,7 +2,7 @@ import 'package:use_in_case/use_in_case.dart';
 
 final class Printer implements ParameterizedInteractor<String> {
   @override
-  Future<void> execute(String input) async {
+  Future<void> runUnsafe(String input) async {
     print(input);
   }
 }

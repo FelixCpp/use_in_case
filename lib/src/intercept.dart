@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:use_in_case/src/interactor.dart';
 
 /// Extension that adds the `intercept` method to the [ParameterizedResultInteractor] class.
-/// This method allows you to intercept exceptions thrown by the interactor's [execute] method.
+/// This method allows you to intercept exceptions thrown by the interactor's [runUnsafe] method.
 /// The callback will be called with the exception that was thrown.
 /// The exception will be rethrown after the callback has been executed.
 ///
@@ -22,30 +22,54 @@ import 'package:use_in_case/src/interactor.dart';
 ///  .typedIntercept<FormatException>((exception) => print('Exception: $exception'))
 ///  .run(input);
 /// ```
-extension Intercept<Input, Output>
-    on ParameterizedResultInteractor<Input, Output> {
-  /// Intercepts exceptions thrown by the interactor's [execute] method.
+///
+/// It is also possible to intercept exceptions based on a predicate:
+/// ```dart
+/// final interactor = MyInteractor();
+/// await interactor
+///   .checkedIntercept(
+///   (exception) => print('FormatException: $exception'),
+///   (exception) => exception is FormatException,
+/// ).run(input);
+/// ```
+extension Intercept<Input, Output> on ParameterizedResultInteractor<Input, Output> {
+  /// Intercepts exceptions thrown by the interactor's [runUnsafe] method.
+  /// [callback] will only be invoked when the [predicate] returned `true`.
   ///
-  /// See also: [typedIntercept]
-  ParameterizedResultInteractor<Input, Output> intercept(
+  /// See also: [typedIntercept], [intercept]
+  ParameterizedResultInteractor<Input, Output> checkedIntercept(
     FutureOr<void> Function(Exception) callback,
+    FutureOr<bool> Function(Exception) predicate,
   ) {
-    return typedIntercept<Exception>(callback);
+    return InlinedParameterizedResultInteractor((input) async {
+      try {
+        return await runUnsafe(input);
+      } on Exception catch (exception) {
+        if (await predicate(exception)) {
+          callback(exception);
+        }
+
+        rethrow;
+      }
+    });
   }
 
-  /// Intercepts exceptions of a specific type thrown by the interactor's [execute] method.
+  /// Intercepts exceptions of a specific type thrown by the interactor's [runUnsafe] method.
   ///
   /// See also: [intercept]
-  ParameterizedResultInteractor<Input, Output>
-      typedIntercept<ExceptionType extends Exception>(
+  ParameterizedResultInteractor<Input, Output> typedIntercept<ExceptionType extends Exception>(
     FutureOr<void> Function(ExceptionType) callback,
   ) {
-    return InlinedParameterizedResultInteractor((input) {
-      return Future(() => execute(input))
-          .onError<ExceptionType>((exception, _) {
-        callback(exception);
-        throw exception;
-      });
-    });
+    return checkedIntercept(
+      (exception) => callback(exception as ExceptionType),
+      (exception) => exception is ExceptionType,
+    );
+  }
+
+  /// Intercepts exceptions thrown by the interactor's [runUnsafe] method.
+  ///
+  /// See also: [typedIntercept]
+  ParameterizedResultInteractor<Input, Output> intercept(FutureOr<void> Function(Exception) callback) {
+    return typedIntercept<Exception>(callback);
   }
 }

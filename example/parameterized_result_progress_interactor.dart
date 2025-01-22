@@ -4,18 +4,14 @@ import 'package:use_in_case/use_in_case.dart';
 
 typedef SourceUrl = String;
 typedef DestinationFilepath = String;
-typedef Parameter = ({
-  SourceUrl sourceUrl,
-  DestinationFilepath destinationFilepath
-});
+typedef Parameter = ({SourceUrl sourceUrl, DestinationFilepath destinationFilepath});
 
 typedef DownloadedBytes = int;
 typedef DownloadProgress = int;
 
-final class ProgressCounter extends ParameterizedResultProgressInteractor<
-    Parameter, DownloadedBytes, DownloadProgress> {
+final class ProgressCounter extends ParameterizedResultProgressInteractor<Parameter, DownloadedBytes, DownloadProgress> {
   @override
-  Future<DownloadedBytes> execute(Parameter input) async {
+  Future<DownloadedBytes> runUnsafe(Parameter input) async {
     // TODO: Implement your file download here
 
     final totalBytes = 1000;
@@ -35,23 +31,19 @@ void main() async {
   final stopwatch = Stopwatch();
 
   final result = await interactor
-      .receiveProgress((progress) async {
+      .receiveProgress((progress) {
         print('Download-Progress: $progress%');
       })
       .before((_) async => stopwatch.start())
-      .eventually(() async {
+      .eventually(() {
         final duration = (stopwatch..stop()).elapsed;
         print('The download took: ${duration.inSeconds}s');
       })
-      .timeout(const Duration(seconds: 2),
-          errorMessage: () => 'Download timed out')
-      .typedRecover<TimeoutException>((error) async {
+      .timeout(const Duration(seconds: 2), errorMessage: () => 'Download timed out')
+      .typedRecover<TimeoutException>((error) {
         return 0;
       })
-      .getOrThrow((
-        sourceUrl: 'https://example.com/image.jpg',
-        destinationFilepath: 'image.jpg'
-      ));
+      .getOrThrow((sourceUrl: 'https://example.com/image.jpg', destinationFilepath: 'image.jpg'));
 
   print(result); // 1000
 }

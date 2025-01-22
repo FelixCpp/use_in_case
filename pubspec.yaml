@@ -1,6 +1,6 @@
 name: use_in_case
 description: An extendable library that provides functionality for use cases
-version: 1.1.0
+version: 1.2.0
 repository: https://github.com/FelixCpp/use_in_case
 
 environment:

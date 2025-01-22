@@ -19,15 +19,12 @@ typedef IsBusy = bool;
 ///   .watchBusyState((isBusy) => print('Is busy: $isBusy'))
 ///   .run(input);
 /// ```
-extension BusyState<Input, Output>
-    on ParameterizedResultInteractor<Input, Output> {
-  ParameterizedResultInteractor<Input, Output> watchBusyState(
-    FutureOr<void> Function(IsBusy) callback,
-  ) {
+extension BusyState<Input, Output> on ParameterizedResultInteractor<Input, Output> {
+  ParameterizedResultInteractor<Input, Output> watchBusyState(FutureOr<void> Function(IsBusy) callback) {
     return InlinedParameterizedResultInteractor((input) async {
       try {
         await callback(true);
-        return await execute(input);
+        return await runUnsafe(input);
       } finally {
         await callback(false);
       }

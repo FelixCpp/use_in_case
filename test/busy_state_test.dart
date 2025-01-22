@@ -23,8 +23,7 @@ void main() {
       final order = <bool>[];
 
       await expectLater(
-        () =>
-            sut.watchBusyState((isBusy) => order.add(isBusy)).getOrThrow('NaN'),
+        () => sut.watchBusyState((isBusy) => order.add(isBusy)).getOrThrow('NaN'),
         throwsA(isA<FormatException>()),
       );
 

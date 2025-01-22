@@ -103,3 +103,5 @@ Removed use_in_case2.0 branch from git-workflow filter.
 
 - Removed documentation of deprecated method `debounceBusyState` in README.md
 - Updated [example](./example/use_in_case.dart) to call getOrThrow instead of execute.
+- Renamed execute interactor to runUnsafe
+- Edited documentation to match the new interactor signature.
