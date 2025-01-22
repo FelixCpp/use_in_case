@@ -15,7 +15,9 @@ void main() {
 
     test('should timeout after 200ms', () async {
       await expectLater(
-        () => sut.timeout(const Duration(milliseconds: 200)).getOrThrow(Duration(milliseconds: 300)),
+        () => sut
+            .timeout(const Duration(milliseconds: 200))
+            .getOrThrow(Duration(milliseconds: 300)),
         throwsA(
           isA<TimeoutException>().having(
             (exception) => exception.duration,
@@ -68,7 +70,9 @@ void main() {
     });
 
     test('should not timeout', () async {
-      final result = await sut.timeout(const Duration(milliseconds: 200)).getOrThrow(Duration(milliseconds: 10));
+      final result = await sut
+          .timeout(const Duration(milliseconds: 200))
+          .getOrThrow(Duration(milliseconds: 10));
       expect(result, 10);
     });
   });

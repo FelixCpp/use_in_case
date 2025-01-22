@@ -10,5 +10,7 @@ final class Printer implements Interactor {
 
 void main() async {
   final interactor = Printer();
-  await interactor.watchBusyState((isBusy) async => print('Busy: $isBusy')).run(unit); // Busy: true, Working..., Busy: false
+  await interactor
+      .watchBusyState((isBusy) async => print('Busy: $isBusy'))
+      .run(unit); // Busy: true, Working..., Busy: false
 }

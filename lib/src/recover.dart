@@ -31,7 +31,8 @@ import 'package:use_in_case/src/interactor.dart';
 ///     (exception) => 'Recovered from: $exception',
 ///     (exception) => exception is FormatException,
 ///   ).run(input);
-extension Recover<Input, Output> on ParameterizedResultInteractor<Input, Output> {
+extension Recover<Input, Output>
+    on ParameterizedResultInteractor<Input, Output> {
   /// This method allows you to recover from an exception thrown by the interactor's [runUnsafe] method.
   /// Only exceptions that which the [predicate] returns `true` will be recovered from.
   ///
@@ -61,7 +62,8 @@ extension Recover<Input, Output> on ParameterizedResultInteractor<Input, Output>
   /// [callback] The callback to invoke when an [Exception] of type [ExceptionType] was thrown.
   ///
   /// See also: [checkedRecover], [recover]
-  ParameterizedResultInteractor<Input, Output> typedRecover<ExceptionType extends Exception>(
+  ParameterizedResultInteractor<Input, Output>
+      typedRecover<ExceptionType extends Exception>(
     FutureOr<Output> Function(ExceptionType) callback,
   ) {
     return checkedRecover(
@@ -75,7 +77,8 @@ extension Recover<Input, Output> on ParameterizedResultInteractor<Input, Output>
   /// [callback] The callback to invoke when an [Exception] was thrown.
   ///
   /// See also: [typedRecover], [checkedRecover]
-  ParameterizedResultInteractor<Input, Output> recover(FutureOr<Output> Function(Exception) callback) {
+  ParameterizedResultInteractor<Input, Output> recover(
+      FutureOr<Output> Function(Exception) callback) {
     return typedRecover<Exception>((exception) => callback(exception));
   }
 }

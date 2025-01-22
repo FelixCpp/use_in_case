@@ -10,5 +10,7 @@ final class Printer implements Interactor {
 
 void main() {
   final interactor = Printer();
-  interactor.intercept((exception) => print('Hello!')).run(unit); // Hello!, Goodbye!
+  interactor
+      .intercept((exception) => print('Hello!'))
+      .run(unit); // Hello!, Goodbye!
 }

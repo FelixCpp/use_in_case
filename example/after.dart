@@ -10,5 +10,7 @@ final class Printer implements Interactor {
 
 void main() async {
   final interactor = Printer();
-  await interactor.after((input) async => print('Goodbye!')).run(unit); // Hello!, Goodbye!
+  await interactor
+      .after((input) async => print('Goodbye!'))
+      .run(unit); // Hello!, Goodbye!
 }

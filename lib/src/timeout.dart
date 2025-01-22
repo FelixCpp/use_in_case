@@ -14,13 +14,15 @@ import 'package:use_in_case/src/interactor.dart';
 ///   .timeout(Duration(seconds: 5), errorMessage: () => 'The interactor took too long to complete.')
 ///   .run(input);
 /// ```
-extension Timeout<Input, Output> on ParameterizedResultInteractor<Input, Output> {
+extension Timeout<Input, Output>
+    on ParameterizedResultInteractor<Input, Output> {
   ParameterizedResultInteractor<Input, Output> timeout(
     Duration duration, {
     FutureOr<String?> Function()? errorMessage,
   }) {
     return InlinedParameterizedResultInteractor((input) {
-      return Future<Output>(() => runUnsafe(input)).timeout(duration, onTimeout: () async {
+      return Future<Output>(() => runUnsafe(input)).timeout(duration,
+          onTimeout: () async {
         final message = await errorMessage?.call();
         throw TimeoutException(message, duration);
       });

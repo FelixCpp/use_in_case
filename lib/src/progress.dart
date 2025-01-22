@@ -24,15 +24,20 @@ import 'package:use_in_case/src/interactor.dart';
 ///   return 'Download complete!';
 /// }
 /// ```
-abstract base class ParameterizedResultProgressInteractor<Input, Output, Progress> {
+abstract base class ParameterizedResultProgressInteractor<Input, Output,
+    Progress> {
   late final FutureOr<void> Function(Progress progress) callback;
   FutureOr<Output> runUnsafe(Input input);
-  Future<void> emitProgress(Progress progress) => Future(() => callback(progress));
+  Future<void> emitProgress(Progress progress) =>
+      Future(() => callback(progress));
 }
 
-typedef ParameterizedProgressInteractor<Input, Progress> = ParameterizedResultProgressInteractor<Input, void, Progress>;
-typedef ResultProgressInteractor<Output, Progress> = ParameterizedResultProgressInteractor<Unit, Output, Progress>;
-typedef ProgressInteractor<Progress> = ParameterizedResultProgressInteractor<Unit, void, Progress>;
+typedef ParameterizedProgressInteractor<Input, Progress>
+    = ParameterizedResultProgressInteractor<Input, void, Progress>;
+typedef ResultProgressInteractor<Output, Progress>
+    = ParameterizedResultProgressInteractor<Unit, Output, Progress>;
+typedef ProgressInteractor<Progress>
+    = ParameterizedResultProgressInteractor<Unit, void, Progress>;
 
 /// Extension that adds the `receiveProgress` method to the [ParameterizedResultProgressInteractor] class.
 /// This method allows you to receive progress events emitted by the interactor.
@@ -45,10 +50,13 @@ typedef ProgressInteractor<Progress> = ParameterizedResultProgressInteractor<Uni
 ///   .receiveProgress((progress) => print('Progress: $progress'))
 ///   .run(10);
 /// ```
-extension ReceiveProgressExtension<Input, Output, Progress> on ParameterizedResultProgressInteractor<Input, Output, Progress> {
-  ParameterizedResultInteractor<Input, Output> receiveProgress(FutureOr<void> Function(Progress) callback) {
+extension ReceiveProgressExtension<Input, Output, Progress>
+    on ParameterizedResultProgressInteractor<Input, Output, Progress> {
+  ParameterizedResultInteractor<Input, Output> receiveProgress(
+      FutureOr<void> Function(Progress) callback) {
     this.callback = callback;
 
-    return InlinedParameterizedResultInteractor<Input, Output>((input) => runUnsafe(input));
+    return InlinedParameterizedResultInteractor<Input, Output>(
+        (input) => runUnsafe(input));
   }
 }

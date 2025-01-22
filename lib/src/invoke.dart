@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:use_in_case/src/interactor.dart';
 
-extension Invoke<Input, Output> on ParameterizedResultInteractor<Input, Output> {
+extension Invoke<Input, Output>
+    on ParameterizedResultInteractor<Input, Output> {
   /// Executes the interactor and returns the output.
   /// If an exception is thrown, it will be caught and ignored.
   Future<void> run(Input input) async {
@@ -41,4 +42,5 @@ extension Invoke<Input, Output> on ParameterizedResultInteractor<Input, Output> 
   }
 }
 
-extension DeprecatedInvocations<Input, Output> on ParameterizedResultInteractor<Input, Output> {}
+extension DeprecatedInvocations<Input, Output>
+    on ParameterizedResultInteractor<Input, Output> {}

@@ -67,8 +67,10 @@ extension Log<Input, Output> on ParameterizedResultInteractor<Input, Output> {
   }) {
     return logEvents(
       logStart: (input) => logStart('$tag started with $input'),
-      logSuccess: (duration, output) => logSuccess('$tag completed after $duration with $output'),
-      logError: (duration, exception) => logError('$tag failed after $duration with $exception'),
+      logSuccess: (duration, output) =>
+          logSuccess('$tag completed after $duration with $output'),
+      logError: (duration, exception) =>
+          logError('$tag failed after $duration with $exception'),
     );
   }
 }

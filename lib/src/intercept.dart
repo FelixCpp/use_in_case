@@ -32,7 +32,8 @@ import 'package:use_in_case/src/interactor.dart';
 ///   (exception) => exception is FormatException,
 /// ).run(input);
 /// ```
-extension Intercept<Input, Output> on ParameterizedResultInteractor<Input, Output> {
+extension Intercept<Input, Output>
+    on ParameterizedResultInteractor<Input, Output> {
   /// Intercepts exceptions thrown by the interactor's [runUnsafe] method.
   /// [callback] will only be invoked when the [predicate] returned `true`.
   ///
@@ -57,7 +58,8 @@ extension Intercept<Input, Output> on ParameterizedResultInteractor<Input, Outpu
   /// Intercepts exceptions of a specific type thrown by the interactor's [runUnsafe] method.
   ///
   /// See also: [intercept]
-  ParameterizedResultInteractor<Input, Output> typedIntercept<ExceptionType extends Exception>(
+  ParameterizedResultInteractor<Input, Output>
+      typedIntercept<ExceptionType extends Exception>(
     FutureOr<void> Function(ExceptionType) callback,
   ) {
     return checkedIntercept(
@@ -69,7 +71,8 @@ extension Intercept<Input, Output> on ParameterizedResultInteractor<Input, Outpu
   /// Intercepts exceptions thrown by the interactor's [runUnsafe] method.
   ///
   /// See also: [typedIntercept]
-  ParameterizedResultInteractor<Input, Output> intercept(FutureOr<void> Function(Exception) callback) {
+  ParameterizedResultInteractor<Input, Output> intercept(
+      FutureOr<void> Function(Exception) callback) {
     return typedIntercept<Exception>(callback);
   }
 }

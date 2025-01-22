@@ -5,7 +5,8 @@ import 'package:use_in_case/src/invoke.dart';
 
 import 'test_interactor.dart';
 
-final class _RunInteractor implements ParameterizedResultInteractor<String, int> {
+final class _RunInteractor
+    implements ParameterizedResultInteractor<String, int> {
   var called = false;
 
   @override

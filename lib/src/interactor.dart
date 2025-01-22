@@ -8,11 +8,13 @@ abstract interface class ParameterizedResultInteractor<Input, Output> {
   FutureOr<Output> runUnsafe(Input input);
 }
 
-typedef ParameterizedInteractor<Input> = ParameterizedResultInteractor<Input, void>;
+typedef ParameterizedInteractor<Input>
+    = ParameterizedResultInteractor<Input, void>;
 typedef ResultInteractor<Output> = ParameterizedResultInteractor<Unit, Output>;
 typedef Interactor = ParameterizedResultInteractor<Unit, void>;
 
-final class InlinedParameterizedResultInteractor<Input, Output> implements ParameterizedResultInteractor<Input, Output> {
+final class InlinedParameterizedResultInteractor<Input, Output>
+    implements ParameterizedResultInteractor<Input, Output> {
   final FutureOr<Output> Function(Input input) _execute;
   const InlinedParameterizedResultInteractor(this._execute);
 
