@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:use_in_case/use_in_case.dart';
 
-extension Measure<Input, Output>
+extension MeasureTime<Input, Output>
     on ParameterizedResultInteractor<Input, Output> {
   /// Measures the time it takes to run the interactor.
   /// [callback] will be invoked regardless of the interactor's success or failure.
@@ -10,22 +10,16 @@ extension Measure<Input, Output>
   /// For example:
   /// ```dart
   /// myInteractor
-  ///   .measure((elapsed) => println('Elapsed Duration: $elapsed')
+  ///   .measureTime((elapsed) => println('Elapsed Duration: $elapsed')
   ///   .run(input);
   /// ```
-  ParameterizedResultInteractor<Input, Output> measure(
+  ParameterizedResultInteractor<Input, Output> measureTime(
     FutureOr<void> Function(Duration) callback,
   ) {
-    return InlinedParameterizedResultInteractor((input) async {
-      final stopwatch = Stopwatch()..start();
-      try {
-        final output = await runUnsafe(input);
-        await callback(stopwatch.elapsed);
-        return output;
-      } finally {
-        await callback(stopwatch.elapsed);
-      }
-    });
+    final stopwatch = Stopwatch();
+
+    return before((_) => stopwatch.start())
+        .eventually(() => callback(stopwatch.elapsed));
   }
 
   /// Measures the time it takes to run the interactor.
@@ -36,17 +30,16 @@ extension Measure<Input, Output>
   /// For example:
   /// ```dart
   /// final (elapsedTime, result) = await myInteractor
-  ///   .measuredValue()
+  ///   .measureTimedValue()
   ///   .getOrThrow(input);
   ///
   /// print('Elapsed Duration: $elapsed');
   /// print('Result: $result');
   /// ```
-  ParameterizedResultInteractor<Input, (Duration, Output)> measuredValue() {
-    return InlinedParameterizedResultInteractor((input) async {
-      final stopwatch = Stopwatch()..start();
-      final output = await runUnsafe(input);
-      return (stopwatch.elapsed, output);
-    });
+  ParameterizedResultInteractor<Input, (Duration, Output)> measureTimedValue() {
+    final stopwatch = Stopwatch();
+
+    return before((_) => stopwatch.start())
+        .map((output) => (stopwatch.elapsed, output));
   }
 }

@@ -5,13 +5,13 @@ import 'package:use_in_case/use_in_case.dart';
 import 'test_interactor.dart';
 
 void main() {
-  group("measure", () {
+  group("measureTime", () {
     test('should measure at least a runtime of 100ms', () async {
       final ParameterizedResultInteractor<Duration, int> sut =
           WaitingInteractor();
       Duration? measuredTime;
 
-      final waitedMillis = await sut.measure((elapsed) async {
+      final waitedMillis = await sut.measureTime((elapsed) async {
         measuredTime = elapsed;
       }).getOrThrow(Duration(milliseconds: 100));
 
@@ -28,12 +28,44 @@ void main() {
 
         final result = sut
             .eventually(() => Future.delayed(Duration(milliseconds: 100)))
-            .measure((elapsed) => measuredTime = elapsed)
+            .measureTime((elapsed) => measuredTime = elapsed)
             .runUnsafe(unit);
 
         await expectLater(result, throwsException);
         expect(measuredTime, isNotNull);
         expect(measuredTime, greaterThanOrEqualTo(Duration(milliseconds: 100)));
+      },
+    );
+  });
+
+  group('measureTimedValue', () {
+    late ParameterizedResultInteractor<String, int> sut;
+
+    setUp(() {
+      sut = TestInteractor();
+    });
+
+    test('should output the duration and result of the interactor', () async {
+      final (duration, value) = await sut
+          .after((_) => Future.delayed(const Duration(milliseconds: 100)))
+          .measureTimedValue()
+          .getOrThrow('42');
+
+      expect(duration, greaterThanOrEqualTo(const Duration(milliseconds: 100)));
+      expect(value, equals(42));
+    });
+
+    test(
+      'should output the duration and result of the interactor even when throwing',
+      () async {
+        final Interactor sut = ThrowingInteractor();
+
+        final result = sut
+            .eventually(() => Future.delayed(const Duration(milliseconds: 100)))
+            .measureTimedValue()
+            .getOrThrow(unit);
+
+        await expectLater(result, throwsException);
       },
     );
   });

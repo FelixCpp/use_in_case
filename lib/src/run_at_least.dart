@@ -15,7 +15,7 @@ extension RunAtLeast<Input, Output>
   ///
   /// See: [measure]
   ParameterizedResultInteractor<Input, Output> runAtLeast(Duration duration) {
-    return measure((elapsed) async {
+    return measureTime((elapsed) async {
       if (elapsed < duration) {
         await Future.delayed(duration - elapsed);
       }

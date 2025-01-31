@@ -12,7 +12,7 @@ void main() {
 
       await sut
           .runAtLeast(Duration(milliseconds: 100))
-          .measure((elapsed) => measuredTime = elapsed)
+          .measureTime((elapsed) => measuredTime = elapsed)
           .run(Duration(milliseconds: 20));
 
       expect(measuredTime, isNotNull);
@@ -26,7 +26,7 @@ void main() {
       await sut
           .runAtLeast(Duration(milliseconds: 100))
           .eventually(() => Future.delayed(Duration(milliseconds: 20)))
-          .measure((elapsed) => measuredTime = elapsed)
+          .measureTime((elapsed) => measuredTime = elapsed)
           .run(unit);
 
       expect(measuredTime, isNotNull);
