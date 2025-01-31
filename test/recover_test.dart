@@ -14,12 +14,12 @@ void main() {
     });
 
     test('should not need to recover without exception', () async {
-      final result = await sut.recover((_) async => 0).getOrThrow('42');
+      final result = await sut.recover((_) => 0).getOrThrow('42');
       expect(result, equals(42));
     });
 
     test('should recover from exception with -1', () async {
-      final result = await sut.recover((_) async => -1).getOrThrow('42.0');
+      final result = await sut.recover((_) => -1).getOrThrow('42.0');
       expect(result, equals(-1));
     });
   });
@@ -32,25 +32,22 @@ void main() {
     });
 
     test('should not need to recover without exception', () async {
-      final result = await sut
-          .typedRecover<FormatException>((_) async => 0)
-          .getOrThrow('42');
+      final result =
+          await sut.typedRecover<FormatException>((_) => 0).getOrThrow('42');
 
       expect(result, equals(42));
     });
 
     test('should recover from exception with -1', () async {
-      final result = await sut
-          .typedRecover<FormatException>((_) async => -1)
-          .getOrThrow('42.0');
+      final result =
+          await sut.typedRecover<FormatException>((_) => -1).getOrThrow('42.0');
       expect(result, equals(-1));
     });
 
     test('should not recover from exception due to type missmatch', () async {
       expect(
-          () => sut
-              .typedRecover<TimeoutException>((_) async => -1)
-              .getOrThrow('42.0'),
+          () =>
+              sut.typedRecover<TimeoutException>((_) => -1).getOrThrow('42.0'),
           throwsFormatException);
     });
   });

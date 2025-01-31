@@ -206,3 +206,165 @@ myFileDownloadInteractor
     .getOrNull(FileDownloadInteractorInput("https://example.com/file.txt", "/path/to/file.txt"))
 ```
 
+# Examples of all available modifiers
+
+The following section contains a bunch of examples covering all available modifiers provided by this library.
+
+To avoid defining the interactor's used across all examples, they'll be defined in a code-block underneith the examples.
+
+### before
+```dart
+final greetings = await greetName
+  .before((name) => 'Called with $name')
+  .getOrThrow('John');
+```
+
+### after
+```dart
+await greetName
+  .after((output) => print(output))
+  .run('Barney');
+```
+
+### busy-state
+```dart
+await greetName
+  .watchBusyState((isBusy) => print('IsBusy: $isBusy'))
+  .run('Josh');
+```
+
+### eventually
+```dart
+await stringToInt
+  .eventually(() => print('Conversion done'))
+  .run('10283');
+```
+
+### intercept
+```dart
+await stringToInt
+  .intercept((exception) => print('Exception: $exception'))
+  .run('not-a-number');
+```
+
+### typed-intercept
+```dart
+final result = await stringToInt
+  .typedIntercept<FormatException>((exception) => -1)
+  .typedIntercept<OverflowException>((exception) => 0)
+  .getOrNull('not-a-number');
+```
+
+### checked-intercept
+```dart
+final result = await stringToInt
+  .checkedIntercept((exception) {
+    if (exception.message.contains('42')) {
+      return true;
+    }
+
+    return false;
+  })
+  .getOrNull('not-a-number');
+```
+
+### log
+```dart
+await stringToInt
+  .log(
+    tag: 'String-To-Int',
+    logBefore: printInfo,
+    logAfter: printSuccess,
+    logError: printError
+  )
+  .run('12');
+```
+
+### map
+```dart
+final pi = await stringToInt
+  .map((output) => output + 0.1415)
+  .getOrThrow('3');
+```
+
+### measure
+```dart
+final result = await stringToInt
+  .measure((duration) => print('Conversion took $duration'))
+  .getOrThrow('19272');
+```
+
+### recover
+```dart
+final result = await stringToInt
+  .recover((exception) => -1)
+  .getOrThrow('not-a-number');
+```
+
+### typed-recover
+```dart
+final result = await stringToInt
+  .typedRecover<FormatException>((exception) => -1)
+  .typedRecover<OverflowException>((exception) => 0)
+  .getOrThrow('not-a-number');
+```
+
+### checked-recover
+```dart
+final result = await stringToInt
+  .checkedRecover((exception) {
+    if (exception.message.contains('42')) {
+      return true;
+    }
+
+    return false;
+  })
+  .getOrThrow('not-a-number');
+```
+
+### run-at-least
+```dart
+await synchronizeData
+  .runAtLeast(const Duration(seconds: 3))
+  .run();
+```
+
+### timeout
+```dart
+await synchronizeData
+  .timeout(const Duration(seconds: 10))
+  .run();
+```
+
+## Interactors used in the examples above.
+
+### GreetName
+```dart
+final class GreetName implements ParameterizedResultInteractor<String, String> {
+  @override
+  FutureOr<String> runUnsafe(String input) async {
+    return 'Hello, $input';
+  }
+}
+```
+
+### StringToInt
+```dart
+final class StringToInt implements ParameterizedResultInteractor<String, int> {
+  @override
+  FutureOr<int> runUnsafe(String input) async {
+    return int.parse(input);
+  }
+}
+```
+
+### SynchronizeData
+```dart
+final class SynchronizeData implements Interactor {
+  @override
+  FutureOr<Unit> runUnsafe(Unit input) async {
+    // Perform sync ...
+    return Future.delayed(const Duration(seconds: 1), () => unit);
+  }
+}
+```

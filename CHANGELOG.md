@@ -110,9 +110,11 @@ Removed use_in_case2.0 branch from git-workflow filter.
 
 - Added [map](lib/src/map.dart) to library export
 
-
 # 1.3.0
 
 - Modifier [measure](./lib/src/measure.dart) added
 - Modifier [runAtLeast](./lib/src/run_at_least.dart) added
 - Modifier [measuredValue](./lib/src/measure.dart) added
+- Example [measure](./example/measure.dart) added
+- Example [measureTimedValue](./example/measure_timed_value.dart) added
+- Example [runAtLeast](./example/run_at_least.dart) added
