@@ -1,5 +1,4 @@
 import 'package:test/test.dart';
-import 'package:use_in_case/src/map.dart';
 import 'package:use_in_case/use_in_case.dart';
 
 import 'test_interactor.dart';

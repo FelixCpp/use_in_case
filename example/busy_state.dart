@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:dartz/dartz.dart';
 import 'package:use_in_case/use_in_case.dart';
 
 final class Printer implements Interactor {
   @override
-  Future<void> runUnsafe(Unit input) async {
+  FutureOr<void> runUnsafe(Unit input) {
     print('Working...');
   }
 }
@@ -11,6 +13,6 @@ final class Printer implements Interactor {
 void main() async {
   final interactor = Printer();
   await interactor
-      .watchBusyState((isBusy) async => print('Busy: $isBusy'))
+      .busyStateChange((isBusy) => print('Busy: $isBusy'))
       .run(unit); // Busy: true, Working..., Busy: false
 }

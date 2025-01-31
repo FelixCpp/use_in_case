@@ -82,7 +82,7 @@ Right now there are couple of decorators available:
 | ------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
 | `after`             | Adds a hook that is called after the interactor is executed.                                                  | ![after](./doc/after.drawio.svg)          |
 | `before`            | Adds a hook that is called before the interactor is executed.                                                 | ![before](./doc/before.drawio.svg)        |
-| `watchBusyState`    | Adds a hook that is called when the interactor starts & ends.                                                 | ![busystate](./doc/busystate.drawio.svg)  |
+| `busyStateChange`    | Adds a hook that is called when the interactor starts & ends.                                                 | ![busystate](./doc/busystate.drawio.svg)  |
 | `eventually`        | Adds a hook that is called when the interactor finishes.                                                      | ![finally](./doc/eventually.drawio.svg)   |
 | `intercept`         | Adds a hook that is called when the interactor fails.                                                         | ![catch](./doc/intercept.drawio.svg)      |
 | `typedIntercept`    | Adds a hook that is called when the interactor fails with a specific exception type.                          | ![catch](./doc/intercept.drawio.svg)      |
@@ -109,7 +109,7 @@ myInteractor
     .intercept((exception) => print("Exception caught: $exception"))
     .before((input) => print("Interactor called with parameter = $input"))
     .after((output) => println("Output produced: $output"))
-    .watchBusyState((isBusy) => println("Busy State: $isBusy"))
+    .busyStateChange((isBusy) => println("Busy State: $isBusy"))
 ```
 </td>
 </table>
@@ -226,11 +226,18 @@ await greetName
   .run('Barney');
 ```
 
-### busy-state
+### busy-state-change
 ```dart
 await greetName
-  .watchBusyState((isBusy) => print('IsBusy: $isBusy'))
+  .busyStateChange((isBusy) => print('IsBusy: $isBusy'))
   .run('Josh');
+```
+
+### emit-busy-state-change
+```dart
+await synchronizeData
+  .emitBusyStateChange(isSyncingStreamController)
+  .run();
 ```
 
 ### eventually

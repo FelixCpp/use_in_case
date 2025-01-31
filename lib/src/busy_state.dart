@@ -8,7 +8,7 @@ import 'package:use_in_case/src/interactor.dart';
 /// extension type const IsBusy(bool value) implements bool {}
 typedef IsBusy = bool;
 
-/// Extension that adds the `watchBusyState` method to the [ParameterizedResultInteractor] class.
+/// Extension that adds the `busyState` method to the [ParameterizedResultInteractor] class.
 /// This method allows you to watch the busy state of the interactor.
 /// The callback will be called with `true` when the interactor is busy and `false` when it's done.
 ///
@@ -16,13 +16,31 @@ typedef IsBusy = bool;
 /// ```dart
 /// final interactor = MyInteractor();
 /// await interactor
-///   .watchBusyState((isBusy) => print('Is busy: $isBusy'))
+///   .busyStateChange((isBusy) => print('Is busy: $isBusy'))
+///   .run(input);
+/// ```
+///
+/// Example with a stream:
+/// ```dart
+/// final interactor = MyInteractor();
+/// final streamController = StreamController<IsBusy>();
+///
+/// final subscription = streamController.stream
+///   .listen((isBusy) => print('Stream: $isBusy'));
+///
+/// await interactor
+///   .emitBusyStateChange(streamController)
+///   .eventually(() {
+///     subscription.cancel();
+///     streamController.close();
+///   })
 ///   .run(input);
 /// ```
 extension BusyState<Input, Output>
     on ParameterizedResultInteractor<Input, Output> {
-  ParameterizedResultInteractor<Input, Output> watchBusyState(
-      FutureOr<void> Function(IsBusy) callback) {
+  ParameterizedResultInteractor<Input, Output> busyStateChange(
+    FutureOr<void> Function(IsBusy) callback,
+  ) {
     return InlinedParameterizedResultInteractor((input) async {
       try {
         await callback(true);
@@ -31,5 +49,18 @@ extension BusyState<Input, Output>
         await callback(false);
       }
     });
+  }
+
+  ParameterizedResultInteractor<Input, Output> emitBusyStateChange(
+    StreamController<IsBusy> controller,
+  ) {
+    return busyStateChange(controller.add);
+  }
+
+  @Deprecated('Use busyStateChange instead')
+  ParameterizedResultInteractor<Input, Output> watchBusyState(
+    FutureOr<void> Function(IsBusy) callback,
+  ) {
+    return busyStateChange(callback);
   }
 }

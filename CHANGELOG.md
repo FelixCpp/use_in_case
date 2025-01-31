@@ -118,3 +118,12 @@ Removed use_in_case2.0 branch from git-workflow filter.
 - Example [measure](./example/measure.dart) added
 - Example [measureTimedValue](./example/measure_timed_value.dart) added
 - Example [runAtLeast](./example/run_at_least.dart) added
+
+# 1.3.1
+
+- Modifier [busyStateChange](./lib/src/busy_state.dart) added
+- Deprecation of [watchBusyState](./lib/src/busy_state.dart) introduced
+- Modifier [emitBusyStateChange](./lib/src/busy_state.dart) added
+- Examples of [watchBusyState](./example/busy_state.dart) updated
+- Example [emitBusyStateChange](./example/emit_busy_state_change.dart) added
+- Documentation for [emitBusyStateChange](./lib/src/busy_state.dart) added
