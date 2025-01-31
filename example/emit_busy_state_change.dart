@@ -14,15 +14,16 @@ void main() async {
   final interactor = HeavyComputation();
   final streamController = StreamController<IsBusy>();
 
-  streamController.stream.listen((isBusy) => print('Stream: $isBusy'));
+  final subscription =
+      streamController.stream.listen((isBusy) => print('Stream: $isBusy'));
 
-  await interactor
-      .busyStateChange((isBusy) => print('Busy: $isBusy'))
-      .eventually(() => streamController.close())
-      .run(unit);
+  await interactor.emitBusyStateChange(streamController).eventually(() {
+    streamController.close();
+    subscription.cancel();
+  }).run(unit);
 
   // Output:
-  //  - Busy: true
+  //  - Stream: true
   //  - Working...
-  //  - Busy: false
+  //  - Stream: false
 }
