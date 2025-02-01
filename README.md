@@ -213,6 +213,7 @@ The following section contains a bunch of examples covering all available modifi
 To avoid defining the interactor's used across all examples, they'll be defined in a code-block underneith the examples.
 
 ### before
+... allows you to specify a callback that will be invoked before executing the interactor. "before" receives the given input as parameter.
 ```dart
 final greetings = await greetName
   .before((name) => 'Called with $name')
@@ -220,6 +221,7 @@ final greetings = await greetName
 ```
 
 ### after
+... allows you to specify a callback that will be invoked after executing the interactor. "after" receives the produced output as parameter. The specified callback will only be invoked when the interactor finished successfully.
 ```dart
 await greetName
   .after((output) => print(output))
@@ -227,6 +229,7 @@ await greetName
 ```
 
 ### busy-state-change
+... allows you to specify a callback that will be invoked before and after surrounding the execution of the interactor regardless of whether an exception has been thrown or not. Its parameter is of type boolean and represents whether the interactor is running or not. This is useful to emit loading states in your UI for example.
 ```dart
 await greetName
   .busyStateChange((isBusy) => print('IsBusy: $isBusy'))
@@ -234,6 +237,7 @@ await greetName
 ```
 
 ### emit-busy-state-change
+... allows you to specify a StreamController that will receive the current state of whether the interactor is running or not. This is useful in order to emit loading states in your UI for example.
 ```dart
 await synchronizeData
   .emitBusyStateChange(isSyncingStreamController)
@@ -241,6 +245,7 @@ await synchronizeData
 ```
 
 ### eventually
+... allows you to specify a callback that will be invoked when execution of the interactor has finished. The speicified function will be called regardless of whether the interactor throws an exception or not.
 ```dart
 await stringToInt
   .eventually(() => print('Conversion done'))
@@ -248,6 +253,7 @@ await stringToInt
 ```
 
 ### intercept
+... allows you to specify a `callback` that will be invoked when execution of the interactor throwed an exception. The parameter of `callback` will be the produced exception of type `Exception`. Note that this method does not handle the thrown error but acts like a listener. In order to handle it, take a look at [recover](#recover), [typed-recover](#typed-recover) or [checked-recover](#checked-recover)
 ```dart
 await stringToInt
   .intercept((exception) => print('Exception: $exception'))
@@ -255,27 +261,34 @@ await stringToInt
 ```
 
 ### typed-intercept
+... allows you to specify a `callback` that will be invoked when an exception of a concrete type has been thrown by the interactor. Its callback receives the typed-exception as parameter. This interception also does not handle the exception but acts like a listener on it. In order to handle it, take a look at [recover](#recover), [typed-recover](#typed-recover) or [checked-recover](#checked-recover)
 ```dart
 final result = await stringToInt
-  .typedIntercept<FormatException>((exception) => -1)
-  .typedIntercept<OverflowException>((exception) => 0)
+  .typedIntercept<FormatException>((exception) => print('FormatException caught'))
+  .typedIntercept<OverflowException>((exception) => print('OverflowException caught'))
   .getOrNull('not-a-number');
 ```
 
 ### checked-intercept
+... allows you to specify a `callback` and `predicate`. The given `callback` will be called when `predicate` returned true. This function represents the base functionality of the previously explained [intercept](#intercept) and [typed-intercept](#typed-intercept) extensions. Note that this function doesn't recover the exception but instead acts like a listener on it. In order to handle it, take a look at [recover](#recover), [typed-recover](#typed-recover) or [checked-recover](#checked-recover)
 ```dart
 final result = await stringToInt
-  .checkedIntercept((exception) {
-    if (exception.message.contains('42')) {
-      return true;
-    }
+  .checkedIntercept(
+    (exception) {
+      print('This method caught an exception where "42" is contained within the  message.');
+    },
+    (exception) {
+      if (exception.message.contains('42')) {
+        return true;
+      }
 
-    return false;
-  })
-  .getOrNull('not-a-number');
+      return false;
+    },
+  ).getOrNull('not-a-number');
 ```
 
 ### log
+... allows you to specify a bunch of functions to invoke when certain execution-stages are reached. `logBefore`, `logAfter` and `logError` must receive a string as parameter. `tag` is simply a name to identify the interactor execution.
 ```dart
 await stringToInt
   .log(
@@ -288,20 +301,31 @@ await stringToInt
 ```
 
 ### map
+... allows you to specify a `callback` receiving the produced output, mapping it into a different one. The returned type doesn't have to equal the original output type. All following modifiers will work on the new output type defined by `map`.
 ```dart
 final pi = await stringToInt
   .map((output) => output + 0.1415)
   .getOrThrow('3');
 ```
 
-### measure
+### measure-time
+... allows you to specify a `callback` receiving the duration it took to execute the interactor.
 ```dart
 final result = await stringToInt
-  .measure((duration) => print('Conversion took $duration'))
+  .measureTime((duration) => print('Conversion took $duration'))
   .getOrThrow('19272');
 ```
 
+### measure-timed-value
+... Maps the output to a pair of type `Duration` and original `Output`-type. The duration will contain the value representing the time it took to execute the interactor. `Output` will be the produced value by the interactor.
+```dart
+final (duration, result) = await stringToInt
+  .measureTimedValue()
+  .getOrThrow();
+```
+
 ### recover
+... allows you to specify a `callback` receiving the thrown `Exception` and return an alternative value.
 ```dart
 final result = await stringToInt
   .recover((exception) => -1)
@@ -309,6 +333,7 @@ final result = await stringToInt
 ```
 
 ### typed-recover
+... allows you to specify a `callback` receiving the `Exception` of the requested exception type. Its content will only be invoked, when execution threw a failure object of the defined exception-type. An alternative value must be returned from the function.
 ```dart
 final result = await stringToInt
   .typedRecover<FormatException>((exception) => -1)
@@ -317,19 +342,24 @@ final result = await stringToInt
 ```
 
 ### checked-recover
+... allows you to specify a `callback` that is only being invoked, when `predicate` returns true for a given exception. Its purpose is to return an alternative value and recover the output.
 ```dart
 final result = await stringToInt
-  .checkedRecover((exception) {
-    if (exception.message.contains('42')) {
-      return true;
-    }
+  .checkedRecover(
+    (exception) => 42,
+    (exception) {
+      if (exception.message.contains('42')) {
+        return true;
+      }
 
-    return false;
-  })
+      return false;
+    }
+  )
   .getOrThrow('not-a-number');
 ```
 
 ### run-at-least
+... ensures that execution at least take a specified amount of time.
 ```dart
 await synchronizeData
   .runAtLeast(const Duration(seconds: 3))
@@ -337,6 +367,7 @@ await synchronizeData
 ```
 
 ### timeout
+... ensures that execution does not take longer that a specified amount of time.
 ```dart
 await synchronizeData
   .timeout(const Duration(seconds: 10))
