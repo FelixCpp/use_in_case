@@ -253,7 +253,7 @@ await stringToInt
 ```
 
 ### intercept
-... allows you to specify a `callback` that will be invoked when execution of the interactor throwed an exception. The parameter of `callback` will be the produced exception of type `Exception`. Note that this method does not handle the thrown error but acts like a listener. In order to handle it, take a look at [recover](#recover), [typed-recover](#typed-recover) or [checked-recover](#checked-recover)
+... allows you to specify a `callback` that will be invoked when execution of the interactor threw an exception. The parameter of `callback` will be the produced exception of type `Exception`. Note that this method does not handle the thrown error but acts like a listener. In order to handle it, take a look at [recover](#recover), [typed-recover](#typed-recover) or [checked-recover](#checked-recover)
 ```dart
 await stringToInt
   .intercept((exception) => print('Exception: $exception'))
