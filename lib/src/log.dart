@@ -35,6 +35,7 @@ import 'package:use_in_case/use_in_case.dart';
 ///     logError: (message) => stderr.writeln(message),
 ///   )
 ///   .run(input);
+/// ```
 extension LogExt<Input, Output>
     on ParameterizedResultInteractor<Input, Output> {
   ParameterizedResultInteractor<Input, Output> logEvents({
@@ -42,21 +43,15 @@ extension LogExt<Input, Output>
     required FutureOr<void> Function(Duration, Output) logSuccess,
     required FutureOr<void> Function(Duration, Exception) logError,
   }) {
-    return InlinedParameterizedResultInteractor((input) async {
-      final stopwatch = Stopwatch();
-      try {
-        await logStart(input);
+    final stopwatch = Stopwatch();
 
-        stopwatch.start();
-        final output = await getOrThrow(input);
-
-        await logSuccess(stopwatch.elapsed, output);
-
-        return output;
-      } on Exception catch (exception) {
-        await logError(stopwatch.elapsed, exception);
-        rethrow;
-      }
+    return before((input) {
+      stopwatch.start();
+      return logStart(input);
+    }).after((output) {
+      return logSuccess(stopwatch.elapsed, output);
+    }).intercept((exception) {
+      return logError(stopwatch.elapsed, exception);
     });
   }
 

@@ -9,7 +9,8 @@ class Accumulator implements ParameterizedResultInteractor<Iterable<num>, num> {
     num result = 0;
 
     for (final number in input) {
-      result += number;
+      result += (number / 3.141592 * 84.1028 * 0.25).floorToDouble() * 1.65;
+      result -= number * 0.7812;
     }
 
     return result;
@@ -21,9 +22,11 @@ void main() async {
 
   final rng = Random();
   final randomLists = List.generate(
-    100,
-    (_) => List.generate(10, (_) => rng.nextDouble() * 3.141592),
+    10000,
+    (_) => List.generate(1000, (_) => rng.nextDouble() * 3.141592),
   );
+
+  final expandedLists = randomLists.expand((e) => e);
 
   var totalDuration = Duration.zero;
   num totalSum = 0;
@@ -39,9 +42,8 @@ void main() async {
   print('Total sum: $totalSum');
   print('Total duration: $totalDuration');
 
-  final (duration, result) = await interactor
-      .measureTimedValue()
-      .getOrThrow(randomLists.expand((e) => e));
+  final (duration, result) =
+      await interactor.measureTimedValue().getOrThrow(expandedLists);
 
   print('-- Using expand --');
   print('Total sum: $result');

@@ -2,6 +2,11 @@ import 'dart:async';
 
 import 'package:use_in_case/use_in_case.dart';
 
+typedef TimedValue<Output> = (
+  Duration duration,
+  Output value,
+);
+
 /// This extension provides methods to measure the time it takes to run an interactor.
 ///
 /// Provided methods:
@@ -42,13 +47,14 @@ extension MeasureTimeExt<Input, Output>
 
   /// This method measures the time it takes to run the interactor.
   /// When the interactor finishes successfully, [callback] is being called
-  /// with the amount of time it took to run the interactor.
+  /// with the amount of time it took to run the interactor and the produced
+  /// output.
   ///
   /// Example:
   /// ```dart
   /// final interactor = MyInteractor();
   /// await interactor
-  ///   .measureTimeOnSuccess((elapsed) => print('Elapsed time: $elapsed'))
+  ///   .measureTimeOnSuccess((elapsed, output) => print('Elapsed time: $elapsed, Output: $output'))
   ///   .run(input);
   /// ```
   ///
@@ -61,12 +67,12 @@ extension MeasureTimeExt<Input, Output>
   ///
   /// see [measureTime], [measureTimedValue]
   ParameterizedResultInteractor<Input, Output> measureTimeOnSuccess(
-    FutureOr<void> Function(Duration) callback,
+    FutureOr<void> Function(Duration, Output) callback,
   ) {
     final stopwatch = Stopwatch();
 
     return before((_) => stopwatch.start())
-        .after((_) => callback(stopwatch.elapsed));
+        .after((output) => callback(stopwatch.elapsed, output));
   }
 
   /// This method measures the time it takes to run the interactor and
@@ -84,8 +90,8 @@ extension MeasureTimeExt<Input, Output>
   ///   .measureTimedValue()
   ///   .run(input);
   ///
-  /// print('Elapsed time: ${result.item1}');
-  /// print('Output: ${result.item2}');
+  /// print('Elapsed time: ${result.$1}');
+  /// print('Output: ${result.$2}');
   /// ```
   ///
   /// Note that this only works, if the interactor finished successfully.
@@ -95,7 +101,7 @@ extension MeasureTimeExt<Input, Output>
   /// methods.
   ///
   /// see [measureTime], [measureTimeOnSuccess]
-  ParameterizedResultInteractor<Input, (Duration, Output)> measureTimedValue() {
+  ParameterizedResultInteractor<Input, TimedValue<Output>> measureTimedValue() {
     final stopwatch = Stopwatch();
 
     return before((_) => stopwatch.start())

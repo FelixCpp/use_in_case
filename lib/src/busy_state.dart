@@ -80,7 +80,7 @@ extension BusyStateExt<Input, Output>
     return busyStateChange(controller.add);
   }
 
-  /// @Deprecated: Deprecated since use_in_case 1.3.0.
+  /// @Deprecated: Deprecated since use_in_case 1.4.0.
   /// Use [busyStateChange] instead.
   @Deprecated('Use busyStateChange instead')
   ParameterizedResultInteractor<Input, Output> watchBusyState(

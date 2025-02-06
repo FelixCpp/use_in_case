@@ -43,7 +43,7 @@ void main() {
       ParameterizedResultInteractor<Duration, int> sut = WaitingInteractor();
       Duration? measuredTime;
 
-      final waitedMillis = await sut.measureTimeOnSuccess((elapsed) async {
+      final waitedMillis = await sut.measureTimeOnSuccess((elapsed, _) {
         measuredTime = elapsed;
       }).getOrThrow(Duration(milliseconds: 100));
 
@@ -57,7 +57,7 @@ void main() {
       Duration? measuredTime;
 
       final result = sut
-          .measureTimeOnSuccess((elapsed) => measuredTime = elapsed)
+          .measureTimeOnSuccess((elapsed, _) => measuredTime = elapsed)
           .getOrThrow(unit);
 
       await expectLater(result, throwsException);

@@ -7,7 +7,7 @@ description: >-
   flexible and readable way. It is designed to be used in combination with
   Business-Logic-Components (BLoC).
 
-version: 1.3.0
+version: 1.4.0
 repository: https://github.com/FelixCpp/use_in_case
 
 topics:
