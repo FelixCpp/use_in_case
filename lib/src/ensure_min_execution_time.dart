@@ -8,14 +8,26 @@ extension EnsureMinExecutionTimeExt<Input, Output>
   /// If the interactor finishes before [duration], it will wait for the remaining time.
   /// Otherwise, it will return immediately.
   ///
+  /// Optionally, you can provide a callback [onDelay] that will be called with the time that was waited.
+  /// Note that this callback is called after the required duration to wait has passed.
+  ///
   /// This method does wait the required amount of time reguardless of whether the interactor
   /// failed due to an exception or not. For a method that only waits on success, see [ensureMinExecutionTimeOnSuccess].
   ///
   /// For example:
   /// ```dart
   /// await myInteractor
-  ///   .runAtLeast(Duration(milliseconds: 100))
+  ///   .ensureMinExecutionTime(Duration(milliseconds: 100))
   ///   .run(input);
+  /// ```
+  ///
+  /// An example using the [onDelay] callback:
+  /// ```dart
+  /// await myInteractor
+  ///   .ensureMinExecutionTime(
+  ///     Duration(milliseconds: 100),
+  ///     onDelay: (elapsed) => print('Waited for $elapsed'),
+  ///   ).run(input);
   /// ```
   ///
   /// See: [ensureMinExecutionTimeOnSuccess]
@@ -41,6 +53,9 @@ extension EnsureMinExecutionTimeExt<Input, Output>
   /// If the interactor finishes before [duration], it will wait for the remaining time.
   /// Otherwise, it will return immediately.
   ///
+  /// Optionally, you can provide a callback [onDelay] that will be called with the time that was waited.
+  /// Note that this callback is called after the required duration to wait has passed.
+  ///
   /// This method only waits if the interactor finishes successfully. If the interactor fails due to an exception,
   /// it will return immediately. For a method that waits regardless of the interactor's success or failure,
   /// see [ensureMinExecutionTime].
@@ -50,6 +65,15 @@ extension EnsureMinExecutionTimeExt<Input, Output>
   /// await myInteractor
   ///   .ensureMinExecutionTimeOnSuccess(Duration(milliseconds: 100))
   ///   .run(input);
+  /// ```
+  ///
+  /// An example using the [onDelay] callback:
+  /// ```dart
+  /// await myInteractor
+  ///   .ensureMinExecutionTimeOnSuccess(
+  ///     Duration(milliseconds: 100),
+  ///     onDelay: (elapsed) => print('Waited for $elapsed'),
+  /// ).run(input);
   /// ```
   ///
   /// See [ensureMinExecutionTime]

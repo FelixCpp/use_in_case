@@ -38,6 +38,33 @@ void main() {
     );
   });
 
+  group('measureTimeOnSuccess', () {
+    test('should measure time', () async {
+      ParameterizedResultInteractor<Duration, int> sut = WaitingInteractor();
+      Duration? measuredTime;
+
+      final waitedMillis = await sut.measureTimeOnSuccess((elapsed) async {
+        measuredTime = elapsed;
+      }).getOrThrow(Duration(milliseconds: 100));
+
+      expect(measuredTime, isNotNull);
+      expect(measuredTime, greaterThanOrEqualTo(Duration(milliseconds: 100)));
+      expect(waitedMillis, equals(100));
+    });
+
+    test('should not measure time due to exception', () async {
+      final Interactor sut = ThrowingInteractor();
+      Duration? measuredTime;
+
+      final result = sut
+          .measureTimeOnSuccess((elapsed) => measuredTime = elapsed)
+          .getOrThrow(unit);
+
+      await expectLater(result, throwsException);
+      expect(measuredTime, isNull);
+    });
+  });
+
   group('measureTimedValue', () {
     late ParameterizedResultInteractor<String, int> sut;
 

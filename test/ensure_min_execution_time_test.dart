@@ -53,5 +53,20 @@ void main() {
         expect(callCount, 1);
       },
     );
+
+    test('should not wait if min execution time is below real execution time',
+        () async {
+      final sut = WaitingInteractor();
+      Duration? delayTime;
+
+      await sut
+          .ensureMinExecutionTime(
+            Duration(milliseconds: 0),
+            onDelay: (remainingTime) => delayTime = remainingTime,
+          )
+          .run(Duration(milliseconds: 100));
+
+      expect(delayTime, isNull);
+    });
   });
 }

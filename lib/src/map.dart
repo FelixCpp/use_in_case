@@ -2,25 +2,39 @@ import 'dart:async';
 
 import 'package:use_in_case/use_in_case.dart';
 
-/// Extension that adds the `map` method to the [ParameterizedResultInteractor] class.
-/// This method allows you to map the output of the interactor to a new output.
-/// The callback will be called with the output of the interactor and should return the new output.
+/// This extension provides a method to map the output of an interactor.
 ///
-/// Example:
-/// ```dart
-/// final interactor = MyInteractor();
-/// await interactor
-///   .map((output) => output.toString())
-///   .run(input);
-/// ```
+/// Provided methods:
+///   - [map]
 extension MapExt<Input, Output>
     on ParameterizedResultInteractor<Input, Output> {
+  /// This method maps the output of the interactor with the given [callback].
+  /// Note that the return type of [callback] does not have to match the
+  /// original output type of the interactor.
+  ///
+  /// Example:
+  /// ```dart
+  /// final interactor = MyInteractor();
+  /// final result = interactor
+  ///   .map((output) => output + 0.141592)
+  ///   .getOrThrow(3);
+  ///
+  /// print(result); // 3.141592
+  /// ```
+  ///
+  /// When you don't need to convert the output of the interactor
+  /// but execute a block of code after the interactor finishes,
+  /// you can use the [after] or [eventually] method.
+  ///
+  /// see [after], [eventually]
   ParameterizedResultInteractor<Input, NewOutput> map<NewOutput>(
-      FutureOr<NewOutput> Function(Output) callback) {
+    FutureOr<NewOutput> Function(Output) callback,
+  ) {
     return InlinedParameterizedResultInteractor<Input, NewOutput>(
-        (input) async {
-      final output = await getOrThrow(input);
-      return await callback(output);
-    });
+      (input) async {
+        final output = await getOrThrow(input);
+        return await callback(output);
+      },
+    );
   }
 }

@@ -316,6 +316,15 @@ final result = await stringToInt
   .getOrThrow('19272');
 ```
 
+### measure-time-on-success
+... allows you to specify a `callback` receiving the duration it took to execute the interactor
+only when it succeeded without throwing an exception.
+```dart
+final result = await stringToInt
+  .measureTimeOnSuccess((duration) => print('Conversion took $duration'))
+  .getOrThrow('19272');
+```
+
 ### measure-timed-value
 ... Maps the output to a pair of type `Duration` and original `Output`-type. The duration will contain the value representing the time it took to execute the interactor. `Output` will be the produced value by the interactor.
 ```dart

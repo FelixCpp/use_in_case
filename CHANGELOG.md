@@ -133,3 +133,4 @@ Removed use_in_case2.0 branch from git-workflow filter.
 - Added `onDelay` callback to [ensureMinExecutionTimeOnSuccess](./lib/src/ensure_min_execution_time.dart)
 - Renamed `runUnsafe` to `getOrThrow` in [ParameterizedResultInteractor](./lib/src/interactor.dart)
 - Renamed `runUnsafe` to `getOrThrow` in [ParameterizedResultProgressInteractor](./lib/src/progress.dart)
+- Modifier [measureTimeOnSuccess](./lib/src/measure.dart) added
