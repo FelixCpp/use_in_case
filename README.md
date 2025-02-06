@@ -213,6 +213,7 @@ The following section contains a bunch of examples covering all available modifi
 To avoid defining the interactor's used across all examples, they'll be defined in a code-block underneith the examples.
 
 ### before
+
 ... allows you to specify a callback that will be invoked before executing the interactor. "before" receives the given input as parameter.
 ```dart
 final greetings = await greetName
@@ -439,3 +440,6 @@ final class SynchronizeData implements Interactor {
   }
 }
 ```
+
+---
+>  For more examples, take a look into the [examples](./example) folder.
