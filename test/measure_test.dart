@@ -66,13 +66,11 @@ void main() {
   });
 
   group('measureTimedValue', () {
-    late ParameterizedResultInteractor<String, int> sut;
-
-    setUp(() {
-      sut = TestInteractor();
-    });
+    setUp(() {});
 
     test('should output the duration and result of the interactor', () async {
+      final ParameterizedResultInteractor<String, int> sut = TestInteractor();
+
       final (duration, value) = await sut
           .after((_) => Future.delayed(const Duration(milliseconds: 100)))
           .measureTimedValue()
@@ -87,12 +85,42 @@ void main() {
       () async {
         final Interactor sut = ThrowingInteractor();
 
-        final result = sut
+        final (duration, value) = await sut
             .eventually(() => Future.delayed(const Duration(milliseconds: 100)))
             .measureTimedValue()
             .getOrThrow(unit);
 
-        await expectLater(result, throwsException);
+        expect(
+          duration,
+          greaterThanOrEqualTo(const Duration(milliseconds: 100)),
+        );
+      },
+    );
+  });
+
+  group('measureTimedValueOnSuccess', () {
+    test('should output the duration and result of the interactor', () async {
+      final ParameterizedResultInteractor<String, int> sut = TestInteractor();
+      final (duration, value) = await sut
+          .after((_) => Future.delayed(const Duration(milliseconds: 100)))
+          .measureTimedValueOnSuccess()
+          .getOrThrow('42');
+
+      expect(duration, greaterThanOrEqualTo(const Duration(milliseconds: 100)));
+      expect(value, equals(42));
+    });
+
+    test(
+      'should not output the duration and result of the interactor when throwing',
+      () async {
+        final Interactor sut = ThrowingInteractor();
+
+        final interactor = sut
+            .eventually(() => Future.delayed(const Duration(milliseconds: 100)))
+            .measureTimedValueOnSuccess()
+            .getOrThrow(unit);
+
+        await expectLater(interactor, throwsException);
       },
     );
   });

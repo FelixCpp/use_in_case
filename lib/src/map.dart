@@ -6,6 +6,7 @@ import 'package:use_in_case/use_in_case.dart';
 ///
 /// Provided methods:
 ///   - [map]
+///   - [cast]
 extension MapExt<Input, Output>
     on ParameterizedResultInteractor<Input, Output> {
   /// This method maps the output of the interactor with the given [callback].
@@ -36,5 +37,25 @@ extension MapExt<Input, Output>
         return await callback(output);
       },
     );
+  }
+
+  /// This method casts the output of the interactor to the given type [NewOutput].
+  /// This is useful when you know that the output of the interactor is of type
+  /// [NewOutput] but the type system does not.
+  ///
+  /// Example:
+  /// ```dart
+  /// final interactor = MyInteractor();
+  /// final result = interactor
+  ///   .cast<String>()
+  ///   .getOrThrow(input);
+  /// ```
+  ///
+  /// If you want to transform not only the type, but the result produced by the
+  /// interactor as well, use the [map] method instead.
+  ///
+  /// see [map]
+  ParameterizedResultInteractor<Input, NewOutput> cast<NewOutput>() {
+    return map((output) => output as NewOutput);
   }
 }

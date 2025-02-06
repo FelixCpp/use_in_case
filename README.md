@@ -308,6 +308,15 @@ final pi = await stringToInt
   .getOrThrow('3');
 ```
 
+### cast
+... allows you to specify a new output type of the previous interactor. The produced result is being explicitly casted to
+the specified type.
+```dart
+final pi = await stringToInt
+  .cast<MyNewType>()
+  .getOrThrow(input);
+```
+
 ### measure-time
 ... allows you to specify a `callback` receiving the duration it took to execute the interactor.
 ```dart

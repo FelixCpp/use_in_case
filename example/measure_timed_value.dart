@@ -32,7 +32,7 @@ void main() async {
   num totalSum = 0;
   for (final list in randomLists) {
     final (duration, result) =
-        await interactor.measureTimedValue().getOrThrow(list);
+        await interactor.measureTimedValueOnSuccess().getOrThrow(list);
 
     totalSum += result;
     totalDuration += duration;

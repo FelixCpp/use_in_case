@@ -25,5 +25,15 @@ void main() {
       expect(result, 4.0);
       expect(result, isA<double>());
     });
+
+    test('should cast from int to dynamic', () async {
+      final result = sut.cast<dynamic>().getOrThrow('2');
+      expect(result, isA<dynamic>());
+    });
+
+    test('should throw type casting exception', () async {
+      final result = sut.cast<String>().getOrThrow('2');
+      await expectLater(result, throwsA(isA<TypeError>()));
+    });
   });
 }

@@ -134,3 +134,4 @@ Removed use_in_case2.0 branch from git-workflow filter.
 - Renamed `runUnsafe` to `getOrThrow` in [ParameterizedResultInteractor](./lib/src/interactor.dart)
 - Renamed `runUnsafe` to `getOrThrow` in [ParameterizedResultProgressInteractor](./lib/src/progress.dart)
 - Modifier [measureTimeOnSuccess](./lib/src/measure.dart) added
+- Modifier [cast](./lib/src/map.dart) added

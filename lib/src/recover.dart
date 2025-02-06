@@ -78,7 +78,8 @@ extension RecoverExt<Input, Output>
   ///
   /// See also: [typedRecover], [checkedRecover]
   ParameterizedResultInteractor<Input, Output> recover(
-      FutureOr<Output> Function(Exception) callback) {
+    FutureOr<Output> Function(Exception) callback,
+  ) {
     return typedRecover<Exception>((exception) => callback(exception));
   }
 }
