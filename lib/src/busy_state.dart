@@ -36,7 +36,7 @@ typedef IsBusy = bool;
 ///   })
 ///   .run(input);
 /// ```
-extension BusyState<Input, Output>
+extension BusyStateExt<Input, Output>
     on ParameterizedResultInteractor<Input, Output> {
   ParameterizedResultInteractor<Input, Output> busyStateChange(
     FutureOr<void> Function(IsBusy) callback,
@@ -44,7 +44,7 @@ extension BusyState<Input, Output>
     return InlinedParameterizedResultInteractor((input) async {
       try {
         await callback(true);
-        return await runUnsafe(input);
+        return await getOrThrow(input);
       } finally {
         await callback(false);
       }

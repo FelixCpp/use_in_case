@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:dartz/dartz.dart';
 import 'package:use_in_case/use_in_case.dart';
 
 final class Runner implements Interactor {
   @override
-  Future<void> runUnsafe(Unit _) async {
+  FutureOr<void> getOrThrow(Unit _) {
     print('Hello, World!');
   }
 }

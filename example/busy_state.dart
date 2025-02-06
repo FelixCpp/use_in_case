@@ -5,7 +5,7 @@ import 'package:use_in_case/use_in_case.dart';
 
 final class Printer implements Interactor {
   @override
-  FutureOr<void> runUnsafe(Unit input) {
+  FutureOr<void> getOrThrow(Unit input) {
     print('Working...');
   }
 }

@@ -15,7 +15,7 @@ typedef DownloadProgress = int;
 final class ProgressCounter extends ParameterizedResultProgressInteractor<
     Parameter, DownloadedBytes, DownloadProgress> {
   @override
-  Future<DownloadedBytes> runUnsafe(Parameter input) async {
+  FutureOr<DownloadedBytes> getOrThrow(Parameter input) async {
     // TODO: Implement your file download here
 
     final totalBytes = 1000;
@@ -44,7 +44,7 @@ void main() async {
         print('The download took: ${duration.inSeconds}s');
       })
       .timeout(const Duration(seconds: 2),
-          errorMessage: () => 'Download timed out')
+          lazyErrorMessage: () => 'Download timed out')
       .typedRecover<TimeoutException>((error) {
         return 0;
       })

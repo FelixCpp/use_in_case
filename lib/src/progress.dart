@@ -15,7 +15,7 @@ import 'package:use_in_case/src/interactor.dart';
 /// ```dart
 /// final class DownloadInteractor extends ParameterizedResultProgressInteractor<int, String, int> {
 ///   @override
-///   FutureOr<String> runUnsafe(int input) async {
+///   FutureOr<String> getOrThrow(int input) async {
 ///     for (var i = 0; i < input; i++) {
 ///     await Future.delayed(Duration(seconds: 1));
 ///     emitProgress(i);
@@ -26,10 +26,10 @@ import 'package:use_in_case/src/interactor.dart';
 /// ```
 abstract base class ParameterizedResultProgressInteractor<Input, Output,
     Progress> {
-  late final FutureOr<void> Function(Progress progress) callback;
-  FutureOr<Output> runUnsafe(Input input);
+  late final FutureOr<void> Function(Progress progress) _callback;
+  FutureOr<Output> getOrThrow(Input input);
   Future<void> emitProgress(Progress progress) =>
-      Future(() => callback(progress));
+      Future(() => _callback(progress));
 }
 
 typedef ParameterizedProgressInteractor<Input, Progress>
@@ -54,9 +54,10 @@ extension ReceiveProgressExtension<Input, Output, Progress>
     on ParameterizedResultProgressInteractor<Input, Output, Progress> {
   ParameterizedResultInteractor<Input, Output> receiveProgress(
       FutureOr<void> Function(Progress) callback) {
-    this.callback = callback;
+    _callback = callback;
 
     return InlinedParameterizedResultInteractor<Input, Output>(
-        (input) => runUnsafe(input));
+      (input) => getOrThrow(input),
+    );
   }
 }

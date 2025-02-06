@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:use_in_case/src/interactor.dart';
 
 /// Extension that adds the `after` method to the [ParameterizedResultInteractor] class.
-/// This method allows you to execute a callback after the interactor's [runUnsafe] method.
+/// This method allows you to execute a callback after the interactor's [getOrThrow] method.
 ///
 /// Example:
 /// ```dart
@@ -12,12 +12,13 @@ import 'package:use_in_case/src/interactor.dart';
 ///   .after((output) => print('Output: $output'))
 ///   .run(input);
 /// ```
-extension After<Input, Output> on ParameterizedResultInteractor<Input, Output> {
+extension AfterExt<Input, Output>
+    on ParameterizedResultInteractor<Input, Output> {
   ParameterizedResultInteractor<Input, Output> after(
     FutureOr<void> Function(Output) callback,
   ) {
     return InlinedParameterizedResultInteractor((input) async {
-      final output = await runUnsafe(input);
+      final output = await getOrThrow(input);
       await callback(output);
       return output;
     });

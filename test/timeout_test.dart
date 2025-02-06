@@ -33,7 +33,7 @@ void main() {
         () => sut
             .timeout(
               const Duration(milliseconds: 200),
-              errorMessage: () => 'bruh',
+              lazyErrorMessage: () => 'bruh',
             )
             .getOrThrow(Duration(milliseconds: 1000)),
         throwsA(

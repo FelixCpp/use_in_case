@@ -127,3 +127,9 @@ Removed use_in_case2.0 branch from git-workflow filter.
 - Examples of [watchBusyState](./example/busy_state.dart) updated
 - Example [emitBusyStateChange](./example/emit_busy_state_change.dart) added
 - Documentation for [emitBusyStateChange](./lib/src/busy_state.dart) added
+- Modifier [ensureMinExecutionTime](./lib/src/ensure_min_execution_time.dart) added
+- Modifier [ensureMinExecutionTimeOnSuccess](./lib/src/ensure_min_execution_time.dart) added
+- Added `onDelay` callback to [ensureMinExecutionTime](./lib/src/ensure_min_execution_time.dart)
+- Added `onDelay` callback to [ensureMinExecutionTimeOnSuccess](./lib/src/ensure_min_execution_time.dart)
+- Renamed `runUnsafe` to `getOrThrow` in [ParameterizedResultInteractor](./lib/src/interactor.dart)
+- Renamed `runUnsafe` to `getOrThrow` in [ParameterizedResultProgressInteractor](./lib/src/progress.dart)

@@ -11,7 +11,7 @@ void main() {
       Duration? measuredTime;
 
       await sut
-          .runAtLeast(Duration(milliseconds: 100))
+          .ensureMinExecutionTime(Duration(milliseconds: 100))
           .measureTime((elapsed) => measuredTime = elapsed)
           .run(Duration(milliseconds: 20));
 
@@ -24,7 +24,7 @@ void main() {
       Duration? measuredTime;
 
       await sut
-          .runAtLeast(Duration(milliseconds: 100))
+          .ensureMinExecutionTime(Duration(milliseconds: 100))
           .eventually(() => Future.delayed(Duration(milliseconds: 20)))
           .measureTime((elapsed) => measuredTime = elapsed)
           .run(unit);
@@ -32,5 +32,26 @@ void main() {
       expect(measuredTime, isNotNull);
       expect(measuredTime, greaterThanOrEqualTo(Duration(milliseconds: 100)));
     });
+
+    test(
+      'should use highest execution time when chaining modifiers',
+      () async {
+        final sut = WaitingInteractor();
+        int callCount = 0;
+
+        await sut
+            .ensureMinExecutionTime(
+              Duration(milliseconds: 100),
+              onDelay: (_) => ++callCount,
+            )
+            .ensureMinExecutionTime(
+              Duration(milliseconds: 50),
+              onDelay: (_) => ++callCount,
+            )
+            .run(Duration(milliseconds: 10));
+
+        expect(callCount, 1);
+      },
+    );
   });
 }

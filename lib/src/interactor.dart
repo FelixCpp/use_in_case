@@ -5,7 +5,7 @@ import 'package:dartz/dartz.dart';
 /// Defines the interface for an interactor.
 /// All interactors must implement this interface in order to fit into the use case architecture.
 abstract interface class ParameterizedResultInteractor<Input, Output> {
-  FutureOr<Output> runUnsafe(Input input);
+  FutureOr<Output> getOrThrow(Input input);
 }
 
 typedef ParameterizedInteractor<Input>
@@ -19,5 +19,5 @@ final class InlinedParameterizedResultInteractor<Input, Output>
   const InlinedParameterizedResultInteractor(this._execute);
 
   @override
-  FutureOr<Output> runUnsafe(Input input) => _execute(input);
+  FutureOr<Output> getOrThrow(Input input) => _execute(input);
 }

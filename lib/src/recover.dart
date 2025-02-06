@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:use_in_case/src/interactor.dart';
 
 /// Adds the `recover` method to the [ParameterizedResultInteractor] class.
-/// This method allows you to recover from an exception thrown by the interactor's [runUnsafe] method.
+/// This method allows you to recover from an exception thrown by the interactor's [getOrThrow] method.
 /// The callback will be called with the exception that was thrown.
 /// The result of the callback will be returned instead of the exception.
 ///
@@ -31,9 +31,9 @@ import 'package:use_in_case/src/interactor.dart';
 ///     (exception) => 'Recovered from: $exception',
 ///     (exception) => exception is FormatException,
 ///   ).run(input);
-extension Recover<Input, Output>
+extension RecoverExt<Input, Output>
     on ParameterizedResultInteractor<Input, Output> {
-  /// This method allows you to recover from an exception thrown by the interactor's [runUnsafe] method.
+  /// This method allows you to recover from an exception thrown by the interactor's [getOrThrow] method.
   /// Only exceptions that which the [predicate] returns `true` will be recovered from.
   ///
   /// [callback] The callback to invoke when [predicate] returned `true` for the given [Exception].
@@ -46,7 +46,7 @@ extension Recover<Input, Output>
   ) {
     return InlinedParameterizedResultInteractor((input) async {
       try {
-        return await runUnsafe(input);
+        return await getOrThrow(input);
       } on Exception catch (exception) {
         if (await predicate(exception)) {
           return callback(exception);
@@ -57,7 +57,7 @@ extension Recover<Input, Output>
     });
   }
 
-  /// This method allows you to recover from an [Exception] of a specific type thrown by the interactor's [runUnsafe] method.
+  /// This method allows you to recover from an [Exception] of a specific type thrown by the interactor's [getOrThrow] method.
   ///
   /// [callback] The callback to invoke when an [Exception] of type [ExceptionType] was thrown.
   ///
@@ -72,7 +72,7 @@ extension Recover<Input, Output>
     );
   }
 
-  /// This method allows you to recover from any [Exception] thrown by the interactor's [runUnsafe] method.
+  /// This method allows you to recover from any [Exception] thrown by the interactor's [getOrThrow] method.
   ///
   /// [callback] The callback to invoke when an [Exception] was thrown.
   ///

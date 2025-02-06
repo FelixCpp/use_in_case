@@ -5,7 +5,7 @@ import 'package:use_in_case/use_in_case.dart';
 
 class Accumulator implements ParameterizedResultInteractor<Iterable<num>, num> {
   @override
-  FutureOr<num> runUnsafe(Iterable<num> input) async {
+  FutureOr<num> getOrThrow(Iterable<num> input) async {
     num result = 0;
 
     for (final number in input) {

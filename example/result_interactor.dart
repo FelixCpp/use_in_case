@@ -1,12 +1,13 @@
+import 'dart:async';
+
 import 'package:dartz/dartz.dart';
 import 'package:use_in_case/src/interactor.dart';
-import 'package:use_in_case/src/invoke.dart';
 
 final class Counter implements ResultInteractor<int> {
   int _counter = 0;
 
   @override
-  Future<int> runUnsafe(Unit _) async {
+  FutureOr<int> getOrThrow(Unit _) {
     return _counter++;
   }
 }

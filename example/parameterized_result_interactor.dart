@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:use_in_case/use_in_case.dart';
 
 final class Converter implements ParameterizedResultInteractor<String, int> {
   @override
-  Future<int> runUnsafe(String input) async {
+  FutureOr<int> getOrThrow(String input) {
     return int.parse(input);
   }
 }

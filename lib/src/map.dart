@@ -13,12 +13,13 @@ import 'package:use_in_case/use_in_case.dart';
 ///   .map((output) => output.toString())
 ///   .run(input);
 /// ```
-extension Map<Input, Output> on ParameterizedResultInteractor<Input, Output> {
+extension MapExt<Input, Output>
+    on ParameterizedResultInteractor<Input, Output> {
   ParameterizedResultInteractor<Input, NewOutput> map<NewOutput>(
       FutureOr<NewOutput> Function(Output) callback) {
     return InlinedParameterizedResultInteractor<Input, NewOutput>(
         (input) async {
-      final output = await runUnsafe(input);
+      final output = await getOrThrow(input);
       return await callback(output);
     });
   }

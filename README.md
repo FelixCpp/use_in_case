@@ -29,7 +29,7 @@ How to call an interactor in your code:
 // Define an interactor that does something. He must extend/implement a type mentioned above.
 final class StringToIntConverter implements ParameterizedResultInteractor<String, int> {
     @override
-    Future<int> runUnsafe(String input) async {
+    Future<int> getOrThrow(String input) async {
         return int.parse(input);
     }
 }
@@ -126,7 +126,7 @@ extension CustomModifier<Input, Output> on ParameterizedResultInteractor<Input, 
   ParameterizedResultInteractor<Input, Output> customModifier() {
     return InlinedParameterizedResultInteractor((input) {
       print("I am here!")
-      return await runUnsafe(input);
+      return await getOrThrow(input);
     });
   }
 }
@@ -151,7 +151,7 @@ typedef DownloadProgress = int;
 final class FileDownloadInteractor extends ParameterizedResultProgressInteractor<
     Parameter, DownloadedBytes, DownloadProgress> {
   @override
-  Future<DownloadedBytes> runUnsafe(Parameter input) async {
+  Future<DownloadedBytes> getOrThrow(Parameter input) async {
     // TODO: Implement your file download here
 
     await emitProgress(0);
@@ -358,11 +358,26 @@ final result = await stringToInt
   .getOrThrow('not-a-number');
 ```
 
-### run-at-least
-... ensures that execution at least take a specified amount of time.
+### ensure-min-execution-time
+... ensures that execution at least take a specified amount of time. This time
+is being used reguardless of how the interactor finishes (failure, success).
 ```dart
 await synchronizeData
-  .runAtLeast(const Duration(seconds: 3))
+  .ensureMinExecutionTime(const Duration(seconds: 3))
+  .run();
+```
+
+### ensure-min-execution-time-on-success
+... ensures that execution takes at least the specified amount of time in case
+the interactor does not fail. Otherwise the execution is being terminated immediately.
+```dart
+await synchronizeData
+  .before((_) {
+    if (...) {
+      throw RuntimeException("This is an intended behavior")
+    }
+  })
+  .ensureMinExecutionTimeOnSuccess(const Duration(seconds: 3)) //!< Only takes 3 seconds in success cases.
   .run();
 ```
 
@@ -380,7 +395,7 @@ await synchronizeData
 ```dart
 final class GreetName implements ParameterizedResultInteractor<String, String> {
   @override
-  FutureOr<String> runUnsafe(String input) async {
+  FutureOr<String> getOrThrow(String input) async {
     return 'Hello, $input';
   }
 }
@@ -390,7 +405,7 @@ final class GreetName implements ParameterizedResultInteractor<String, String> {
 ```dart
 final class StringToInt implements ParameterizedResultInteractor<String, int> {
   @override
-  FutureOr<int> runUnsafe(String input) async {
+  FutureOr<int> getOrThrow(String input) async {
     return int.parse(input);
   }
 }
@@ -400,7 +415,7 @@ final class StringToInt implements ParameterizedResultInteractor<String, int> {
 ```dart
 final class SynchronizeData implements Interactor {
   @override
-  FutureOr<Unit> runUnsafe(Unit input) async {
+  FutureOr<Unit> getOrThrow(Unit input) async {
     // Perform sync ...
     return Future.delayed(const Duration(seconds: 1), () => unit);
   }

@@ -29,7 +29,7 @@ void main() {
         final result = sut
             .eventually(() => Future.delayed(Duration(milliseconds: 100)))
             .measureTime((elapsed) => measuredTime = elapsed)
-            .runUnsafe(unit);
+            .getOrThrow(unit);
 
         await expectLater(result, throwsException);
         expect(measuredTime, isNotNull);

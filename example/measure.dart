@@ -7,7 +7,7 @@ typedef RepeatParams = ({int times, Action action});
 
 final class RepeatInteractor implements ParameterizedInteractor<RepeatParams> {
   @override
-  FutureOr<void> runUnsafe(RepeatParams input) {
+  FutureOr<void> getOrThrow(RepeatParams input) {
     for (var i = 0; i < input.times; i++) {
       input.action();
     }

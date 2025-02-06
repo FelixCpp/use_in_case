@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:use_in_case/use_in_case.dart';
 
-extension MeasureTime<Input, Output>
+extension MeasureTimeExt<Input, Output>
     on ParameterizedResultInteractor<Input, Output> {
   /// Measures the time it takes to run the interactor.
   /// [callback] will be invoked regardless of the interactor's success or failure.

@@ -6,7 +6,7 @@ import 'package:use_in_case/use_in_case.dart';
 final class TestInteractor
     implements ParameterizedResultInteractor<String, int> {
   @override
-  Future<int> runUnsafe(String input) async {
+  Future<int> getOrThrow(String input) async {
     return int.parse(input);
   }
 }
@@ -14,14 +14,14 @@ final class TestInteractor
 final class WaitingInteractor
     implements ParameterizedResultInteractor<Duration, int> {
   @override
-  Future<int> runUnsafe(Duration input) async {
+  Future<int> getOrThrow(Duration input) async {
     return Future.delayed(input, () => input.inMilliseconds);
   }
 }
 
 final class ThrowingInteractor implements Interactor {
   @override
-  FutureOr<void> runUnsafe(Unit input) {
+  FutureOr<void> getOrThrow(Unit input) {
     throw Exception("This is an expected exception");
   }
 }

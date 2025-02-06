@@ -10,7 +10,7 @@ final class _RunInteractor
   var called = false;
 
   @override
-  Future<int> runUnsafe(String input) async {
+  Future<int> getOrThrow(String input) async {
     called = true;
     return int.parse(input);
   }
@@ -18,7 +18,7 @@ final class _RunInteractor
 
 final class _ThrowErrorInteracctor implements ResultInteractor<int> {
   @override
-  Future<int> runUnsafe(Unit unit) async {
+  Future<int> getOrThrow(Unit unit) async {
     throw ArgumentError('Invalid argument');
   }
 }
@@ -56,7 +56,7 @@ void main() {
 
     test('should invoke execute method and ignore exception', () async {
       await expectLater(
-        () => interactor.runUnsafe('bruh'),
+        () => interactor.getOrThrow('bruh'),
         throwsA(isA<FormatException>()),
       );
 

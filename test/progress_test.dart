@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 import 'package:use_in_case/use_in_case.dart';
@@ -5,7 +7,7 @@ import 'package:use_in_case/use_in_case.dart';
 final class _TestProgressInteractor
     extends ParameterizedResultProgressInteractor<String, int, double> {
   @override
-  Future<int> runUnsafe(String input) async {
+  FutureOr<int> getOrThrow(String input) async {
     for (var i = 0; i < 10; i++) {
       await emitProgress(i / 10);
     }

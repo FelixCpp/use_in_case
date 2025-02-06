@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:dartz/dartz.dart';
 import 'package:use_in_case/use_in_case.dart';
 
 final class Printer implements Interactor {
   @override
-  Future<void> runUnsafe(Unit input) async {
+  FutureOr<void> getOrThrow(Unit input) {
     print('Hello!');
   }
 }
