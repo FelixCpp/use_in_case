@@ -27,7 +27,7 @@ void main() {
       var output = 0;
 
       final result = await sut
-          .after((producedOutput) async => output = producedOutput)
+          .after((producedOutput) => output = producedOutput)
           .getOrThrow('42');
 
       expect(output, equals(42));
@@ -38,8 +38,8 @@ void main() {
       final order = <int>[];
 
       final result = await sut
-          .after((_) async => order.add(0))
-          .after((_) async => order.add(1))
+          .after((_) => order.add(0))
+          .after((_) => order.add(1))
           .getOrThrow('42');
 
       expect(order, orderedEquals([0, 1]));
@@ -51,9 +51,9 @@ void main() {
 
       await expectLater(
         () => sut
-            .after((_) async => callCount++)
-            .after((_) async => throw Exception())
-            .after((_) async => callCount++)
+            .after((_) => callCount++)
+            .after((_) => throw Exception())
+            .after((_) => callCount++)
             .getOrThrow('42'),
         throwsException,
       );

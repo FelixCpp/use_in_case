@@ -47,7 +47,7 @@ extension InterceptExt<Input, Output>
         return await getOrThrow(input);
       } on Exception catch (exception) {
         if (await predicate(exception)) {
-          callback(exception);
+          await callback(exception);
         }
 
         rethrow;

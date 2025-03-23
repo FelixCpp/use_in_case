@@ -15,7 +15,7 @@ void main() {
     test('should call "before" once', () async {
       var callCount = 0;
 
-      final result = await sut.before((_) async {
+      final result = await sut.before((_) {
         callCount++;
       }).getOrThrow('42');
 
@@ -27,7 +27,7 @@ void main() {
       var parameter = '';
 
       final result =
-          await sut.before((input) async => parameter = input).getOrThrow('42');
+          await sut.before((input) => parameter = input).getOrThrow('42');
 
       expect(parameter, equals('42'));
       expect(result, equals(42));
@@ -37,8 +37,8 @@ void main() {
       final order = <int>[];
 
       final result = await sut
-          .before((_) async => order.add(1))
-          .before((_) async => order.add(0))
+          .before((_) => order.add(1))
+          .before((_) => order.add(0))
           .getOrThrow('42');
 
       expect(order, orderedEquals([0, 1]));
@@ -50,9 +50,9 @@ void main() {
 
       await expectLater(
         () => sut
-            .before((_) async => callCount++)
-            .before((_) async => throw Exception())
-            .before((_) async => callCount++)
+            .before((_) => callCount++)
+            .before((_) => throw Exception())
+            .before((_) => callCount++)
             .getOrThrow('42'),
         throwsException,
       );
