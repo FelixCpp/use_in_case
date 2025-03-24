@@ -156,3 +156,7 @@ New parameter `allowMultiCatch` added to the following function signatures:
 * [checkedIntercept](./lib/src/intercept.dart)
 * [typedIntercept](./lib/src/intercept.dart)
 * [intercept](./lib/src/intercept.dart)
+
+## Branding
+
+Shortened package description
