@@ -24,6 +24,62 @@ void main() {
 
       expect(interceptedException, isA<FormatException>());
     });
+
+    test('should call multiple interceptions', () async {
+      var callCount = 0;
+
+      await expectLater(
+        () => sut
+            .intercept((e) => callCount++)
+            .intercept((e) => callCount++)
+            .intercept((e) => callCount++)
+            .getOrThrow('input'),
+        throwsA(isA<FormatException>()),
+      );
+
+      expect(callCount, equals(3));
+    });
+
+    test('should not catch same exception twice', () async {
+      var callCount = 0;
+
+      await expectLater(
+        () => sut
+            .intercept((e) => callCount++, handled: true)
+            .intercept((e) => callCount++)
+            .getOrThrow('input'),
+        throwsA(
+          isA<HandledException<Exception>>().having(
+            (exception) => exception.exception,
+            'exception',
+            isA<FormatException>(),
+          ),
+        ),
+      );
+
+      expect(callCount, equals(1));
+    });
+
+    test('should not catch same exception after second interception', () async {
+      var callCount = 0;
+
+      await expectLater(
+        () => sut
+            .intercept((e) => callCount++, handled: false)
+            .intercept((e) => callCount++, handled: true)
+            .intercept((e) => callCount++)
+            .getOrThrow('input'),
+        throwsA(
+          isA<HandledException<Exception>>().having(
+            (exception) => exception.exception,
+            'exception',
+            isA<FormatException>(),
+          ),
+        ),
+      );
+
+      expect(callCount, equals(2));
+    });
   });
 
   group('typedIntercept', () {
@@ -76,6 +132,44 @@ void main() {
         expect(callCount, equals(2));
       },
     );
+
+    test('should not catch same exception twice', () async {
+      var callCount = 0;
+
+      await expectLater(
+        () => sut
+            .typedIntercept<FormatException>(
+              (e) => callCount++,
+              handled: true,
+            )
+            .typedIntercept<FormatException>((e) => callCount++)
+            .getOrThrow('input'),
+        throwsA(isA<HandledException<FormatException>>()),
+      );
+
+      expect(callCount, equals(1));
+    });
+
+    test('should not catch same exception after second interception', () async {
+      var callCount = 0;
+
+      await expectLater(
+        () => sut
+            .typedIntercept<FormatException>(
+              (e) => callCount++,
+              handled: false,
+            )
+            .typedIntercept<FormatException>(
+              (e) => callCount++,
+              handled: true,
+            )
+            .typedIntercept<FormatException>((e) => callCount++)
+            .getOrThrow('input'),
+        throwsA(isA<HandledException<FormatException>>()),
+      );
+
+      expect(callCount, equals(2));
+    });
   });
 
   group('checkedIntercept', () {
@@ -110,6 +204,53 @@ void main() {
       );
 
       expect(called, isFalse);
+    });
+
+    test('should not catch same exception twice', () async {
+      var callCount = 0;
+
+      await expectLater(
+        () => sut
+            .checkedIntercept(
+              (e) => callCount++,
+              (_) => true,
+              handled: true,
+            )
+            .checkedIntercept(
+              (e) => callCount++,
+              (_) => true,
+            )
+            .getOrThrow('input'),
+        throwsA(isA<HandledException<Exception>>()),
+      );
+
+      expect(callCount, equals(1));
+    });
+
+    test('should not catch same exception after second interception', () async {
+      var callCount = 0;
+
+      await expectLater(
+        () => sut
+            .checkedIntercept(
+              (e) => callCount++,
+              (_) => true,
+              handled: false,
+            )
+            .checkedIntercept(
+              (e) => callCount++,
+              (_) => true,
+              handled: true,
+            )
+            .checkedIntercept(
+              (e) => callCount++,
+              (_) => true,
+            )
+            .getOrThrow('input'),
+        throwsA(isA<Exception>()),
+      );
+
+      expect(callCount, equals(2));
     });
   });
 }

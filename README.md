@@ -441,5 +441,63 @@ final class SynchronizeData implements Interactor {
 }
 ```
 
+## Interception
+Release 1.4.1 added a new parameter named [handled] to all interception modifiers.
+It's value defaults to false meaning the behavior is identical to the releases before
+Version 1.4.1.
+
+### Before 1.4.1
+Before adding the parameter, usecases might throw an exception which gets
+caught by all [intercept](./lib/src/intercept.dart) modifiers.
+
+```dart
+final result = stringToInt
+  .typedIntercept<FormatException>((exception) => print('The provided number could not be parsed as an interger.'))
+  .intercept((exception) => print('An exception occured'))
+  .getOrNull('12');
+```
+
+The code above would call typedIntercept regardless of whether there's another interception call
+registered inside the call chain or not. Therefore both callbacks are getting invoked
+every time an exception occurs.
+
+Avoiding the behavior looked like this:
+
+```dart
+final result = stringToInt
+  .typedIntercept<FormatException>((exception) => print('The provided number could not be parsed as an interger.'))
+  .checkedIntercept(
+    (exception) => print('An exception occured'),
+    (exception) => exception is! FormatException,
+  )
+  .getOrNull('12');
+```
+
+This time only one callback gets invoked, either typedIntercept or checkedIntercept.
+In order to provide a more easier way to get around catching the exception
+multiple times inside the call chain, i've added `handled` as optional
+parameter to all intercept methods.
+
+### After 1.4.1
+
+A code example using `handled` might look like this:
+
+```dart
+final result = stringToInt
+  .typedIntercept<FormatException>(
+    (exception) => print('The provided number could not be parsed as an interger.'),
+    handled: true
+  )
+  .intercept((exception) => print('An exception occured'))
+  .getOrNull('12');
+```
+
+In this case, only `typedIntercept` receives the exception.
+Internally a new exception type is used to differentiate between caught exceptions from the
+outside and exception thrown by the implementation. In some scenarios the caller might
+be interested in the exception type due to a [getOrThrow](./lib/src/invoke.dart). From now on
+exceptions filtered out by `handled` are rethrown using the [HandledException](./lib/src/intercept.dart)
+type.
+
 ---
 >  For more examples, take a look into the [examples](./example) folder.

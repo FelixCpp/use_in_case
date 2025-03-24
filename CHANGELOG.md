@@ -135,3 +135,23 @@ Removed use_in_case2.0 branch from git-workflow filter.
 - Renamed `runUnsafe` to `getOrThrow` in [ParameterizedResultProgressInteractor](./lib/src/progress.dart)
 - Modifier [measureTimeOnSuccess](./lib/src/measure.dart) added
 - Modifier [cast](./lib/src/map.dart) added
+
+# 1.4.1
+
+## Bugfixes
+
+Re-invocation of `callback` provided as parameter in [checkedIntercept](./lib/src/intercept.dart) is now awaited when called.
+
+## Examples
+
+- Example of [after](./lib/src/after.dart) updated
+- Example of [before](./lib/src/before.dart) updated
+- Example for [timeout](./lib/src/timeout.dart) added
+
+## Features
+
+New parameter `allowMultiCatch` added to the following function signatures:
+
+* [checkedIntercept](./lib/src/intercept.dart)
+* [typedIntercept](./lib/src/intercept.dart)
+* [intercept](./lib/src/intercept.dart)
