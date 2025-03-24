@@ -153,7 +153,7 @@ extension InterceptExt<Input, Output>
           throw HandledException(exception);
         }
       },
-      (exception) => exception is ExceptionType,
+      (exception) async => exception is ExceptionType,
       handled: handled, //!< This parameter is useless here
     );
   }
