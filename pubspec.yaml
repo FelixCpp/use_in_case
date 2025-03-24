@@ -2,12 +2,9 @@ name: use_in_case
 description: >-
   Have you ever tried to follow a clean-architecture approach in your Project?
   If so, you probably have a lot of UseCases. This package will help you to use
-  them in a more readable way. It's a simple package that provides a set of
-  classes and functions to help you configuring your UseCases in a more
-  flexible and readable way. It is designed to be used in combination with
-  Business-Logic-Components (BLoC).
+  them in a more organized way.
 
-version: 1.4.0
+version: 1.4.1
 repository: https://github.com/FelixCpp/use_in_case
 
 topics:
