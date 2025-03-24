@@ -147,6 +147,7 @@ Re-invocation of `callback` provided as parameter in [checkedIntercept](./lib/sr
 - Example of [after](./lib/src/after.dart) updated
 - Example of [before](./lib/src/before.dart) updated
 - Example for [timeout](./lib/src/timeout.dart) added
+- Example [intercept](./example/intercept_handled.dart) added
 
 ## Features
 
