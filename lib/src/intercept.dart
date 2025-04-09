@@ -60,19 +60,19 @@ extension InterceptExt<Input, Output>
   ///   .checkedIntercept(
   ///     (exception) => print('Exception: $exception'),
   ///     (exception) => exception is FormatException,
-  ///     handled: false,
+  ///     consume: false,
   ///   )
   ///   .checkedIntercept(
   ///     (exception) => print('FormatException: $exception'),
   ///     (exception) => exception is FormatException,
-  ///     handled: false,
+  ///     consume: true,
   ///   )
   ///   .run(input);
   /// ```
   ///
   /// The output of the code above will result in calling both callbacks
   /// since the same exception is rethrown right after the first interception.
-  /// Setting the `allowMultiCatch` parameter to `false` will prevent all
+  /// Setting the [consume] parameter to `true` will prevent all
   /// following interception modifiers from receiving the same exception
   /// resulting in only the first callback being called.
   ///

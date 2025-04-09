@@ -160,3 +160,12 @@ New parameter `allowMultiCatch` added to the following function signatures:
 ## Branding
 
 Shortened package description
+
+# 1.4.2
+
+## Features
+
+### Intercept
+
+`allowMultiCatch` has been renamed to `consume`. By default, all intercept-functions will
+consume exceptions and rethrow a `HandledException` in order to filter out previously caught exception types. Note that this behavior can be customized by providing `false` as parameter.
