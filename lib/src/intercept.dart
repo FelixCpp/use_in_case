@@ -47,11 +47,11 @@ extension InterceptExt<Input, Output>
     on ParameterizedResultInteractor<Input, Output> {
   /// Intercepts exceptions thrown by the interactor's [getOrThrow] method.
   /// [callback] will only be invoked when the [predicate] returned `true`.
-  /// [handled] specifies whether the exception should be rethrown
+  /// [consume] specifies whether the exception should be rethrown
   /// after the callback has been executed or not. If set to `false`, the
   /// exception won't be caught again by the [checkedIntercept] method.
   ///
-  /// Demonstrating the use of [handled]:
+  /// Demonstrating the use of [consume]:
   ///
   /// ```dart
   /// final interactor = MyInteractor();
@@ -76,7 +76,7 @@ extension InterceptExt<Input, Output>
   /// following interception modifiers from receiving the same exception
   /// resulting in only the first callback being called.
   ///
-  /// In case [handled] is enabled, the exception will be rethrown as a
+  /// In case [consume] is enabled, the exception will be rethrown as a
   /// [HandledException] with the original exception as its type parameter. This
   /// means that the resulting exception will be of type `HandledException<Exception>`.
   /// This is necessary to differentiate between exceptions that have been handled
@@ -91,7 +91,7 @@ extension InterceptExt<Input, Output>
   ParameterizedResultInteractor<Input, Output> checkedIntercept(
     FutureOr<void> Function(Exception) callback,
     FutureOr<bool> Function(Exception) predicate, {
-    bool handled = false,
+    bool consume = true,
   }) {
     return InlinedParameterizedResultInteractor((input) async {
       try {
@@ -112,7 +112,7 @@ extension InterceptExt<Input, Output>
           // information to determine the exact type of
           // the exception, so we just throw it as a
           // HandledException<Exception>.
-          if (handled) {
+          if (consume) {
             throw HandledException(exception);
           }
         }
@@ -124,7 +124,7 @@ extension InterceptExt<Input, Output>
 
   /// Intercepts exceptions of a specific type thrown by the interactor's [getOrThrow] method.
   /// [callback] will only be invoked when the exception is of the specified [ExceptionType].
-  /// [handled] specifies whether the exception should be rethrown and therefore
+  /// [consume] specifies whether the exception should be rethrown and therefore
   /// caught by any chained [checkedIntercept] method or not. More details can be found in the
   /// documentation of the [checkedIntercept] method.
   ///
@@ -135,7 +135,7 @@ extension InterceptExt<Input, Output>
   ParameterizedResultInteractor<Input, Output>
       typedIntercept<ExceptionType extends Exception>(
     FutureOr<void> Function(ExceptionType) callback, {
-    bool handled = false,
+    bool consume = true,
   }) {
     return checkedIntercept(
       (exception) async {
@@ -149,18 +149,19 @@ extension InterceptExt<Input, Output>
         // If we wouldn't do this, the exception would be
         // rethrown as a HandledException<Exception> without
         // concrete exception type.
-        if (handled) {
+
+        if (consume) {
           throw HandledException(exception);
         }
       },
-      (exception) async => exception is ExceptionType,
-      handled: handled, //!< This parameter is useless here
+      (exception) => exception is ExceptionType,
+      consume: false,
     );
   }
 
   /// Intercepts exceptions thrown by the interactor's [getOrThrow] method.
   /// [callback] will be called any time an exception occurs.
-  /// [handled] specifies whether the exception should be rethrown and therefore
+  /// [consume] specifies whether the exception should be rethrown and therefore
   /// caught by any chained [checkedIntercept] method or not. More details can be found in the
   /// documentation of the [checkedIntercept] method.
   ///
@@ -170,11 +171,11 @@ extension InterceptExt<Input, Output>
   /// See also: [typedIntercept], [checkedIntercept]
   ParameterizedResultInteractor<Input, Output> intercept(
     FutureOr<void> Function(Exception) callback, {
-    bool handled = false,
+    bool consume = true,
   }) {
     return typedIntercept<Exception>(
       callback,
-      handled: handled,
+      consume: consume,
     );
   }
 }

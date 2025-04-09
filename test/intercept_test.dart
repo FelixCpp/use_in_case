@@ -1,84 +1,101 @@
-import 'dart:async';
-
 import 'package:test/test.dart';
 import 'package:use_in_case/use_in_case.dart';
 
 import 'test_interactor.dart';
 
 void main() {
-  group('intercept', () {
+  group('checkedIntercept', () {
     late ParameterizedResultInteractor<String, int> sut;
 
     setUp(() {
       sut = TestInteractor();
     });
 
-    test('should intercept exception', () async {
-      Exception? interceptedException;
+    test(
+      'should catch handled exception due to invalid conversion parameter',
+      () async {
+        var caught = false;
+
+        await expectLater(
+          () => sut
+              .checkedIntercept(
+                (exception) => caught = true,
+                (exception) => exception is FormatException,
+              )
+              .getOrThrow('invalid'),
+          throwsA(isA<HandledException<Exception>>()),
+        );
+
+        expect(caught, isTrue);
+      },
+    );
+
+    test(
+      'should catch unhandled exception due to invalid conversion parameter',
+      () async {
+        var caught = false;
+
+        await expectLater(
+          () => sut
+              .checkedIntercept(
+                (exception) => caught = true,
+                (exception) => exception is FormatException,
+                consume: false,
+              )
+              .getOrThrow('invalid'),
+          throwsException,
+        );
+
+        expect(caught, isTrue);
+      },
+    );
+
+    test(
+      'should catch only all exception down to first consumer',
+      () async {
+        var firstCaught = false;
+        var secondCaught = false;
+        var thirdCaught = false;
+
+        await expectLater(
+          () => sut
+              .checkedIntercept(
+                (exception) => firstCaught = true,
+                (exception) => true,
+                consume: false,
+              )
+              .checkedIntercept(
+                (exception) => secondCaught = true,
+                (exception) => true,
+              )
+              .checkedIntercept(
+                (exception) => thirdCaught = true,
+                (exception) => true,
+              )
+              .getOrThrow('invalid'),
+          throwsA(isA<HandledException<Exception>>()),
+        );
+
+        expect(firstCaught, isTrue);
+        expect(secondCaught, isTrue);
+        expect(thirdCaught, isFalse);
+      },
+    );
+
+    test('should not catch exception due to valid input', () async {
+      var caught = false;
 
       await expectLater(
-        () =>
-            sut.intercept((e) => interceptedException = e).getOrThrow('input'),
-        throwsA(isA<FormatException>()),
+        sut
+            .checkedIntercept(
+              (exception) => caught = true,
+              (exception) => exception is FormatException,
+            )
+            .getOrThrow('42'),
+        completion(equals(42)),
       );
 
-      expect(interceptedException, isA<FormatException>());
-    });
-
-    test('should call multiple interceptions', () async {
-      var callCount = 0;
-
-      await expectLater(
-        () => sut
-            .intercept((e) => callCount++)
-            .intercept((e) => callCount++)
-            .intercept((e) => callCount++)
-            .getOrThrow('input'),
-        throwsA(isA<FormatException>()),
-      );
-
-      expect(callCount, equals(3));
-    });
-
-    test('should not catch same exception twice', () async {
-      var callCount = 0;
-
-      await expectLater(
-        () => sut
-            .intercept((e) => callCount++, handled: true)
-            .intercept((e) => callCount++)
-            .getOrThrow('input'),
-        throwsA(
-          isA<HandledException<Exception>>().having(
-            (exception) => exception.exception,
-            'exception',
-            isA<FormatException>(),
-          ),
-        ),
-      );
-
-      expect(callCount, equals(1));
-    });
-
-    test('should not catch same exception after second interception', () async {
-      var callCount = 0;
-
-      await expectLater(
-        () => sut
-            .intercept((e) => callCount++, handled: false)
-            .intercept((e) => callCount++, handled: true)
-            .intercept((e) => callCount++)
-            .getOrThrow('input'),
-        throwsA(
-          isA<HandledException<Exception>>().having(
-            (exception) => exception.exception,
-            'exception',
-            isA<FormatException>(),
-          ),
-        ),
-      );
-
-      expect(callCount, equals(2));
+      expect(caught, isFalse);
     });
   });
 
@@ -89,168 +106,144 @@ void main() {
       sut = TestInteractor();
     });
 
-    test('should intercept exception', () async {
-      var called = false;
-
-      await expectLater(
-        () => sut
-            .typedIntercept<FormatException>((e) => called = true)
-            .getOrThrow('input'),
-        throwsA(isA<FormatException>()),
-      );
-
-      expect(called, isTrue);
-    });
-
-    test('should not intercept exception due to type missmatch', () async {
-      var called = false;
-
-      await expectLater(
-        () => sut
-            .typedIntercept<TimeoutException>((e) => called = true)
-            .getOrThrow('input'),
-        throwsA(isA<FormatException>()),
-      );
-
-      expect(called, isFalse);
-    });
-
     test(
-      'should call multiple interceptions',
+      'should catch handled exception due to invalid conversion parameter',
       () async {
-        var callCount = 0;
+        var caught = false;
 
         await expectLater(
           () => sut
-              .typedIntercept<FormatException>((e) => callCount++)
-              .typedIntercept<TimeoutException>((e) => callCount++)
-              .intercept((e) => callCount++)
-              .getOrThrow('input'),
-          throwsA(isA<FormatException>()),
+              .typedIntercept<FormatException>(
+                (exception) => caught = true,
+              )
+              .getOrThrow('invalid'),
+          throwsA(isA<HandledException<FormatException>>()),
         );
 
-        expect(callCount, equals(2));
+        expect(caught, isTrue);
       },
     );
 
-    test('should not catch same exception twice', () async {
-      var callCount = 0;
+    test(
+      'should catch unhandled exception due to invalid conversion parameter',
+      () async {
+        var caught = false;
 
-      await expectLater(
-        () => sut
-            .typedIntercept<FormatException>(
-              (e) => callCount++,
-              handled: true,
-            )
-            .typedIntercept<FormatException>((e) => callCount++)
-            .getOrThrow('input'),
-        throwsA(isA<HandledException<FormatException>>()),
-      );
+        await expectLater(
+          () => sut
+              .typedIntercept<FormatException>(
+                (exception) => caught = true,
+                consume: false,
+              )
+              .getOrThrow('invalid'),
+          throwsException,
+        );
 
-      expect(callCount, equals(1));
-    });
+        expect(caught, isTrue);
+      },
+    );
 
-    test('should not catch same exception after second interception', () async {
-      var callCount = 0;
+    test(
+      'should catch only all exception down to first consumer',
+      () async {
+        var firstCaught = false;
+        var secondCaught = false;
+        var thirdCaught = false;
 
-      await expectLater(
-        () => sut
-            .typedIntercept<FormatException>(
-              (e) => callCount++,
-              handled: false,
-            )
-            .typedIntercept<FormatException>(
-              (e) => callCount++,
-              handled: true,
-            )
-            .typedIntercept<FormatException>((e) => callCount++)
-            .getOrThrow('input'),
-        throwsA(isA<HandledException<FormatException>>()),
-      );
+        await expectLater(
+          () => sut
+              .typedIntercept<FormatException>(
+                (exception) => firstCaught = true,
+                consume: false,
+              )
+              .typedIntercept<FormatException>(
+                (exception) => secondCaught = true,
+              )
+              .typedIntercept<FormatException>(
+                (exception) => thirdCaught = true,
+              )
+              .getOrThrow('invalid'),
+          throwsA(isA<HandledException<FormatException>>()),
+        );
 
-      expect(callCount, equals(2));
-    });
+        expect(firstCaught, isTrue);
+        expect(secondCaught, isTrue);
+        expect(thirdCaught, isFalse);
+      },
+    );
   });
 
-  group('checkedIntercept', () {
+  group('intercept', () {
     late ParameterizedResultInteractor<String, int> sut;
 
     setUp(() {
       sut = TestInteractor();
     });
 
-    test('should intercept exception', () async {
-      var called = false;
+    test(
+      'should catch handled exception due to invalid conversion parameter',
+      () async {
+        var caught = false;
 
-      await expectLater(
-        () => sut
-            .checkedIntercept((e) => called = true, (_) => true)
-            .getOrThrow('input'),
-        throwsA(isA<FormatException>()),
-      );
+        await expectLater(
+          () => sut
+              .intercept(
+                (exception) => caught = true,
+              )
+              .getOrThrow('invalid'),
+          throwsA(isA<HandledException<Exception>>()),
+        );
 
-      expect(called, isTrue);
-    });
+        expect(caught, isTrue);
+      },
+    );
 
-    test('should not intercept exception due to unsatisfied predicate',
-        () async {
-      var called = false;
+    test(
+      'should catch unhandled exception due to invalid conversion parameter',
+      () async {
+        var caught = false;
 
-      await expectLater(
-        () => sut
-            .checkedIntercept((e) => called = true, (_) => false)
-            .getOrThrow('input'),
-        throwsA(isA<FormatException>()),
-      );
+        await expectLater(
+          () => sut
+              .intercept(
+                (exception) => caught = true,
+                consume: false,
+              )
+              .getOrThrow('invalid'),
+          throwsException,
+        );
 
-      expect(called, isFalse);
-    });
+        expect(caught, isTrue);
+      },
+    );
 
-    test('should not catch same exception twice', () async {
-      var callCount = 0;
+    test(
+      'should catch only all exception down to first consumer',
+      () async {
+        var firstCaught = false;
+        var secondCaught = false;
+        var thirdCaught = false;
 
-      await expectLater(
-        () => sut
-            .checkedIntercept(
-              (e) => callCount++,
-              (_) => true,
-              handled: true,
-            )
-            .checkedIntercept(
-              (e) => callCount++,
-              (_) => true,
-            )
-            .getOrThrow('input'),
-        throwsA(isA<HandledException<Exception>>()),
-      );
+        await expectLater(
+          () => sut
+              .intercept(
+                (exception) => firstCaught = true,
+                consume: false,
+              )
+              .intercept(
+                (exception) => secondCaught = true,
+              )
+              .intercept(
+                (exception) => thirdCaught = true,
+              )
+              .getOrThrow('invalid'),
+          throwsA(isA<HandledException<Exception>>()),
+        );
 
-      expect(callCount, equals(1));
-    });
-
-    test('should not catch same exception after second interception', () async {
-      var callCount = 0;
-
-      await expectLater(
-        () => sut
-            .checkedIntercept(
-              (e) => callCount++,
-              (_) => true,
-              handled: false,
-            )
-            .checkedIntercept(
-              (e) => callCount++,
-              (_) => true,
-              handled: true,
-            )
-            .checkedIntercept(
-              (e) => callCount++,
-              (_) => true,
-            )
-            .getOrThrow('input'),
-        throwsA(isA<Exception>()),
-      );
-
-      expect(callCount, equals(2));
-    });
+        expect(firstCaught, isTrue);
+        expect(secondCaught, isTrue);
+        expect(thirdCaught, isFalse);
+      },
+    );
   });
 }

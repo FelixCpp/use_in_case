@@ -18,7 +18,7 @@ Future<void> main() {
     return interactor
         .typedIntercept<FormatException>(
           (exception) => print('Formatting error $exception!'),
-          handled: true,
+          consume: true,
         )
         .intercept((exception) => print('Unexpected error $exception!'))
         .run(input);
