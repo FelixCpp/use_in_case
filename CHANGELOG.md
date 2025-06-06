@@ -169,3 +169,9 @@ Shortened package description
 
 `allowMultiCatch` has been renamed to `consume`. By default, all intercept-functions will
 consume exceptions and rethrow a `HandledException` in order to filter out previously caught exception types. Note that this behavior can be customized by providing `false` as parameter.
+
+# 1.4.3
+
+## Bugfixes
+
+There was a bug in 'logEvents' that consumed exceptions event though they should've forwarded to the interception call.
