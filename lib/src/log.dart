@@ -52,7 +52,7 @@ extension LogExt<Input, Output>
       return logSuccess(stopwatch.elapsed, output);
     }).intercept((exception) {
       return logError(stopwatch.elapsed, exception);
-    });
+    }, consume: false);
   }
 
   ParameterizedResultInteractor<Input, Output> log({

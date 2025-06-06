@@ -43,5 +43,27 @@ void main() {
       expect(logStartInput, equals('bruh'));
       expect(logErrorException, isA<FormatException>());
     });
+
+    test('should not consume exceptions when logError is executed', () async {
+      String? logStartInput;
+      Exception? logErrorException;
+      Exception? caughtException;
+
+      await sut
+          .logEvents(
+            logStart: (input) => logStartInput = input,
+            logSuccess: (_, __) => fail("logSuccess has been called."),
+            logError: (_, exception) {
+              logErrorException = exception;
+            },
+          )
+          .intercept((exception) => caughtException = exception)
+          .run('bruh');
+
+      expect(logStartInput, equals('bruh'));
+      expect(caughtException, isA<FormatException>());
+      expect(logErrorException, isA<FormatException>());
+      expect(caughtException, equals(logErrorException));
+    });
   });
 }
