@@ -175,3 +175,15 @@ consume exceptions and rethrow a `HandledException` in order to filter out previ
 ## Bugfixes
 
 There was a bug in 'logEvents' that consumed exceptions event though they should've forwarded to the interception call.
+
+# 1.4.4
+
+## Features
+
+### continue-with
+`continueWith` has been added to the library. Its purpose is to continue the execution flow of an interactor regardless of the result.
+It's callback produces an output having the outcome passed as parameter in order for you to decide what to continue with.
+
+Function: [here](./lib/src/map.dart)<br/>
+Example: [here](./example/continue_with.dart)<br/>
+Test: [here](./test/map_test.dart)<br/>

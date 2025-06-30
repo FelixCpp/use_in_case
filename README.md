@@ -309,6 +309,19 @@ final pi = await stringToInt
   .getOrThrow('3');
 ```
 
+### continueWith
+... allows you to specify a `callback` receiving an `Either` type from [dartz](https://pub.dev/packages/dartz) holding the output or exception depending on the outcome. It's purpose is to generate a new output for the execution flow depending on the outcome of the interactor in state of the given parameter.
+```dart
+final output = await stringToInt
+  .continueWith((result) {
+    return result.fold(
+      ifLeft: (exception) => 'Failed: ${exception.toString()}',
+      ifRight: (value) => 'Succeeded: ${value.toString()}'
+    )
+  })
+  .getOrThrow();
+```
+
 ### cast
 ... allows you to specify a new output type of the previous interactor. The produced result is being explicitly casted to
 the specified type.

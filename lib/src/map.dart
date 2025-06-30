@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dartz/dartz.dart';
 import 'package:use_in_case/use_in_case.dart';
 
 /// This extension provides a method to map the output of an interactor.
@@ -37,6 +38,45 @@ extension MapExt<Input, Output>
         return await callback(output);
       },
     );
+  }
+
+  /// This method continues the execution of the interactor regardless of the
+  /// result. Whether it succeeded having an output or failed with an
+  /// exception, [callback] will be executed with a corresponding
+  /// [Either] value.
+  ///
+  /// This is useful when you want to execute some code after the
+  /// interactor finishes depending on the result. In case the output
+  /// is really not needed, you should use [eventually] method instead.
+  ///
+  /// Example:
+  /// ```dart
+  /// final interactor = MyInteractor();
+  /// final result = interactor
+  ///   .continueWith((either) {
+  ///     either.fold(
+  ///       (exception) => print('Interactor failed with: $exception'),
+  ///       (output) => print('Interactor succeeded with: $output'),
+  ///     );
+  ///     return 'Done';
+  ///   })
+  ///   .getOrThrow(input);
+  /// ///
+  /// print(result); // 'Done'
+  /// ```
+  ///
+  /// see [eventually]
+  ParameterizedResultInteractor<Input, NewOutput> continueWith<NewOutput>(
+    FutureOr<NewOutput> Function(Either<Exception, Output>) callback,
+  ) {
+    return InlinedParameterizedResultInteractor((input) async {
+      try {
+        final result = await getOrThrow(input);
+        return await callback(right(result));
+      } on Exception catch (exception) {
+        return await callback(left(exception));
+      }
+    });
   }
 
   /// This method casts the output of the interactor to the given type [NewOutput].

@@ -36,4 +36,45 @@ void main() {
       await expectLater(result, throwsA(isA<TypeError>()));
     });
   });
+
+  group('continueWith', () {
+    late ParameterizedResultInteractor<String, int> sut;
+
+    setUp(() {
+      sut = TestInteractor();
+    });
+
+    test('should continue with output', () async {
+      final result = await sut
+          .continueWith((either) => either.fold(
+                (e) => 'Error',
+                (o) => 'Output',
+              ))
+          .getOrThrow('2');
+
+      expect(result, 'Output');
+    });
+
+    test('should continue with error', () async {
+      final result = await sut
+          .continueWith((either) => either.fold(
+                (e) => 'Error',
+                (o) => 'Output',
+              ))
+          .getOrThrow('NaN');
+
+      expect(result, 'Error');
+    });
+
+    test('should have correct exception type', () async {
+      final result = await sut
+          .continueWith((either) => either.fold(
+                (e) => e,
+                (o) => 'Output',
+              ))
+          .getOrThrow('NaN');
+
+      await expectLater(result, isA<FormatException>());
+    });
+  });
 }
