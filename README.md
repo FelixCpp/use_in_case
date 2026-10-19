@@ -534,3 +534,27 @@ type.
 
 ---
 >  For more examples, take a look into the [examples](./example) folder.
+
+## Publishing
+
+Run **Release and publish** from the repository's GitHub Actions tab using
+**Run workflow** and enter the release version without a `v` prefix (for
+example, `2.1.0`). It must match the version in `pubspec.yaml`. The workflow
+validates the package, runs formatting, analysis and tests, creates the
+matching `v` tag and GitHub Release, then publishes to pub.dev. Update the
+package version and `CHANGELOG.md` and push the commit before dispatching the
+workflow.
+
+To enable publishing, configure a [pub.dev trusted publisher](https://dart.dev/tools/pub/automated-publishing)
+for this package once:
+
+1. Open the package's **Admin** page on pub.dev and add a GitHub Actions
+   publisher.
+2. Set the GitHub owner to `FelixCpp`, the repository to `use_in_case`, and the
+   workflow file to `.github/workflows/publish.yml`. Leave the environment
+   blank; this workflow does not use a GitHub environment.
+
+If a previous run created the GitHub Release but failed during publication,
+dispatching the workflow again will reuse that release. The workflow uses
+GitHub's OIDC identity, so no pub.dev token needs to be stored as a GitHub
+secret.

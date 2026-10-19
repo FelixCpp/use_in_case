@@ -1,0 +1,70 @@
+name: Release and publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Package version to release (for example, 2.1.0)
+        required: true
+        type: string
+
+jobs:
+  publish:
+    name: Create release and publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+
+      - name: Get dependencies
+        run: dart pub get
+
+      - name: Verify release version
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          PACKAGE_VERSION="$(sed -n 's/^version: *//p' pubspec.yaml | head -n 1)"
+          if [[ ! "$RELEASE_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([+-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid release version: '$RELEASE_VERSION'." >&2
+            exit 1
+          fi
+          if [[ "$RELEASE_VERSION" != "$PACKAGE_VERSION" ]]; then
+            echo "Release version '$RELEASE_VERSION' does not match package version '$PACKAGE_VERSION'." >&2
+            exit 1
+          fi
+          echo "RELEASE_TAG=v$RELEASE_VERSION" >> "$GITHUB_ENV"
+
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: dart analyze
+
+      - name: Run tests
+        run: dart test
+
+      - name: Validate package
+        run: dart pub publish --dry-run
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "GitHub Release $RELEASE_TAG already exists; continuing with publication."
+          else
+            gh release create "$RELEASE_TAG" \
+              --target "$GITHUB_SHA" \
+              --title "$RELEASE_TAG" \
+              --generate-notes
+          fi
+
+      - name: Publish package
+        run: dart pub publish --force
