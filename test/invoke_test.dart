@@ -1,4 +1,3 @@
-import 'package:dartz/dartz.dart';
 import 'package:test/test.dart';
 import 'package:use_in_case/src/interactor.dart';
 import 'package:use_in_case/src/invoke.dart';
@@ -10,15 +9,15 @@ final class _RunInteractor
   var called = false;
 
   @override
-  Future<int> getOrThrow(String input) async {
+  Future<int> invoke(String input) async {
     called = true;
     return int.parse(input);
   }
 }
 
-final class _ThrowErrorInteracctor implements ResultInteractor<int> {
+final class _ThrowErrorInteracctor extends ResultInteractor<int> {
   @override
-  Future<int> getOrThrow(Unit unit) async {
+  Future<int> getOrThrow() async {
     throw ArgumentError('Invalid argument');
   }
 }
@@ -39,6 +38,15 @@ void main() {
     test('should invoke execute method and ignore exception', () async {
       await sut.run('bruh');
       expect(sut.called, isTrue);
+    });
+
+    test('should propagate errors', () async {
+      final interactor = _ThrowErrorInteracctor();
+
+      await expectLater(
+        () => interactor.run(),
+        throwsA(isA<ArgumentError>()),
+      );
     });
   });
 
@@ -116,22 +124,25 @@ void main() {
   });
 
   group('invocation with errors', () {
-    late ParameterizedResultInteractor<Unit, int> interactor;
+    late ResultInteractor<int> interactor;
 
     setUp(() {
       interactor = _ThrowErrorInteracctor();
     });
 
     test('should throw ArgumentError', () {
-      expect(() => interactor.getOrThrow(unit), throwsArgumentError);
+      expect(() => interactor.getOrThrow(), throwsArgumentError);
     });
 
-    test('should return null', () async {
-      expect(interactor.getOrNull(unit), completion(isNull));
+    test('should propagate errors from getOrNull', () async {
+      await expectLater(
+        () => interactor.getOrNull(),
+        throwsA(isA<ArgumentError>()),
+      );
     });
 
     test('should not return fallback value due to error not exception', () {
-      expect(() => interactor.getOrElse(unit, (_) => -1), throwsArgumentError);
+      expect(() => interactor.getOrElse((_) => -1), throwsArgumentError);
     });
   });
 }

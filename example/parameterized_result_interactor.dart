@@ -4,7 +4,7 @@ import 'package:use_in_case/use_in_case.dart';
 
 final class Converter implements ParameterizedResultInteractor<String, int> {
   @override
-  FutureOr<int> getOrThrow(String input) {
+  FutureOr<int> invoke(String input) {
     return int.parse(input);
   }
 }

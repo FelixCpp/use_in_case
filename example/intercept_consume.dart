@@ -5,7 +5,7 @@ import 'package:use_in_case/src/invoke.dart';
 class StringToIntInteractor
     implements ParameterizedResultInteractor<String, int> {
   @override
-  Future<int> getOrThrow(String input) async {
+  Future<int> invoke(String input) async {
     return int.parse(input);
   }
 }

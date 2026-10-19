@@ -6,17 +6,18 @@ class ToIntInteractor implements ParameterizedResultInteractor<String, int> {
   ToIntInteractor();
 
   @override
-  FutureOr<int> getOrThrow(String input) {
+  FutureOr<int> invoke(String input) {
     return int.parse(input);
   }
 }
 
 void main() async {
   final intToString = ToIntInteractor();
-  final intToStringModifier = intToString.continueWith((either) => either.fold(
-        (exception) => 'Failed with: $exception',
-        (output) => 'Succeeded with: $output',
-      ));
+  final intToStringModifier =
+      intToString.continueWith((outcome) => switch (outcome) {
+            InteractorFailure(:final exception) => 'Failed with: $exception',
+            InteractorSuccess(:final value) => 'Succeeded with: $value',
+          });
 
   {
     final result = await intToStringModifier.getOrThrow('42');

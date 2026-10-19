@@ -1,6 +1,6 @@
 name: use_in_case
 description: A Dart package that provides a set of functionality to help you write usecases.
-version: 1.4.4
+version: 2.0.0
 repository: https://github.com/FelixCpp/use_in_case
 
 topics:
@@ -9,9 +9,6 @@ topics:
 
 environment:
   sdk: ^3.0.0
-
-dependencies:
-  dartz: ^0.10.1
 
 dev_dependencies:
   lints: ^5.1.1

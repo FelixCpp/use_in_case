@@ -1,23 +1,39 @@
 import 'dart:async';
 
-import 'package:dartz/dartz.dart';
+/// Opaque marker used to share the interactor interface for no-input use cases.
+final class NoInput {
+  const NoInput._();
 
-/// Defines the interface for an interactor.
-/// All interactors must implement this interface in order to fit into the use case architecture.
-abstract interface class ParameterizedResultInteractor<Input, Output> {
-  FutureOr<Output> getOrThrow(Input input);
+  static const instance = NoInput._();
 }
 
+/// Defines the common execution contract for all interactors.
+abstract class ParameterizedResultInteractor<Input, Output> {
+  FutureOr<Output> invoke(Input input);
+}
+
+/// Defines an interactor that receives input and does not return a value.
 typedef ParameterizedInteractor<Input>
     = ParameterizedResultInteractor<Input, void>;
-typedef ResultInteractor<Output> = ParameterizedResultInteractor<Unit, Output>;
-typedef Interactor = ParameterizedResultInteractor<Unit, void>;
 
-final class InlinedParameterizedResultInteractor<Input, Output>
-    implements ParameterizedResultInteractor<Input, Output> {
-  final FutureOr<Output> Function(Input input) _execute;
-  const InlinedParameterizedResultInteractor(this._execute);
+/// Defines an interactor that takes no input and returns an output.
+abstract class ResultInteractor<Output>
+    extends ParameterizedResultInteractor<NoInput, Output> {
+  FutureOr<Output> getOrThrow();
 
   @override
-  FutureOr<Output> getOrThrow(Input input) => _execute(input);
+  FutureOr<Output> invoke(NoInput input) => getOrThrow();
+}
+
+/// Defines an interactor that takes no input and returns no value.
+typedef Interactor = ResultInteractor<void>;
+
+/// Adapts a function into a parameterized interactor.
+final class InlinedParameterizedResultInteractor<Input, Output>
+    extends ParameterizedResultInteractor<Input, Output> {
+  final FutureOr<Output> Function(Input input) _execute;
+  InlinedParameterizedResultInteractor(this._execute);
+
+  @override
+  FutureOr<Output> invoke(Input input) => _execute(input);
 }

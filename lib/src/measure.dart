@@ -1,155 +1,59 @@
 import 'dart:async';
 
-import 'package:use_in_case/use_in_case.dart';
+import 'package:use_in_case/src/interactor.dart';
 
-typedef TimedValue<Output> = (
-  Duration duration,
-  Output value,
-);
+typedef TimedValue<Output> = (Duration duration, Output value);
 
-/// This extension provides methods to measure the time it takes to run an interactor.
-///
-/// Provided methods:
-///   - [measureTime]
-///   - [measureTimeOnSuccess]
-///   - [measureTimedValue]
-///   - [measureTimedValueOnSuccess]
+/// Adds per-invocation timing operations to interactors.
 extension MeasureTimeExt<Input, Output>
     on ParameterizedResultInteractor<Input, Output> {
-  /// This method measures the time it takes to run the interactor.
-  /// When finished raguardless of whether the invocation
-  /// threw an exception or not, [callback] is being called with
-  /// the amount of time it took to run the interactor.
-  ///
-  /// Example:
-  /// ```dart
-  /// final interactor = MyInteractor();
-  /// await interactor
-  ///   .measureTime((elapsed) => print('Elapsed time: $elapsed'))
-  ///   .run(input);
-  /// ```
-  ///
-  /// If you want to execute the given [callback] only when the interactor
-  /// finishes successfully, you can use the [measureTimeOnSuccess] method.
-  ///
-  /// Sometimes you might want to map the output to include the duration
-  /// it took in order to perform the invocation for further processing.
-  /// In this case, you can use the [measureTimedValue] method.
-  ///
-  /// see [measureTimeOnSuccess], [measureTimedValue]
+  /// Measures each invocation and invokes [callback] even if it fails.
   ParameterizedResultInteractor<Input, Output> measureTime(
     FutureOr<void> Function(Duration) callback,
   ) {
-    final stopwatch = Stopwatch();
-
-    return before((_) => stopwatch.start())
-        .eventually(() => callback(stopwatch.elapsed));
+    return InlinedParameterizedResultInteractor((input) async {
+      final stopwatch = Stopwatch()..start();
+      try {
+        return await invoke(input);
+      } finally {
+        await callback(stopwatch.elapsed);
+      }
+    });
   }
 
-  /// This method measures the time it takes to run the interactor.
-  /// When the interactor finishes successfully, [callback] is being called
-  /// with the amount of time it took to run the interactor and the produced
-  /// output.
-  ///
-  /// Example:
-  /// ```dart
-  /// final interactor = MyInteractor();
-  /// await interactor
-  ///   .measureTimeOnSuccess((elapsed, output) => print('Elapsed time: $elapsed, Output: $output'))
-  ///   .run(input);
-  /// ```
-  ///
-  /// If you want to measure the time it took to run the interactor
-  /// regardless of the outcome, you can use the [measureTime] method.
-  ///
-  /// Sometimes you might want to map the output to include the duration
-  /// it took in order to perform the invocation for further processing.
-  /// In this case, you can use the [measureTimedValue] method.
-  ///
-  /// see [measureTime], [measureTimedValue]
+  /// Measures a successful invocation and provides its output.
   ParameterizedResultInteractor<Input, Output> measureTimeOnSuccess(
     FutureOr<void> Function(Duration, Output) callback,
   ) {
-    final stopwatch = Stopwatch();
-
-    return before((_) => stopwatch.start())
-        .after((output) => callback(stopwatch.elapsed, output));
+    return InlinedParameterizedResultInteractor((input) async {
+      final stopwatch = Stopwatch()..start();
+      final output = await invoke(input);
+      await callback(stopwatch.elapsed, output);
+      return output;
+    });
   }
 
-  /// This method measures the time it takes to run the interactor and
-  /// maps the output to include the duration it took in order to perform
-  /// the invocation.
-  ///
-  /// The output will be a tuple of the duration and the original output where
-  /// the first element is the duration and the second element is the original
-  /// output of the interactor.
-  ///
-  /// Example:
-  /// ```dart
-  /// final interactor = MyInteractor();
-  /// final result = await interactor
-  ///   .measureTimedValueOnSuccess()
-  ///   .run(input);
-  ///
-  /// print('Elapsed time: ${result.$1}');
-  /// print('Output: ${result.$2}');
-  /// ```
-  ///
-  /// Note that this only works, if the interactor finished successfully.
-  ///
-  /// If you want to measure the time it took to run the interactor without
-  /// changing the output, you can use the [measureTime] or [measureTimeOnSuccess]
-  /// methods.
-  ///
-  /// If you want to receive the output regardless of the outcome, you can use
-  /// the [measureTimedValue] method.
-  ///
-  /// see [measureTime], [measureTimeOnSuccess], [measureTimedValue]
+  /// Returns the successful output together with its elapsed time.
   ParameterizedResultInteractor<Input, TimedValue<Output>>
       measureTimedValueOnSuccess() {
-    final stopwatch = Stopwatch();
-
-    return before((_) => stopwatch.start())
-        .map((output) => (stopwatch.elapsed, output));
+    return InlinedParameterizedResultInteractor((input) async {
+      final stopwatch = Stopwatch()..start();
+      final output = await invoke(input);
+      return (stopwatch.elapsed, output);
+    });
   }
 
-  /// This method measures the time it takes to run the interactor and
-  /// maps the output to include the duration it took in order to perform
-  /// the invocation.
-  ///
-  /// The output will be a tuple of the duration and the original output where
-  /// the first element is the duration and the second element is the original
-  /// output of the interactor.
-  ///
-  /// This method will always return a tuple, even if the interactor threw
-  /// an exception. In this case, the second element of the tuple will be `null`.
-  /// This is useful when you want to measure the time it took to run the interactor
-  /// regardless of the outcome. If you want to receive the output only when the
-  /// interactor finishes successfully, you can use the [measureTimedValueOnSuccess]
-  /// method.
-  ///
-  /// Example:
-  /// ```dart
-  /// final interactor = MyInteractor();
-  /// final (duration, value) = await interactor
-  ///   .measureTimedValue()
-  ///   .getOrThrow(input);
-  ///
-  /// print('Elapsed time: $duration');
-  /// print('Output: $value');
-  /// ```
-  ///
-  /// If you want to measure the time it took to run the interactor without
-  /// changing the output, you can use the [measureTime] or [measureTimeOnSuccess]
-  /// methods.
-  ///
-  /// see [measureTime], [measureTimeOnSuccess], [measureTimedValueOnSuccess]
+  /// Returns elapsed time and a nullable output, including on Exception.
   ParameterizedResultInteractor<Input, TimedValue<Output?>>
       measureTimedValue() {
-    final stopwatch = Stopwatch();
-
-    return before((_) => stopwatch.start())
-        .map((output) => (stopwatch.elapsed, output as Output?))
-        .recover((_) => (stopwatch.elapsed, null));
+    return InlinedParameterizedResultInteractor((input) async {
+      final stopwatch = Stopwatch()..start();
+      try {
+        final output = await invoke(input);
+        return (stopwatch.elapsed, output);
+      } on Exception {
+        return (stopwatch.elapsed, null);
+      }
+    });
   }
 }

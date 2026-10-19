@@ -1,11 +1,10 @@
 import 'dart:async';
 
-import 'package:dartz/dartz.dart';
 import 'package:use_in_case/use_in_case.dart';
 
-final class HeavyComputation implements Interactor {
+final class HeavyComputation extends Interactor {
   @override
-  FutureOr<void> getOrThrow(Unit input) {
+  FutureOr<void> getOrThrow() {
     print('Working...');
   }
 }
@@ -20,7 +19,7 @@ void main() async {
   await interactor.emitBusyStateChange(streamController).eventually(() {
     streamController.close();
     subscription.cancel();
-  }).run(unit);
+  }).run();
 
   // Output:
   //  - Stream: true

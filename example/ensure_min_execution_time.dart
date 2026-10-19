@@ -1,11 +1,10 @@
 import 'dart:async';
 
-import 'package:dartz/dartz.dart';
 import 'package:use_in_case/use_in_case.dart';
 
-class SynchronizeInteractor implements Interactor {
+class SynchronizeInteractor extends Interactor {
   @override
-  FutureOr<void> getOrThrow(Unit input) {
+  FutureOr<void> getOrThrow() {
     // .. Perform real synchronization here ...
     return Future.delayed(Duration(milliseconds: 100));
   }
@@ -17,5 +16,5 @@ void main() async {
   await interactor
       .ensureMinExecutionTime(Duration(milliseconds: 1500))
       .measureTime((duration) => print('Synchronization took $duration'))
-      .run(unit);
+      .run();
 }

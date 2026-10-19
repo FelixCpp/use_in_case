@@ -1,11 +1,10 @@
 import 'dart:async';
 
-import 'package:dartz/dartz.dart';
 import 'package:use_in_case/use_in_case.dart';
 
-final class Printer implements Interactor {
+final class Printer extends Interactor {
   @override
-  FutureOr<void> getOrThrow(Unit input) {
+  FutureOr<void> getOrThrow() {
     print('Goodbye!');
   }
 }
@@ -13,6 +12,6 @@ final class Printer implements Interactor {
 void main() async {
   final interactor = Printer();
   await interactor
-      .before((input) async => print('Hello!'))
-      .run(unit); // Hello!, Goodbye!
+      .before((_) async => print('Hello!'))
+      .run(); // Hello!, Goodbye!
 }

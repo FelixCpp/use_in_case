@@ -26,10 +26,10 @@ This library declares a base interactor interface aswell as a corresponding prog
 How to call an interactor in your code:
 
 ```dart
-// Define an interactor that does something. He must extend/implement a type mentioned above.
+// Define an interactor that does something. It implements the shared interactor contract.
 final class StringToIntConverter implements ParameterizedResultInteractor<String, int> {
     @override
-    Future<int> getOrThrow(String input) async {
+    Future<int> invoke(String input) async {
         return int.parse(input);
     }
 }
@@ -53,10 +53,30 @@ Future<void> _ = converter.runUnsafe("word"); // Throws exception
 | Method name  | Description                                                                                  |
 | ------------ | -------------------------------------------------------------------------------------------- |
 | `getOrThrow` | Calls the interactor and throws an exception if the interactor fails.                        |
-| `getOrNull`  | Calls the interactor and returns `null` if the interactor fails.                             |
-| `getOrElse`  | Calls the interactor and returns a fallback value if the interactor fails.                   |
-| `run`        | Calls the interactor and ignores the result. Also this method does not throw.                |
+| `getOrNull`  | Calls the interactor and returns `null` if it throws an `Exception`.                          |
+| `getOrElse`  | Calls the interactor and returns a fallback value if it throws an `Exception`.               |
+| `run`        | Calls the interactor and ignores the result and any thrown `Exception`.                      |
 | `runUnsafe`  | Calls the interactor and throws an exception in case of a failure. The return type is void.  |
+
+### Interactors without input
+
+No-input interactors no longer need a `Unit` value. Extend `Interactor` for
+operations without a result, or `ResultInteractor<Output>` when returning one.
+Both use the same `ParameterizedResultInteractor` modifier chain:
+
+```dart
+final class RefreshInteractor extends Interactor {
+  @override
+  Future<void> getOrThrow() async {
+    // Refresh data.
+  }
+}
+
+await RefreshInteractor().run();
+```
+
+Parameterized interactor implementations provide `invoke(input)`; callers still
+use `getOrThrow(input)` to execute them.
 
 ## Customization
 
@@ -108,8 +128,8 @@ The graphic below shows in which order each decorator is going to append itself 
 myInteractor
     .intercept((exception) => print("Exception caught: $exception"))
     .before((input) => print("Interactor called with parameter = $input"))
-    .after((output) => println("Output produced: $output"))
-    .busyStateChange((isBusy) => println("Busy State: $isBusy"))
+    .after((output) => print("Output produced: $output"))
+    .busyStateChange((isBusy) => print("Busy State: $isBusy"))
 ```
 </td>
 </table>
@@ -124,8 +144,8 @@ Examples can be found [here](lib/src/).
 ```dart
 extension CustomModifier<Input, Output> on ParameterizedResultInteractor<Input, Output> {
   ParameterizedResultInteractor<Input, Output> customModifier() {
-    return InlinedParameterizedResultInteractor((input) {
-      print("I am here!")
+    return InlinedParameterizedResultInteractor<Input, Output>((input) async {
+      print("I am here!");
       return await getOrThrow(input);
     });
   }
@@ -180,7 +200,7 @@ void main() {
 }
 ```
 
-Just like the default interactor types written above, the ProgressInteractor provides a single method called `onProgress` which must be called before all other decorators. It gets called whenever the interactor wants to publish a progress-value to the caller. Due to API limitations it can only be registerd once in the method-pipe.
+Just like the default interactor types written above, a progress interactor provides `receiveProgress`, which should be called before other decorators. It gets called whenever the interactor publishes a progress value to the caller. Due to API limitations it can only be registered once in the method pipe.
 
 The naming-convention mirrors the previously declared interactors from above.
 
@@ -197,12 +217,12 @@ An example might look like this:
 
 ```dart
 myFileDownloadInteractor
-    .receiveProgress((progress) => println("Downloaded ${progress}% of the file."))
+    .receiveProgress((progress) => print("Downloaded ${progress}% of the file."))
     .timeout(const Duration(seconds: 30))
-    .before((input) => println("Downloading file from ${input.sourceUrl} to ${input.destinationFilepath}."))
-    .after((_) => println("Successfully downloaded file."))
-    .intercept((exception) => println("Failed to download file. Exception caught: $it"))
-    .eventually(() => println("Finished downloading file from."))
+    .before((input) => print("Downloading file from ${input.sourceUrl} to ${input.destinationFilepath}."))
+    .after((_) => print("Successfully downloaded file."))
+    .intercept((exception) => print("Failed to download file. Exception caught: $exception"))
+    .eventually(() => print("Finished downloading file."))
     .getOrNull(FileDownloadInteractorInput("https://example.com/file.txt", "/path/to/file.txt"))
 ```
 
@@ -310,16 +330,16 @@ final pi = await stringToInt
 ```
 
 ### continueWith
-... allows you to specify a `callback` receiving an `Either` type from [dartz](https://pub.dev/packages/dartz) holding the output or exception depending on the outcome. It's purpose is to generate a new output for the execution flow depending on the outcome of the interactor in state of the given parameter.
+... allows you to specify a callback receiving an `InteractorSuccess` or `InteractorFailure` value, depending on the outcome. It can generate a new output based on that result.
 ```dart
 final output = await stringToInt
   .continueWith((result) {
-    return result.fold(
-      ifLeft: (exception) => 'Failed: ${exception.toString()}',
-      ifRight: (value) => 'Succeeded: ${value.toString()}'
-    )
+    return switch (result) {
+      InteractorFailure(:final exception) => 'Failed: $exception',
+      InteractorSuccess(:final value) => 'Succeeded: $value',
+    };
   })
-  .getOrThrow();
+  .getOrThrow('12');
 ```
 
 ### cast
@@ -427,7 +447,7 @@ await synchronizeData
 ```dart
 final class GreetName implements ParameterizedResultInteractor<String, String> {
   @override
-  FutureOr<String> getOrThrow(String input) async {
+  FutureOr<String> invoke(String input) async {
     return 'Hello, $input';
   }
 }
@@ -437,7 +457,7 @@ final class GreetName implements ParameterizedResultInteractor<String, String> {
 ```dart
 final class StringToInt implements ParameterizedResultInteractor<String, int> {
   @override
-  FutureOr<int> getOrThrow(String input) async {
+  FutureOr<int> invoke(String input) async {
     return int.parse(input);
   }
 }
@@ -445,11 +465,11 @@ final class StringToInt implements ParameterizedResultInteractor<String, int> {
 
 ### SynchronizeData
 ```dart
-final class SynchronizeData implements Interactor {
+final class SynchronizeData extends Interactor {
   @override
-  FutureOr<Unit> getOrThrow(Unit input) async {
+  FutureOr<void> getOrThrow() async {
     // Perform sync ...
-    return Future.delayed(const Duration(seconds: 1), () => unit);
+    await Future<void>.delayed(const Duration(seconds: 1));
   }
 }
 ```

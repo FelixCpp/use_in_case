@@ -65,5 +65,20 @@ void main() {
       expect(logErrorException, isA<FormatException>());
       expect(caughtException, equals(logErrorException));
     });
+
+    test('should measure each invocation independently', () async {
+      final durations = <Duration>[];
+      final interactor = WaitingInteractor().logEvents(
+        logStart: (_) {},
+        logSuccess: (duration, _) => durations.add(duration),
+        logError: (_, __) => fail('logError has been called.'),
+      );
+
+      await interactor.getOrThrow(const Duration(milliseconds: 150));
+      await interactor.getOrThrow(Duration.zero);
+
+      expect(durations, hasLength(2));
+      expect(durations[1], lessThan(const Duration(milliseconds: 100)));
+    });
   });
 }

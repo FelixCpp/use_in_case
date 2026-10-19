@@ -1,4 +1,3 @@
-import 'package:dartz/dartz.dart';
 import 'package:test/test.dart';
 import 'package:use_in_case/use_in_case.dart';
 
@@ -29,13 +28,25 @@ void main() {
         final result = sut
             .eventually(() => Future.delayed(Duration(milliseconds: 100)))
             .measureTime((elapsed) => measuredTime = elapsed)
-            .getOrThrow(unit);
+            .getOrThrow();
 
         await expectLater(result, throwsException);
         expect(measuredTime, isNotNull);
         expect(measuredTime, greaterThanOrEqualTo(Duration(milliseconds: 100)));
       },
     );
+
+    test('should measure each invocation independently', () async {
+      final sut = WaitingInteractor();
+      final measured = <Duration>[];
+      final interactor = sut.measureTime(measured.add);
+
+      await interactor.getOrThrow(const Duration(milliseconds: 150));
+      await interactor.getOrThrow(Duration.zero);
+
+      expect(measured, hasLength(2));
+      expect(measured[1], lessThan(const Duration(milliseconds: 100)));
+    });
   });
 
   group('measureTimeOnSuccess', () {
@@ -58,7 +69,7 @@ void main() {
 
       final result = sut
           .measureTimeOnSuccess((elapsed, _) => measuredTime = elapsed)
-          .getOrThrow(unit);
+          .getOrThrow();
 
       await expectLater(result, throwsException);
       expect(measuredTime, isNull);
@@ -88,7 +99,7 @@ void main() {
         final (duration, value) = await sut
             .eventually(() => Future.delayed(const Duration(milliseconds: 100)))
             .measureTimedValue()
-            .getOrThrow(unit);
+            .getOrThrow();
 
         expect(
           duration,
@@ -118,7 +129,7 @@ void main() {
         final interactor = sut
             .eventually(() => Future.delayed(const Duration(milliseconds: 100)))
             .measureTimedValueOnSuccess()
-            .getOrThrow(unit);
+            .getOrThrow();
 
         await expectLater(interactor, throwsException);
       },

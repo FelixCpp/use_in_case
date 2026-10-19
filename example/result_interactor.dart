@@ -1,13 +1,12 @@
 import 'dart:async';
 
-import 'package:dartz/dartz.dart';
 import 'package:use_in_case/src/interactor.dart';
 
-final class Counter implements ResultInteractor<int> {
+final class Counter extends ResultInteractor<int> {
   int _counter = 0;
 
   @override
-  FutureOr<int> getOrThrow(Unit _) {
+  FutureOr<int> getOrThrow() {
     return _counter++;
   }
 }
@@ -15,9 +14,9 @@ final class Counter implements ResultInteractor<int> {
 void main() async {
   final interactor = Counter();
 
-  final result = await interactor.getOrThrow(unit);
+  final result = await interactor.getOrThrow();
   print(result); // 0
 
-  final result2 = await interactor.getOrThrow(unit);
+  final result2 = await interactor.getOrThrow();
   print(result2); // 1
 }

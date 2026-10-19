@@ -1,17 +1,16 @@
 import 'dart:async';
 
-import 'package:dartz/dartz.dart';
 import 'package:use_in_case/use_in_case.dart';
 
-class GetPiInteractor implements ResultInteractor<double> {
+class GetPiInteractor extends ResultInteractor<double> {
   @override
-  FutureOr<double> getOrThrow(Unit input) {
+  FutureOr<double> getOrThrow() {
     return 3.141592;
   }
 }
 
 void main() async {
   final interactor = GetPiInteractor();
-  final pi = await interactor.map((output) => output.toInt()).getOrThrow(unit);
+  final pi = await interactor.map((output) => output.toInt()).getOrThrow();
   print('Pi is $pi');
 }

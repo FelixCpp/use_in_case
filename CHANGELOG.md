@@ -187,3 +187,14 @@ It's callback produces an output having the outcome passed as parameter in order
 Function: [here](./lib/src/map.dart)<br/>
 Example: [here](./example/continue_with.dart)<br/>
 Test: [here](./test/map_test.dart)<br/>
+
+# 2.0.0
+
+## Breaking Changes
+
+- Removed the `dartz` dependency. `ResultInteractor` and `Interactor` now share the `ParameterizedResultInteractor` base and can be invoked without passing an input. All modifiers remain extensions on that shared contract.
+- Parameterized interactor implementations now implement `invoke(input)`; call sites continue to use `getOrThrow(input)`.
+- Replaced `dartz`'s `Either` in `continueWith` with the sealed `InteractorOutcome` hierarchy: `InteractorSuccess` and `InteractorFailure`.
+- Progress interactors without input now extend `ResultProgressInteractor` and expose a no-argument `getOrThrow()`.
+
+See the README and examples for updated usage.

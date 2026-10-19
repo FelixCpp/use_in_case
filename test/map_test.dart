@@ -46,10 +46,10 @@ void main() {
 
     test('should continue with output', () async {
       final result = await sut
-          .continueWith((either) => either.fold(
-                (e) => 'Error',
-                (o) => 'Output',
-              ))
+          .continueWith((outcome) => switch (outcome) {
+                InteractorFailure() => 'Error',
+                InteractorSuccess() => 'Output',
+              })
           .getOrThrow('2');
 
       expect(result, 'Output');
@@ -57,10 +57,10 @@ void main() {
 
     test('should continue with error', () async {
       final result = await sut
-          .continueWith((either) => either.fold(
-                (e) => 'Error',
-                (o) => 'Output',
-              ))
+          .continueWith((outcome) => switch (outcome) {
+                InteractorFailure() => 'Error',
+                InteractorSuccess() => 'Output',
+              })
           .getOrThrow('NaN');
 
       expect(result, 'Error');
@@ -68,10 +68,10 @@ void main() {
 
     test('should have correct exception type', () async {
       final result = await sut
-          .continueWith((either) => either.fold(
-                (e) => e,
-                (o) => 'Output',
-              ))
+          .continueWith((outcome) => switch (outcome) {
+                InteractorFailure(exception: final exception) => exception,
+                InteractorSuccess() => 'Output',
+              })
           .getOrThrow('NaN');
 
       await expectLater(result, isA<FormatException>());

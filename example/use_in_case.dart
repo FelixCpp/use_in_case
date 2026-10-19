@@ -4,7 +4,7 @@ import 'package:use_in_case/use_in_case.dart';
 final class StringToIntConverter
     implements ParameterizedResultInteractor<String, int> {
   @override
-  Future<int> getOrThrow(String input) async {
+  Future<int> invoke(String input) async {
     return int.parse(input);
   }
 }

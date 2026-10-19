@@ -1,4 +1,3 @@
-import 'package:dartz/dartz.dart';
 import 'package:test/test.dart';
 import 'package:use_in_case/use_in_case.dart';
 
@@ -27,7 +26,7 @@ void main() {
           .ensureMinExecutionTime(Duration(milliseconds: 100))
           .eventually(() => Future.delayed(Duration(milliseconds: 20)))
           .measureTime((elapsed) => measuredTime = elapsed)
-          .run(unit);
+          .run();
 
       expect(measuredTime, isNotNull);
       expect(measuredTime, greaterThanOrEqualTo(Duration(milliseconds: 100)));
@@ -67,6 +66,28 @@ void main() {
           .run(Duration(milliseconds: 100));
 
       expect(delayTime, isNull);
+    });
+
+    test('should enforce the minimum duration on every invocation', () async {
+      final sut = WaitingInteractor();
+      final interactor = sut.ensureMinExecutionTime(
+        const Duration(milliseconds: 50),
+      );
+      final elapsed = <Duration>[];
+      final measuredInteractor = interactor.measureTime(elapsed.add);
+
+      await measuredInteractor.getOrThrow(Duration.zero);
+      await measuredInteractor.getOrThrow(Duration.zero);
+
+      expect(elapsed, hasLength(2));
+      expect(
+        elapsed[0],
+        greaterThanOrEqualTo(const Duration(milliseconds: 40)),
+      );
+      expect(
+        elapsed[1],
+        greaterThanOrEqualTo(const Duration(milliseconds: 40)),
+      );
     });
   });
 }

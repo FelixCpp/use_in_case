@@ -4,7 +4,7 @@ import 'package:use_in_case/use_in_case.dart';
 
 final class Printer implements ParameterizedInteractor<String> {
   @override
-  FutureOr<void> getOrThrow(String input) {
+  FutureOr<void> invoke(String input) {
     print(input);
   }
 }

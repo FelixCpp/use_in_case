@@ -1,16 +1,15 @@
 import 'dart:async';
 
-import 'package:dartz/dartz.dart';
 import 'package:use_in_case/use_in_case.dart';
 
-final class Runner implements Interactor {
+final class Runner extends Interactor {
   @override
-  FutureOr<void> getOrThrow(Unit _) {
+  FutureOr<void> getOrThrow() {
     print('Hello, World!');
   }
 }
 
 void main() async {
   final interactor = Runner();
-  await interactor.run(unit); // Hello, World!
+  await interactor.run(); // Hello, World!
 }

@@ -17,7 +17,7 @@ final class Square extends Shape {
 final class ShapeFactory
     implements ParameterizedResultInteractor<String, Shape> {
   @override
-  FutureOr<Shape> getOrThrow(String input) {
+  FutureOr<Shape> invoke(String input) {
     if (input == 'circle') {
       return Circle(1.0);
     } else if (input == 'square') {
