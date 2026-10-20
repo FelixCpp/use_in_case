@@ -540,10 +540,11 @@ type.
 Run **Release and publish** from the repository's GitHub Actions tab using
 **Run workflow** and enter the release version without a `v` prefix (for
 example, `2.1.0`). It must match the version in `pubspec.yaml`. The workflow
-validates the package, runs formatting, analysis and tests, creates the
-matching `v` tag and GitHub Release, then publishes to pub.dev. Update the
-package version and `CHANGELOG.md` and push the commit before dispatching the
-workflow.
+validates the package (including a `dart pub publish --dry-run`), runs
+formatting, analysis and tests, publishes to pub.dev and only after a
+successful publication creates the matching `v` tag and GitHub Release. Update
+the package version and `CHANGELOG.md` and push the commit before dispatching
+the workflow.
 
 To enable publishing, configure a [pub.dev trusted publisher](https://dart.dev/tools/pub/automated-publishing)
 for this package once:
@@ -554,7 +555,7 @@ for this package once:
    workflow file to `.github/workflows/publish.yml`. Leave the environment
    blank; this workflow does not use a GitHub environment.
 
-If a previous run created the GitHub Release but failed during publication,
-dispatching the workflow again will reuse that release. The workflow uses
-GitHub's OIDC identity, so no pub.dev token needs to be stored as a GitHub
-secret.
+The dry-run cannot verify the trusted publisher setup, so a failed publish step
+usually means it is missing or misconfigured; nothing is tagged in that case and
+the workflow can simply be run again. The workflow uses GitHub's OIDC identity,
+so no pub.dev token needs to be stored as a GitHub secret.
