@@ -1,13 +1,7 @@
-# Unreleased
-
-## Breaking Changes
-
-- Interactor implementations now extend the shared abstract base classes and provide `execute` consistently. No-input interactors accept the opaque `NoInput` marker in `execute`, while callers continue to invoke them without an argument.
-- `invoke` is now an adapter over the shared interactor contract rather than an implementation method.
-
 # 0.1.0
 
 ### Core Classes
+
 - Base Class "[Interactor](lib/src/interactor.dart)" added
 - Base Class "[Modifier](lib/src/modifier.dart)" added
 - Class "[Invocator](lib/src/invocator.dart)" added
@@ -16,11 +10,13 @@
 - Class "[Busy-State Modifier](lib/src/busy_state_modifier.dart)" added
 
 #### Examples
+
 - Example "[simple example](example/simple_example.dart)" added
 - Example "[predefined modifier example](example/predefined_modifier_example.dart)" added
 - Example "[custom modifier](example/custom_modifier_example.dart)" added
 
 #### Tests
+
 - Test "[timeout test](test/modifiers/timeout_test.dart)" added
 - Test "[busy-state test](test/modifiers/busy_state_test.dart)" added
 - Test "[default configuration test](test/default_configuration_test.dart)" added
@@ -31,6 +27,7 @@
 I'm glad to announce that Versin 2 has reached its initial state that can be published!
 
 ### Core Classes
+
 - Interface [Interactor](lib/src/interactor.dart) added
 - Interface [ResultInteractor](lib/src/interactor.dart) added
 - Interface [ParameterizedInteractor](lib/src/interactor.dart) added
@@ -58,6 +55,7 @@ I'm glad to announce that Versin 2 has reached its initial state that can be pub
 - Modifier [timeout](lib/src/timeout.dart) added
 
 ### Examples
+
 - Example for [after](examples/after.dart) added
 - Example for [before](examples/before.dart) added
 - Example for [busy_state](examples/busy_state.dart) added
@@ -72,6 +70,7 @@ I'm glad to announce that Versin 2 has reached its initial state that can be pub
 - Example for [use_in_case](examples/use_in_case.dart) added
 
 ### Documentation
+
 - Documentation for [after](docs/after.drawio.svg) added
 - Documentation for [before](docs/before.drawio.svg) added
 - Documentation for [busyState](docs/busyState.drawio.svg) added
@@ -83,12 +82,14 @@ I'm glad to announce that Versin 2 has reached its initial state that can be pub
 - Documentation for [timeout](docs/timeout.drawio.svg) added
 
 ### Cleanup
+
 Removed pretty much all dependencies from the [pubspec](./pubspec.yaml) except darz for the unit type.
 Removed use_in_case2.0 branch from git-workflow filter.
 
 # 1.1.0
 
 ### Documentation
+
 - Code Documentation added in [after.dart](lib/src/after.dart)
 - Code Documentation added in [before.dart](lib/src/before.dart)
 - Code Documentation added in [busy_state.dart](lib/src/busy_state.dart)
@@ -160,9 +161,9 @@ Re-invocation of `callback` provided as parameter in [checkedIntercept](./lib/sr
 
 New parameter `allowMultiCatch` added to the following function signatures:
 
-* [checkedIntercept](./lib/src/intercept.dart)
-* [typedIntercept](./lib/src/intercept.dart)
-* [intercept](./lib/src/intercept.dart)
+- [checkedIntercept](./lib/src/intercept.dart)
+- [typedIntercept](./lib/src/intercept.dart)
+- [intercept](./lib/src/intercept.dart)
 
 ## Branding
 
@@ -188,6 +189,7 @@ There was a bug in 'logEvents' that consumed exceptions event though they should
 ## Features
 
 ### continue-with
+
 `continueWith` has been added to the library. Its purpose is to continue the execution flow of an interactor regardless of the result.
 It's callback produces an output having the outcome passed as parameter in order for you to decide what to continue with.
 
@@ -205,3 +207,10 @@ Test: [here](./test/map_test.dart)<br/>
 - Progress interactors without input now extend `ResultProgressInteractor` and expose a no-argument `getOrThrow()`.
 
 See the README and examples for updated usage.
+
+# 2.1.0
+
+## Breaking Changes
+
+- Interactor implementations now extend the shared abstract base classes and provide `execute` consistently. No-input interactors accept the opaque `NoInput` marker in `execute`, while callers continue to invoke them without an argument.
+- `invoke` is now an adapter over the shared interactor contract rather than an implementation method.
