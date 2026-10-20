@@ -9,7 +9,9 @@ Future<void> _waitForMinimum(
 ) async {
   final delayTime = duration - stopwatch.elapsed;
   if (delayTime > Duration.zero) {
-    await Future.delayed(delayTime);
+    while (stopwatch.elapsed < duration) {
+      await Future.delayed(duration - stopwatch.elapsed);
+    }
     await onDelay?.call(delayTime);
   }
 }
