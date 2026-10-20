@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:use_in_case/src/interactor.dart';
 
 /// Adds logging callbacks around interactor invocations.
-extension LogExt<Input, Output>
-    on ParameterizedResultInteractor<Input, Output> {
+extension LogExt<Input, Output> on InteractorContract<Input, Output> {
   ParameterizedResultInteractor<Input, Output> logEvents({
     required FutureOr<void> Function(Input) logStart,
     required FutureOr<void> Function(Duration, Output) logSuccess,

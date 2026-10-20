@@ -2,25 +2,24 @@ import 'dart:async';
 
 import 'package:use_in_case/use_in_case.dart';
 
-final class TestInteractor
-    implements ParameterizedResultInteractor<String, int> {
+final class TestInteractor extends ParameterizedResultInteractor<String, int> {
   @override
-  Future<int> invoke(String input) async {
+  Future<int> execute(String input) async {
     return int.parse(input);
   }
 }
 
 final class WaitingInteractor
-    implements ParameterizedResultInteractor<Duration, int> {
+    extends ParameterizedResultInteractor<Duration, int> {
   @override
-  Future<int> invoke(Duration input) async {
+  Future<int> execute(Duration input) async {
     return Future.delayed(input, () => input.inMilliseconds);
   }
 }
 
 final class ThrowingInteractor extends Interactor {
   @override
-  FutureOr<void> getOrThrow() {
+  FutureOr<void> execute(NoInput _) {
     throw Exception("This is an expected exception");
   }
 }

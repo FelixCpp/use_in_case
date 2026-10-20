@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:use_in_case/use_in_case.dart';
 
-final class Printer implements ParameterizedInteractor<String> {
+final class Printer extends ParameterizedInteractor<String> {
   @override
-  FutureOr<void> invoke(String input) {
+  FutureOr<void> execute(String input) {
     print(input);
   }
 }

@@ -15,7 +15,7 @@ typedef DownloadProgress = int;
 final class ProgressCounter extends ParameterizedResultProgressInteractor<
     Parameter, DownloadedBytes, DownloadProgress> {
   @override
-  FutureOr<DownloadedBytes> getOrThrow(Parameter input) async {
+  FutureOr<DownloadedBytes> execute(Parameter input) async {
     // TODO: Implement your file download here
 
     final totalBytes = 1000;

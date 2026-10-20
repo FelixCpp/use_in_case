@@ -1,3 +1,10 @@
+# Unreleased
+
+## Breaking Changes
+
+- Interactor implementations now extend the shared abstract base classes and provide `execute` consistently. No-input interactors accept the opaque `NoInput` marker in `execute`, while callers continue to invoke them without an argument.
+- `invoke` is now an adapter over the shared interactor contract rather than an implementation method.
+
 # 0.1.0
 
 ### Core Classes

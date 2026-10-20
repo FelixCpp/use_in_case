@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:use_in_case/use_in_case.dart';
 
-class GetPiInteractor extends ResultInteractor<double> {
+final class GetPiInteractor extends ResultInteractor<double> {
   @override
-  FutureOr<double> getOrThrow() {
+  FutureOr<double> execute(NoInput _) {
     return 3.141592;
   }
 }

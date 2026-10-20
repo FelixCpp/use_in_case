@@ -14,10 +14,9 @@ final class Square extends Shape {
   Square(this.side);
 }
 
-final class ShapeFactory
-    implements ParameterizedResultInteractor<String, Shape> {
+final class ShapeFactory extends ParameterizedResultInteractor<String, Shape> {
   @override
-  FutureOr<Shape> invoke(String input) {
+  FutureOr<Shape> execute(String input) {
     if (input == 'circle') {
       return Circle(1.0);
     } else if (input == 'square') {

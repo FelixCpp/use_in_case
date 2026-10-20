@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:use_in_case/use_in_case.dart';
 
-class SynchronizationInteractor extends Interactor {
+final class SynchronizationInteractor extends Interactor {
   @override
-  FutureOr<void> getOrThrow() {
+  FutureOr<void> execute(NoInput _) {
     return Future.delayed(Duration(seconds: 5));
   }
 }

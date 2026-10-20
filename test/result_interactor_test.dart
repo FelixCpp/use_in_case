@@ -5,18 +5,18 @@ import 'package:use_in_case/use_in_case.dart';
 
 final class _NoInputInteractor extends ResultInteractor<int> {
   @override
-  FutureOr<int> getOrThrow() => 42;
+  FutureOr<int> execute(NoInput _) => 42;
 }
 
 final class _FailingNoInputInteractor extends ResultInteractor<int> {
   @override
-  FutureOr<int> getOrThrow() => throw const FormatException('invalid');
+  FutureOr<int> execute(NoInput _) => throw const FormatException('invalid');
 }
 
 final class _NoInputProgressInteractor
     extends ResultProgressInteractor<int, int> {
   @override
-  FutureOr<int> getOrThrow() async {
+  FutureOr<int> execute(NoInput _) async {
     await emitProgress(1);
     await emitProgress(2);
     return 42;

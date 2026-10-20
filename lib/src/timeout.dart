@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:use_in_case/src/interactor.dart';
 
-extension TimeoutExt<Input, Output>
-    on ParameterizedResultInteractor<Input, Output> {
+extension TimeoutExt<Input, Output> on InteractorContract<Input, Output> {
   /// Fails with [TimeoutException] if the invocation exceeds [duration].
   ParameterizedResultInteractor<Input, Output> timeout(
     Duration duration, {

@@ -2,10 +2,10 @@ import 'package:use_in_case/src/interactor.dart';
 import 'package:use_in_case/src/intercept.dart';
 import 'package:use_in_case/src/invoke.dart';
 
-class StringToIntInteractor
-    implements ParameterizedResultInteractor<String, int> {
+final class StringToIntInteractor
+    extends ParameterizedResultInteractor<String, int> {
   @override
-  Future<int> invoke(String input) async {
+  Future<int> execute(String input) async {
     return int.parse(input);
   }
 }

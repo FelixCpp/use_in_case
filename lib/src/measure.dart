@@ -5,8 +5,7 @@ import 'package:use_in_case/src/interactor.dart';
 typedef TimedValue<Output> = (Duration duration, Output value);
 
 /// Adds per-invocation timing operations to interactors.
-extension MeasureTimeExt<Input, Output>
-    on ParameterizedResultInteractor<Input, Output> {
+extension MeasureTimeExt<Input, Output> on InteractorContract<Input, Output> {
   /// Measures each invocation and invokes [callback] even if it fails.
   ParameterizedResultInteractor<Input, Output> measureTime(
     FutureOr<void> Function(Duration) callback,

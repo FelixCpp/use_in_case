@@ -2,9 +2,9 @@
 import 'package:use_in_case/use_in_case.dart';
 
 final class StringToIntConverter
-    implements ParameterizedResultInteractor<String, int> {
+    extends ParameterizedResultInteractor<String, int> {
   @override
-  Future<int> invoke(String input) async {
+  Future<int> execute(String input) async {
     return int.parse(input);
   }
 }

@@ -26,10 +26,10 @@ This library declares a base interactor interface aswell as a corresponding prog
 How to call an interactor in your code:
 
 ```dart
-// Define an interactor that does something. It implements the shared interactor contract.
-final class StringToIntConverter implements ParameterizedResultInteractor<String, int> {
+// Define an interactor that does something. It extends the shared base class.
+final class StringToIntConverter extends ParameterizedResultInteractor<String, int> {
     @override
-    Future<int> invoke(String input) async {
+    Future<int> execute(String input) async {
         return int.parse(input);
     }
 }
@@ -62,12 +62,12 @@ Future<void> _ = converter.runUnsafe("word"); // Throws exception
 
 No-input interactors no longer need a `Unit` value. Extend `Interactor` for
 operations without a result, or `ResultInteractor<Output>` when returning one.
-Both use the same `ParameterizedResultInteractor` modifier chain:
+Both use the same interactor modifier chain:
 
 ```dart
 final class RefreshInteractor extends Interactor {
   @override
-  Future<void> getOrThrow() async {
+  Future<void> execute(NoInput _) async {
     // Refresh data.
   }
 }
@@ -75,8 +75,10 @@ final class RefreshInteractor extends Interactor {
 await RefreshInteractor().run();
 ```
 
-Parameterized interactor implementations provide `invoke(input)`; callers still
-use `getOrThrow(input)` to execute them.
+All interactor implementations provide `execute`. Parameterized interactors
+receive their domain input; no-input interactors receive the opaque `NoInput`
+marker, which can be ignored. Callers never pass that marker and continue to use
+`getOrThrow()` (or the other invocation helpers) to execute no-input interactors.
 
 ## Customization
 
@@ -142,7 +144,7 @@ It is possible to write custom decorators that modify that invocation-flow of th
 Examples can be found [here](lib/src/).
 
 ```dart
-extension CustomModifier<Input, Output> on ParameterizedResultInteractor<Input, Output> {
+extension CustomModifier<Input, Output> on InteractorContract<Input, Output> {
   ParameterizedResultInteractor<Input, Output> customModifier() {
     return InlinedParameterizedResultInteractor<Input, Output>((input) async {
       print("I am here!");
@@ -171,7 +173,7 @@ typedef DownloadProgress = int;
 final class FileDownloadInteractor extends ParameterizedResultProgressInteractor<
     Parameter, DownloadedBytes, DownloadProgress> {
   @override
-  Future<DownloadedBytes> getOrThrow(Parameter input) async {
+  Future<DownloadedBytes> execute(Parameter input) async {
     // TODO: Implement your file download here
 
     await emitProgress(0);
@@ -445,9 +447,9 @@ await synchronizeData
 
 ### GreetName
 ```dart
-final class GreetName implements ParameterizedResultInteractor<String, String> {
+final class GreetName extends ParameterizedResultInteractor<String, String> {
   @override
-  FutureOr<String> invoke(String input) async {
+  FutureOr<String> execute(String input) async {
     return 'Hello, $input';
   }
 }
@@ -455,9 +457,9 @@ final class GreetName implements ParameterizedResultInteractor<String, String> {
 
 ### StringToInt
 ```dart
-final class StringToInt implements ParameterizedResultInteractor<String, int> {
+final class StringToInt extends ParameterizedResultInteractor<String, int> {
   @override
-  FutureOr<int> invoke(String input) async {
+  FutureOr<int> execute(String input) async {
     return int.parse(input);
   }
 }
@@ -467,7 +469,7 @@ final class StringToInt implements ParameterizedResultInteractor<String, int> {
 ```dart
 final class SynchronizeData extends Interactor {
   @override
-  FutureOr<void> getOrThrow() async {
+  FutureOr<void> execute(NoInput _) async {
     // Perform sync ...
     await Future<void>.delayed(const Duration(seconds: 1));
   }

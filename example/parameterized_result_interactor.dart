@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:use_in_case/use_in_case.dart';
 
-final class Converter implements ParameterizedResultInteractor<String, int> {
+final class Converter extends ParameterizedResultInteractor<String, int> {
   @override
-  FutureOr<int> invoke(String input) {
+  FutureOr<int> execute(String input) {
     return int.parse(input);
   }
 }

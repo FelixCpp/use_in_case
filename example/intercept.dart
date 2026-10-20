@@ -7,7 +7,7 @@ final class Printer extends Interactor {
   final random = Random();
 
   @override
-  FutureOr<void> getOrThrow() {
+  FutureOr<void> execute(NoInput _) {
     if (random.nextDouble() > 0.5) {
       throw Exception('Random exception');
     }

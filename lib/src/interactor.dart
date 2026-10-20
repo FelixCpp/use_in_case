@@ -8,22 +8,26 @@ final class NoInput {
 }
 
 /// Defines the common execution contract for all interactors.
-abstract class ParameterizedResultInteractor<Input, Output> {
-  FutureOr<Output> invoke(Input input);
+abstract base class InteractorContract<Input, Output> {
+  FutureOr<Output> execute(Input input);
 }
+
+extension InvokeContractExt<Input, Output>
+    on InteractorContract<Input, Output> {
+  FutureOr<Output> invoke(Input input) => execute(input);
+}
+
+/// Defines an interactor that receives an input.
+abstract base class ParameterizedResultInteractor<Input, Output>
+    extends InteractorContract<Input, Output> {}
 
 /// Defines an interactor that receives input and does not return a value.
 typedef ParameterizedInteractor<Input>
     = ParameterizedResultInteractor<Input, void>;
 
 /// Defines an interactor that takes no input and returns an output.
-abstract class ResultInteractor<Output>
-    extends ParameterizedResultInteractor<NoInput, Output> {
-  FutureOr<Output> getOrThrow();
-
-  @override
-  FutureOr<Output> invoke(NoInput input) => getOrThrow();
-}
+abstract base class ResultInteractor<Output>
+    extends InteractorContract<NoInput, Output> {}
 
 /// Defines an interactor that takes no input and returns no value.
 typedef Interactor = ResultInteractor<void>;
@@ -35,5 +39,5 @@ final class InlinedParameterizedResultInteractor<Input, Output>
   InlinedParameterizedResultInteractor(this._execute);
 
   @override
-  FutureOr<Output> invoke(Input input) => _execute(input);
+  FutureOr<Output> execute(Input input) => _execute(input);
 }

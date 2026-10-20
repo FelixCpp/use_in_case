@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:use_in_case/src/interactor.dart';
 
-extension BeforeExt<Input, Output>
-    on ParameterizedResultInteractor<Input, Output> {
+extension BeforeExt<Input, Output> on InteractorContract<Input, Output> {
   /// Invokes [callback] with the input before executing the interactor.
   ParameterizedResultInteractor<Input, Output> before(
     FutureOr<void> Function(Input) callback,

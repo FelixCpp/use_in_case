@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:use_in_case/src/interactor.dart';
+import 'package:use_in_case/use_in_case.dart';
 
 final class Counter extends ResultInteractor<int> {
   int _counter = 0;
 
   @override
-  FutureOr<int> getOrThrow() {
+  FutureOr<int> execute(NoInput _) {
     return _counter++;
   }
 }

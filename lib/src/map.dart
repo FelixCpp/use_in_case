@@ -4,8 +4,7 @@ import 'package:use_in_case/src/interactor.dart';
 import 'package:use_in_case/src/outcome.dart';
 
 /// Adds output transformations and outcome handling to all interactors.
-extension MapExt<Input, Output>
-    on ParameterizedResultInteractor<Input, Output> {
+extension MapExt<Input, Output> on InteractorContract<Input, Output> {
   /// Transforms the output of this interactor.
   ParameterizedResultInteractor<Input, NewOutput> map<NewOutput>(
     FutureOr<NewOutput> Function(Output) callback,

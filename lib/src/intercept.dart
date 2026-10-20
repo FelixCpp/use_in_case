@@ -31,8 +31,7 @@ FutureOr<Output> _checkedIntercept<Output>(
 }
 
 /// Adds exception interception to interactor invocations.
-extension InterceptExt<Input, Output>
-    on ParameterizedResultInteractor<Input, Output> {
+extension InterceptExt<Input, Output> on InteractorContract<Input, Output> {
   /// Observes matching exceptions and optionally consumes them.
   ParameterizedResultInteractor<Input, Output> checkedIntercept(
     FutureOr<void> Function(Exception) callback,

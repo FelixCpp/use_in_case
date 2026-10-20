@@ -17,8 +17,7 @@ FutureOr<Output> _recover<Output>(
   }
 }
 
-extension RecoverExt<Input, Output>
-    on ParameterizedResultInteractor<Input, Output> {
+extension RecoverExt<Input, Output> on InteractorContract<Input, Output> {
   /// Recovers from exceptions matching [predicate].
   ParameterizedResultInteractor<Input, Output> checkedRecover(
     FutureOr<Output> Function(Exception) callback,

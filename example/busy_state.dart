@@ -4,7 +4,7 @@ import 'package:use_in_case/use_in_case.dart';
 
 final class Printer extends Interactor {
   @override
-  FutureOr<void> getOrThrow() {
+  FutureOr<void> execute(NoInput _) {
     print('Working...');
   }
 }

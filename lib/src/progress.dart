@@ -12,22 +12,14 @@ mixin _ProgressEmitter<Progress> {
 /// A progress-emitting interactor that receives an input.
 abstract base class ParameterizedResultProgressInteractor<Input, Output,
         Progress> extends ParameterizedResultInteractor<Input, Output>
-    with _ProgressEmitter<Progress> {
-  FutureOr<Output> getOrThrow(Input input);
-
-  @override
-  FutureOr<Output> invoke(Input input) => getOrThrow(input);
-}
+    with _ProgressEmitter<Progress> {}
 
 typedef ParameterizedProgressInteractor<Input, Progress>
     = ParameterizedResultProgressInteractor<Input, void, Progress>;
 
 /// A progress-emitting interactor that takes no input.
 abstract base class ResultProgressInteractor<Output, Progress>
-    extends ResultInteractor<Output> with _ProgressEmitter<Progress> {
-  @override
-  FutureOr<Output> getOrThrow();
-}
+    extends ResultInteractor<Output> with _ProgressEmitter<Progress> {}
 
 typedef ProgressInteractor<Progress> = ResultProgressInteractor<void, Progress>;
 
@@ -49,6 +41,8 @@ extension ResultReceiveProgressExtension<Output, Progress>
     FutureOr<void> Function(Progress) callback,
   ) {
     _callback = callback;
-    return InlinedParameterizedResultInteractor((_) => getOrThrow());
+    return InlinedParameterizedResultInteractor(
+      (_) => execute(NoInput.instance),
+    );
   }
 }

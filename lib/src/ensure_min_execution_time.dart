@@ -17,7 +17,7 @@ Future<void> _waitForMinimum(
 }
 
 extension EnsureMinExecutionTimeExt<Input, Output>
-    on ParameterizedResultInteractor<Input, Output> {
+    on InteractorContract<Input, Output> {
   /// Delays completion to meet [duration], including after an exception.
   ParameterizedResultInteractor<Input, Output> ensureMinExecutionTime(
     Duration duration, {

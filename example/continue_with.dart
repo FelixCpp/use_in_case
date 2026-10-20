@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:use_in_case/use_in_case.dart';
 
-class ToIntInteractor implements ParameterizedResultInteractor<String, int> {
+final class ToIntInteractor extends ParameterizedResultInteractor<String, int> {
   ToIntInteractor();
 
   @override
-  FutureOr<int> invoke(String input) {
+  FutureOr<int> execute(String input) {
     return int.parse(input);
   }
 }

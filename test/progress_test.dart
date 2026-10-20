@@ -7,7 +7,7 @@ import 'package:use_in_case/use_in_case.dart';
 final class _TestProgressInteractor
     extends ParameterizedResultProgressInteractor<String, int, double> {
   @override
-  FutureOr<int> getOrThrow(String input) async {
+  FutureOr<int> execute(String input) async {
     for (var i = 0; i < 10; i++) {
       await emitProgress(i / 10);
     }

@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:use_in_case/src/interactor.dart';
 
-extension InvokeExt<Input, Output>
-    on ParameterizedResultInteractor<Input, Output> {
+extension InvokeExt<Input, Output> on InteractorContract<Input, Output> {
   /// Executes the interactor and propagates any thrown object.
   Future<void> runUnsafe(Input input) async {
     await invoke(input);
@@ -43,8 +42,7 @@ extension InvokeExt<Input, Output>
   }
 }
 
-extension NoInputInvokeExt<Output>
-    on ParameterizedResultInteractor<NoInput, Output> {
+extension NoInputInvokeExt<Output> on InteractorContract<NoInput, Output> {
   /// Executes a no-input interactor and propagates any thrown object.
   Future<void> runUnsafe() async {
     await invoke(NoInput.instance);
