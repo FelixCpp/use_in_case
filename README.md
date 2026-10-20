@@ -537,14 +537,14 @@ type.
 
 ## Publishing
 
-Run **Release and publish** from the repository's GitHub Actions tab using
-**Run workflow** and enter the release version without a `v` prefix (for
-example, `2.1.0`). It must match the version in `pubspec.yaml`. The workflow
-validates the package (including a `dart pub publish --dry-run`), runs
-formatting, analysis and tests, publishes to pub.dev and only after a
-successful publication creates the matching `v` tag and GitHub Release. Update
-the package version and `CHANGELOG.md` and push the commit before dispatching
-the workflow.
+Run **Release** from the repository's GitHub Actions tab using **Run workflow**
+and enter the release version without a `v` prefix (for example, `2.1.0`). It
+must match the version in `pubspec.yaml`. The workflow runs formatting,
+analysis, tests and a `dart pub publish --dry-run`, creates the matching `v`
+tag and GitHub Release and then starts **Publish to pub.dev** on that tag.
+pub.dev only accepts publishing from a tag, which is why publishing is a
+separate workflow. Update the package version and `CHANGELOG.md` and push the
+commit before dispatching the workflow.
 
 To enable publishing, configure a [pub.dev trusted publisher](https://dart.dev/tools/pub/automated-publishing)
 for this package once:
@@ -554,8 +554,12 @@ for this package once:
 2. Set the GitHub owner to `FelixCpp`, the repository to `use_in_case`, and the
    workflow file to `.github/workflows/publish.yml`. Leave the environment
    blank; this workflow does not use a GitHub environment.
+3. Set the tag pattern to `v{{version}}` and enable publishing from
+   `workflow_dispatch` events.
 
-The dry-run cannot verify the trusted publisher setup, so a failed publish step
-usually means it is missing or misconfigured; nothing is tagged in that case and
-the workflow can simply be run again. The workflow uses GitHub's OIDC identity,
-so no pub.dev token needs to be stored as a GitHub secret.
+If the publish step fails (for example because the trusted publisher is
+misconfigured), the tag and release already exist. Fix the setting and re-run
+the **Publish to pub.dev** workflow on the tag via **Run workflow** with the
+tag selected as ref, or delete the tag and release and start over. The workflow
+uses GitHub's OIDC identity, so no pub.dev token needs to be stored as a GitHub
+secret.
