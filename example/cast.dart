@@ -4,17 +4,17 @@ import 'package:use_in_case/use_in_case.dart';
 
 sealed class Shape {}
 
-final class Circle extends Shape {
+class Circle implements Shape {
   final double radius;
-  Circle(this.radius);
+  const Circle(this.radius);
 }
 
-final class Square extends Shape {
+class Square implements Shape {
   final double side;
-  Square(this.side);
+  const Square(this.side);
 }
 
-final class ShapeFactory extends ParameterizedResultInteractor<String, Shape> {
+class ShapeFactory implements ParameterizedResultInteractor<String, Shape> {
   @override
   FutureOr<Shape> execute(String input) {
     if (input == 'circle') {
@@ -28,15 +28,15 @@ final class ShapeFactory extends ParameterizedResultInteractor<String, Shape> {
 }
 
 void main() async {
-  final factory = ShapeFactory();
+  final shapeFactory = ShapeFactory();
 
-  await factory
+  await shapeFactory
       .before((input) => print('Creating shape with name $input'))
       .cast<Circle>()
       .after((circle) => print('Circle with radius ${circle.radius}'))
       .getOrThrow('circle');
 
-  await factory
+  await shapeFactory
       .before((input) => print('Creating shape with name $input'))
       .cast<Square>()
       .after((square) => print('Square with side ${square.side}'))

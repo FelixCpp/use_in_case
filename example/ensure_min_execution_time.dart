@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:use_in_case/use_in_case.dart';
 
-final class SynchronizeInteractor extends Interactor {
+class SynchronizeInteractor implements Interactor {
   @override
   FutureOr<void> execute(NoInput _) {
     // .. Perform real synchronization here ...

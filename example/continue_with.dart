@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:use_in_case/use_in_case.dart';
 
-final class ToIntInteractor extends ParameterizedResultInteractor<String, int> {
+class ToIntInteractor implements ParameterizedResultInteractor<String, int> {
   ToIntInteractor();
 
   @override

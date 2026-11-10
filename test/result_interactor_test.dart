@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:test/test.dart';
 import 'package:use_in_case/use_in_case.dart';
 
-final class _NoInputInteractor extends ResultInteractor<int> {
+class _NoInputInteractor implements ResultInteractor<int> {
   @override
   FutureOr<int> execute(NoInput _) => 42;
 }
 
-final class _FailingNoInputInteractor extends ResultInteractor<int> {
+class _FailingNoInputInteractor implements ResultInteractor<int> {
   @override
   FutureOr<int> execute(NoInput _) => throw const FormatException('invalid');
 }

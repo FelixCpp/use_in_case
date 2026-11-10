@@ -4,7 +4,7 @@ import 'package:use_in_case/src/invoke.dart';
 
 import 'test_interactor.dart';
 
-final class _RunInteractor extends ParameterizedResultInteractor<String, int> {
+class _RunInteractor implements ParameterizedResultInteractor<String, int> {
   var called = false;
 
   @override
@@ -14,7 +14,7 @@ final class _RunInteractor extends ParameterizedResultInteractor<String, int> {
   }
 }
 
-final class _ThrowErrorInteracctor extends ResultInteractor<int> {
+class _ThrowErrorInteracctor implements ResultInteractor<int> {
   @override
   Future<int> execute(NoInput _) async {
     throw ArgumentError('Invalid argument');

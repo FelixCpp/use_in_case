@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:use_in_case/use_in_case.dart';
 
-final class SynchronizationInteractor extends Interactor {
+class SynchronizationInteractor implements Interactor {
   @override
   FutureOr<void> execute(NoInput _) {
     return Future.delayed(Duration(seconds: 5));

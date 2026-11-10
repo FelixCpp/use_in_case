@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:use_in_case/use_in_case.dart';
 
-final class Printer extends Interactor {
+class Printer implements Interactor {
   final random = Random();
 
   @override

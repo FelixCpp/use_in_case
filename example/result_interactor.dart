@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:use_in_case/use_in_case.dart';
 
-final class Counter extends ResultInteractor<int> {
+class Counter implements ResultInteractor<int> {
   int _counter = 0;
 
   @override

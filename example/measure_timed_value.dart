@@ -3,8 +3,7 @@ import 'dart:math';
 
 import 'package:use_in_case/use_in_case.dart';
 
-final class Accumulator
-    extends ParameterizedResultInteractor<Iterable<num>, num> {
+class Accumulator implements ParameterizedResultInteractor<Iterable<num>, num> {
   @override
   FutureOr<num> execute(Iterable<num> input) async {
     num result = 0;

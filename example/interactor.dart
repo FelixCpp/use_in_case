@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:use_in_case/use_in_case.dart';
 
-final class Runner extends Interactor {
+class Runner implements Interactor {
   @override
   FutureOr<void> execute(NoInput _) {
     print('Hello, World!');

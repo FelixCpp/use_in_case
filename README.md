@@ -26,8 +26,8 @@ This library declares a base interactor interface aswell as a corresponding prog
 How to call an interactor in your code:
 
 ```dart
-// Define an interactor that does something. It extends the shared base class.
-final class StringToIntConverter extends ParameterizedResultInteractor<String, int> {
+// Define an interactor that does something. It implements one of the interactor interfaces.
+class StringToIntConverter implements ParameterizedResultInteractor<String, int> {
     @override
     Future<int> execute(String input) async {
         return int.parse(input);
@@ -60,12 +60,12 @@ Future<void> _ = converter.runUnsafe("word"); // Throws exception
 
 ### Interactors without input
 
-No-input interactors no longer need a `Unit` value. Extend `Interactor` for
+No-input interactors no longer need a `Unit` value. Implement `Interactor` for
 operations without a result, or `ResultInteractor<Output>` when returning one.
 Both use the same interactor modifier chain:
 
 ```dart
-final class RefreshInteractor extends Interactor {
+class RefreshInteractor implements Interactor {
   @override
   Future<void> execute(NoInput _) async {
     // Refresh data.
@@ -157,6 +157,11 @@ extension CustomModifier<Input, Output> on InteractorContract<Input, Output> {
 ## Progress Interactors
 
 In some cases the interactor might need to publish progress information.
+Unlike the plain interactor types, which are interfaces and must be implemented,
+progress interactors are abstract classes that provide `emitProgress`. They must
+therefore be extended rather than implemented, and subclasses must be declared
+`final`, `base` or `sealed`.
+
 Given a `FileDownloadInteractor` that downloads a file from the internet, it might look like this:
 
 ```dart
@@ -202,7 +207,7 @@ void main() {
 }
 ```
 
-Just like the default interactor types written above, a progress interactor provides `receiveProgress`, which should be called before other decorators. It gets called whenever the interactor publishes a progress value to the caller. Due to API limitations it can only be registered once in the method pipe.
+A progress interactor is not an interactor by itself: the only method it offers is `receiveProgress`. The registered callback gets called whenever the interactor publishes a progress value. `receiveProgress` returns a regular interactor, on which all other modifiers (`before`, `after`, `map`, `timeout`, …) and invocation methods (`getOrThrow`, `run`, …) can be chained. Calling `receiveProgress` again on the same instance replaces the previously registered callback.
 
 The naming-convention mirrors the previously declared interactors from above.
 
@@ -447,7 +452,7 @@ await synchronizeData
 
 ### GreetName
 ```dart
-final class GreetName extends ParameterizedResultInteractor<String, String> {
+class GreetName implements ParameterizedResultInteractor<String, String> {
   @override
   FutureOr<String> execute(String input) async {
     return 'Hello, $input';
@@ -457,7 +462,7 @@ final class GreetName extends ParameterizedResultInteractor<String, String> {
 
 ### StringToInt
 ```dart
-final class StringToInt extends ParameterizedResultInteractor<String, int> {
+class StringToInt implements ParameterizedResultInteractor<String, int> {
   @override
   FutureOr<int> execute(String input) async {
     return int.parse(input);
@@ -467,7 +472,7 @@ final class StringToInt extends ParameterizedResultInteractor<String, int> {
 
 ### SynchronizeData
 ```dart
-final class SynchronizeData extends Interactor {
+class SynchronizeData implements Interactor {
   @override
   FutureOr<void> execute(NoInput _) async {
     // Perform sync ...

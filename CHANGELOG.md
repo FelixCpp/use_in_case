@@ -214,3 +214,15 @@ See the README and examples for updated usage.
 
 - Interactor implementations now extend the shared abstract base classes and provide `execute` consistently. No-input interactors accept the opaque `NoInput` marker in `execute`, while callers continue to invoke them without an argument.
 - `invoke` is now an adapter over the shared interactor contract rather than an implementation method.
+
+# 3.0.0
+
+## Breaking Changes
+
+- `InteractorContract`, `ParameterizedResultInteractor` and `ResultInteractor` (and therefore `ParameterizedInteractor` and `Interactor`) are now interfaces. Interactors must `implement` them instead of extending them.
+- Progress interactors (`ParameterizedResultProgressInteractor`, `ResultProgressInteractor` and their typedefs) are no longer interactors themselves. The only method available on them is `receiveProgress`, which returns a regular interactor that supports all modifiers and invocation methods.
+- Progress interactors must still be extended to inherit `emitProgress`; subclasses must be declared `final`, `base` or `sealed`.
+
+## Changes
+
+- Calling `receiveProgress` multiple times on the same progress interactor instance no longer throws. The latest callback replaces the previous one.
